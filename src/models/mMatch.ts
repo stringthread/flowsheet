@@ -1,6 +1,6 @@
-import {Part} from './Part';
+import {mPart} from './mPart';
 
-export interface Match {
+export interface mMatch {
   topic?: string;
   date?: Date|string;
   side?: string;
@@ -8,5 +8,5 @@ export interface Match {
   opponent?: string;
   member?: Map<string,string>; // パート名からメンバ名への対応
   note?: string;
-  content?: Array<Part>;
+  content?: Array<mPart>;
 }
