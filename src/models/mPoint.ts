@@ -1,10 +1,10 @@
-import {Evidence} from './Evidence'
+import {mEvidence} from './mEvidence'
 
 export type Claim = string;
 
-export type PointChild = Claim|Evidence|Point;
+export type PointChild = Claim|mEvidence|mPoint;
 
-export interface Point {
+export interface mPoint {
   numbering?: number|string;
   children_numbering?: number|string;
   contents?: Array<PointChild>;
