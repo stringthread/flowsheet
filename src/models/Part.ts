@@ -1,6 +1,6 @@
-import {Issue} from './Issue';
+import {Point} from './Point';
 
 export interface Part {
   name?: string|number;
-  contents?: Array<Issue>;
+  contents?: Array<Point>;
 }
