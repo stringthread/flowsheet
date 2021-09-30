@@ -1,4 +1,4 @@
-import {Evidence} from './Evidence.ts'
+import {Evidence} from './Evidence'
 
 export type Claim = string;
 
