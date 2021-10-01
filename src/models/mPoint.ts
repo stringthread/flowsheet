@@ -1,5 +1,5 @@
 import {mEvidence} from './mEvidence'
-import {isObject, multipleTypeof} from '~/util/typeGuardUtils'
+import {isObject, multipleTypeof} from 'util/typeGuardUtils'
 
 export type Claim = string;
 

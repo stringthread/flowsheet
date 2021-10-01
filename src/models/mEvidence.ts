@@ -1,4 +1,4 @@
-import {isObject, multipleTypeof} from '~/util/typeGuardUtils'
+import {isObject, multipleTypeof} from 'util/typeGuardUtils'
 
 export interface mEvidence {
   about_author?: string;
