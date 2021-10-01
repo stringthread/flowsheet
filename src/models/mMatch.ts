@@ -1,4 +1,4 @@
-import {mPart} from './mPart';
+import {mSide} from './mSide';
 
 export interface mMatch {
   topic?: string;
@@ -8,5 +8,5 @@ export interface mMatch {
   opponent?: string;
   member?: Map<string,string>; // パート名からメンバ名への対応
   note?: string;
-  content?: Array<mPart>;
+  content?: Array<mSide>;
 }
