@@ -1,5 +1,5 @@
 import React from 'react';
-import {mMatch} from '~/models/mMatch'
+import {mMatch} from 'models/mMatch'
 import {Side} from './Side';
 
 type HeaderProps = {

@@ -1,6 +1,6 @@
 import React from 'react';
-import {is_mEvidence} from '~/models/mEvidence'
-import {mPoint, is_mPoint} from '~/models/mPoint';
+import {is_mEvidence} from 'models/mEvidence'
+import {mPoint, is_mPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
 
 type Props = {

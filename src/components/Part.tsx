@@ -1,5 +1,5 @@
 import React from 'react';
-import {mPart} from '~/models/mPart';
+import {mPart} from 'models/mPart';
 import {Point} from './Point'
 
 type Props = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {mEvidence} from '~/models/mEvidence'
+import {mEvidence} from 'models/mEvidence'
 
 type HeaderProps = {
   metadata: Omit<mEvidence, 'content'>;

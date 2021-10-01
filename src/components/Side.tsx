@@ -1,5 +1,5 @@
 import React from 'react';
-import {mSide} from '~/models/mSide'
+import {mSide} from 'models/mSide'
 import {Part} from './Part';
 
 type Props = {
