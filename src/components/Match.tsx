@@ -1,6 +1,6 @@
 import React from 'react';
 import {mMatch} from '~/models/mMatch'
-import {Part} from './Part';
+import {Side} from './Side';
 
 type HeaderProps = {
   metadata: Omit<mMatch,'content'>
@@ -20,6 +20,6 @@ type Props = {
 export const Match: React.VFC<Props> = (props)=>(
   <div className='match'>
     <MatchHeader metadata={props.match} />
-    {props.match.content?.map(part=>(<Part part={part} />))??null}
+    {props.match.content?.map(side=>(<Side side={side} />))??null}
   </div>
 );
