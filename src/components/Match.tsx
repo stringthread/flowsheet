@@ -20,6 +20,6 @@ type Props = {
 export const Match: React.VFC<Props> = (props)=>(
   <div className='match'>
     <MatchHeader metadata={props.match} />
-    {props.match.content?.map(side=>(<Side side={side} />))??null}
+    {props.match.contents?.map(side=>(<Side side={side} />))??null}
   </div>
 );

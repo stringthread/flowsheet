@@ -8,5 +8,5 @@ export interface mMatch {
   opponent?: string;
   member?: Map<string,string>; // パート名からメンバ名への対応
   note?: string;
-  content?: Array<mSide>;
+  contents?: Array<mSide>;
 }

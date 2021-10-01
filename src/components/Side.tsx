@@ -9,6 +9,6 @@ type Props = {
 export const Side: React.VFC<Props> = (props)=>(
   <div className="side">
     <div className="sideName">{props.side.side}</div>
-    {props.side.content?.map(content=><Part part={content} />)??null}
+    {props.side.contents?.map(content=><Part part={content} />)??null}
   </div>
 );
