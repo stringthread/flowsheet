@@ -1,14 +1,20 @@
 import React from 'react';
-import {mSide} from 'models/mSide'
+import {useSelector} from 'react-redux';
+import {RootState} from 'stores/index';
 import {Part} from './Part';
+import {side_selectors} from 'stores/slices/side';
 
 type Props = {
-  side: mSide;
+  sideID: string;
 }
 
-export const Side: React.VFC<Props> = (props)=>(
-  <div className="side">
-    <div className="sideName">{props.side.side}</div>
-    {props.side.contents?.map(content=><Part part={content} />)??null}
-  </div>
-);
+export const Side: React.VFC<Props> = (props)=>{
+  const side=useSelector((state:RootState)=>side_selectors.selectById(state,props.sideID));
+  if(side===undefined) return null;
+  return (
+    <div className="side">
+      <div className="sideName">{side.side}</div>
+      {side.contents?.map(content=><Part partID={content} />)??null}
+    </div>
+  );
+};
