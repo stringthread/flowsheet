@@ -1,21 +1,33 @@
 import React from 'react';
-import {is_mEvidence} from 'models/mEvidence'
-import {mPoint, is_mPoint} from 'models/mPoint';
+import {useSelector} from 'react-redux';
+import {RootState} from 'stores/index';
+import {mPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
+import {point_selectors} from 'stores/slices/point';
+import {ValueOf} from 'util/utilityTypes';
 
 type Props = {
-  point: mPoint;
+  pointID: string;
 }
 
-export const Point: React.VFC<Props> = (props)=>(
-  <div className="point">
-    <span className="pointNumbering">{props.point.numbering}</span>
-    {props.point.contents?.map(
-      content=>{
-        if(is_mEvidence(content)) return <Evidence evi={content} />;
-        if(is_mPoint(content)) return <Point point={content} />;
-        return <div className="pointClaim">{content}</div>;
-      }
-    )??null}
-  </div>
-);
+const PointChild: React.VFC<{contents:ValueOf<mPoint['contents']>}> = (props)=>{
+  if(typeof props.contents === 'string') return <div className="pointClaim">{props.contents}</div>;
+  return (
+    <>
+    {props.contents?.map(
+      contents=>contents[1]?<Point pointID={contents[0]} />:<Evidence eviID={contents[0]} />
+    )}
+    </>
+  );
+}
+
+export const Point: React.VFC<Props> = (props)=>{
+  const point=useSelector((state:RootState)=>point_selectors.selectById(state,props.pointID));
+  if(point===undefined) return null;
+  return (
+    <div className="point">
+      <span className="pointNumbering">{point.numbering}</span>
+      {point.contents!==undefined?<PointChild contents={point.contents} />:null}
+    </div>
+  );
+};

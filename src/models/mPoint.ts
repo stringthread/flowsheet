@@ -9,7 +9,7 @@ export interface mPoint {
   id: string;
   numbering?: number|string;
   children_numbering?: number|string;
-  contents?: Array<string>|Claim; // PointChildのID
+  contents?: Array<[string,boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
   _shorthands?: Map<string,number>; // _contentsのキーに変換
 }
 
