@@ -1,6 +1,5 @@
-import {mPart} from './mPart';
-
 export interface mSide {
+  id?: string;
   side?: string; // TODO: enumにする
-  contents?: Array<mPart>;
+  contents?: Array<string>; // mPartのID
 }
