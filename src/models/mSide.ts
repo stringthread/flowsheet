@@ -1,5 +1,5 @@
 export interface mSide {
-  id?: string;
+  id: string;
   side?: string; // TODO: enumにする
   contents?: Array<string>; // mPartのID
 }

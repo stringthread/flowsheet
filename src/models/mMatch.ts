@@ -1,5 +1,5 @@
 export interface mMatch {
-  id?: string;
+  id: string;
   topic?: string;
   date?: Date|string;
   side?: string;

@@ -1,7 +1,7 @@
 import {isObject, multipleTypeof} from 'util/typeGuardUtils'
 
 export interface mEvidence {
-  id?: string;
+  id: string;
   about_author?: string;
   author?: string;
   year?: number|string;
@@ -10,7 +10,7 @@ export interface mEvidence {
 
 export const is_mEvidence = (value: unknown): value is mEvidence => {
   return isObject<mEvidence>(value) &&
-    multipleTypeof(value.id, ['undefined','string']) &&
+    multipleTypeof(value.id, ['string']) &&
     multipleTypeof(value.about_author, ['undefined','string']) &&
     multipleTypeof(value.author, ['undefined','string']) &&
     multipleTypeof(value.year, ['undefined','number','string']) &&

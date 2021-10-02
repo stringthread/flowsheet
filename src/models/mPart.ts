@@ -1,5 +1,5 @@
 export interface mPart {
-  id?: string;
+  id: string;
   name?: string|number;
   contents?: Array<string>; // mPointのID
 }
