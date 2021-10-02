@@ -28,6 +28,9 @@ export const side_slice=createSlice({
       if(entity.contents===undefined) entity.contents=[];
       entity.contents.push(new_part);
     },
+    incrementID: state=>{
+      state.last_id_number++;
+    },
   }
 });
 export const side_selectors=side_adapter.getSelectors<RootState>(state=>state.side);

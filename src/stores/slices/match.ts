@@ -28,6 +28,9 @@ export const match_slice=createSlice({
       if(entity.contents===undefined) entity.contents=[];
       entity.contents.push(new_part);
     },
+    incrementID: state=>{
+      state.last_id_number++;
+    },
   }
 });
 export const match_selectors=match_adapter.getSelectors<RootState>(state=>state.match);

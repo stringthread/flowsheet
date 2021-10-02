@@ -38,7 +38,10 @@ export const part_slice=createSlice({
       if(contents!==undefined){
         entity.contents=reorder_array(contents,child_target,before);
       }
-    }
+    },
+    incrementID: state=>{
+      state.last_id_number++;
+    },
   }
 });
 export const part_selectors=part_adapter.getSelectors<RootState>(state=>state.part);

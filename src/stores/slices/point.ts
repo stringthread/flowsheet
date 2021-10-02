@@ -38,7 +38,10 @@ export const point_slice=createSlice({
       if(contents instanceof Array){
         entity.contents=reorder_array(contents,child_target,before);
       }
-    }
+    },
+    incrementID: state=>{
+      state.last_id_number++;
+    },
   }
 });
 export const point_selectors=point_adapter.getSelectors<RootState>(state=>state.point);

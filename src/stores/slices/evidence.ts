@@ -19,7 +19,10 @@ export const evidence_slice=createSlice({
     },
     removeAll: state=>{
       evidence_adapter.removeAll(state);
-    }
+    },
+    incrementID: state=>{
+      state.last_id_number++;
+    },
   }
 });
 export const evidence_selectors=evidence_adapter.getSelectors<RootState>(state=>state.evidence);
