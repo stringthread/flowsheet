@@ -1,16 +1,22 @@
 import React from 'react';
-import {mPart} from 'models/mPart';
-import {Point} from './Point'
+import {useSelector} from 'react-redux';
+import {RootState} from 'stores/index';
+import {Point} from './Point';
+import {part_selectors} from 'stores/slices/part';
 
 type Props = {
-  part: mPart;
+  partID: string;
 };
 
-export const Part: React.VFC<Props> = (props)=>(
-  <div className="part">
-    <div className="partName">{props.part.name??''}</div>
-    {props.part.contents?.map(
-      content=><Point point={content} />
-     )??null}
-  </div>
-);
+export const Part: React.VFC<Props> = (props)=>{
+  const part=useSelector((state:RootState)=>part_selectors.selectById(state,props.partID));
+  if(part===undefined) return null;
+  return (
+    <div className="part">
+      <div className="partName">{part.name??''}</div>
+      {part.contents?.map(
+        content=><Point pointID={content} />
+       )??null}
+    </div>
+  );
+}
