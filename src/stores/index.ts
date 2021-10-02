@@ -4,6 +4,7 @@ import {evidence_slice} from './slices/evidence';
 import {point_slice} from './slices/point';
 import {part_slice} from './slices/part';
 import {side_slice} from './slices/side';
+import {match_slice} from './slices/match';
 
 export const store=configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store=configureStore({
     point: point_slice.reducer,
     part: part_slice.reducer,
     side: side_slice.reducer,
+    match: match_slice.reducer,
   }
 });
 
