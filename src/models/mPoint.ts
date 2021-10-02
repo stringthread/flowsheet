@@ -9,7 +9,7 @@ export interface mPoint {
   id?: string;
   numbering?: number|string;
   children_numbering?: number|string;
-  contents?: Array<string>; // PointChildのID
+  contents?: Array<string>|Claim; // PointChildのID
   _shorthands?: Map<string,number>; // _contentsのキーに変換
 }
 
@@ -18,6 +18,6 @@ export const is_mPoint = (value: unknown): value is mPoint => {
     multipleTypeof(value.id, ['undefined','string']) &&
     multipleTypeof(value.numbering, ['undefined','number','string']) &&
     multipleTypeof(value.children_numbering, ['undefined','number','string']) &&
-    ((value?.contents instanceof Array)??true) &&
-    ((value?._shorthands instanceof Map)??true);
+    ((value.contents instanceof Array || typeof value.contents === 'string')??true) &&
+    ((value._shorthands instanceof Map)??true);
 }
