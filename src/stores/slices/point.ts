@@ -21,9 +21,9 @@ export const point_slice=createSlice({
     removeAll: state=>{
       point_adapter.removeAll(state);
     },
-    // Payload[a,b]->ID==aの要素にあるcontentsの末尾にbを追加する
-    addChild: (state,action:PayloadAction<[string,string]>)=>{
-      const [id, new_part]=action.payload;
+    // Payload[a,b,c]->ID==aの要素にあるcontentsの末尾に[b,c]を追加する
+    addChild: (state,action:PayloadAction<[string,string,boolean]>)=>{
+      const [id, ...new_part]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined||typeof entity.contents==='string') return;
       if(entity.contents===undefined) entity.contents=[];
@@ -35,9 +35,8 @@ export const point_slice=createSlice({
       const entity=state.entities[id];
       if(entity===undefined) return;
       const contents=entity.contents;
-      if(contents instanceof Array){
-        entity.contents=reorder_array(contents,child_target,before);
-      }
+      if(!(contents instanceof Array)) return;
+      entity.contents=reorder_array(contents,child_target,before,(e,t)=>e[0]===t);
     },
     incrementID: state=>{
       state.last_id_number++;

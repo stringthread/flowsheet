@@ -1,8 +1,13 @@
-export const reorder_array=<T>(array:Array<T>,target:T,before:T|null):Array<T>=>{
-  const result=array.filter(value=>(value!==target));
-  if(result.length===array.length) return array; // targetに該当する要素がなければ何も変更しない
-  const index=before!==null?result.indexOf(before):0;
+// array上でtargetに対応する要素をberofeの前に移動する. before===nullなら末尾に移動する
+export function reorder_array<T>(array:Array<T>,target:T,before:T|null):Array<T>;
+export function reorder_array<T,U>(array:Array<T>,target:U,before:U|null,func:(e:T,t:U)=>boolean):Array<T>;
+export function reorder_array<T,U>(array:Array<T>,target:U,before:U|null,func?:(e:T,t:U)=>boolean):Array<T>{
+  if(func===undefined) func=(e,t)=>e===(t as any as T); // funcがないのは1つ目の定義のみ
+  const target_elem=array.find(e=>func(e,target));
+  if(target_elem===undefined) return array;
+  const result=array.filter(e=>!func(e,target));
+  const index=before!==null?result.findIndex(e=>func(e,before)):result.length;
   if(index===-1) return array; // beforeに該当する要素がなければ何も変更しない
-  result.splice(index,0,target);
+  result.splice(index,0,target_elem);
   return result;
 }
