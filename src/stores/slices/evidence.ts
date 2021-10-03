@@ -23,6 +23,7 @@ export const evidence_slice=createSlice({
     incrementID: state=>{
       state.last_id_number++;
     },
+    reset: ()=>evidence_initialState,
   }
 });
 export const evidence_selectors=evidence_adapter.getSelectors<RootState>(state=>state.evidence);
