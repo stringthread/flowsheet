@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../index';
+import {RootState,store} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mPart} from 'models/mPart';
 import {reorder_array} from 'util/funcs';
@@ -45,3 +45,10 @@ export const part_slice=createSlice({
   }
 });
 export const part_selectors=part_adapter.getSelectors<RootState>(state=>state.part);
+
+export const part_id_prefix='part_';
+export const generate_part_id=()=>{
+  const id_number=store.getState().evidence.last_id_number;
+  store.dispatch(part_slice.actions.incrementID());
+  return part_id_prefix+id_number.toString();
+}

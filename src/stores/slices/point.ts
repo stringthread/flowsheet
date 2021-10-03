@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../index';
+import {RootState,store} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mPoint} from 'models/mPoint';
 import {reorder_array} from 'util/funcs';
@@ -44,3 +44,10 @@ export const point_slice=createSlice({
   }
 });
 export const point_selectors=point_adapter.getSelectors<RootState>(state=>state.point);
+
+export const point_id_prefix='point_';
+export const generate_point_id=()=>{
+  const id_number=store.getState().evidence.last_id_number;
+  store.dispatch(point_slice.actions.incrementID());
+  return point_id_prefix+id_number.toString();
+}

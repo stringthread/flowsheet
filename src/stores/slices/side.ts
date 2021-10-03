@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../index';
+import {RootState,store} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mSide} from 'models/mSide';
 
@@ -34,3 +34,10 @@ export const side_slice=createSlice({
   }
 });
 export const side_selectors=side_adapter.getSelectors<RootState>(state=>state.side);
+
+export const side_id_prefix='side_';
+export const generate_side_id=()=>{
+  const id_number=store.getState().evidence.last_id_number;
+  store.dispatch(side_slice.actions.incrementID());
+  return side_id_prefix+id_number.toString();
+}

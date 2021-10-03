@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../index';
+import {RootState,store} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mEvidence} from 'models/mEvidence';
 
@@ -26,3 +26,10 @@ export const evidence_slice=createSlice({
   }
 });
 export const evidence_selectors=evidence_adapter.getSelectors<RootState>(state=>state.evidence);
+
+export const evidence_id_prefix='evi_';
+export const generate_evidence_id=()=>{
+  const id_number=store.getState().evidence.last_id_number;
+  store.dispatch(evidence_slice.actions.incrementID());
+  return evidence_id_prefix+id_number.toString();
+}
