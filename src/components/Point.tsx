@@ -25,8 +25,8 @@ export const Point: React.VFC<Props> = (props)=>{
   const point=useSelector((state:RootState)=>point_selectors.selectById(state,props.pointID));
   if(point===undefined) return null;
   return (
-    <div className="point">
-      <span className="pointNumbering">{point.numbering}</span>
+    <div className="point" data-testid="point">
+      <span className="pointNumbering" data-testid="pointNumbering">{point.numbering}</span>
       {point.contents!==undefined?<PointChild contents={point.contents} />:null}
     </div>
   );
