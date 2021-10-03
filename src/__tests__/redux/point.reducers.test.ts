@@ -1,6 +1,6 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
-import {point_slice} from 'stores/slices/point';
+import {point_slice,generate_point_id} from 'stores/slices/point';
 import {mPoint} from 'models/mPoint';
 
 const initial_point_state: EntityStateWithLastID<mPoint>={
@@ -16,13 +16,13 @@ test('point/removeAll reducerの確認',()=>{
   };
   store.dispatch(point_slice.actions.add(test_point));
   store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  expect(store.getState().point).toEqual(initial_point_state);
 });
 
 test('point/add reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
     id: 'point_0',
     numbering: 1
@@ -40,8 +40,8 @@ test('point/add reducerの確認',()=>{
 
 test('point/removeOne reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
     id: 'point_1',
     numbering: 1
@@ -65,8 +65,8 @@ test('point/removeOne reducerの確認',()=>{
 
 test('point/addChild reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
     id: 'point_3',
     contents: [['evi_0',false]]
@@ -79,8 +79,8 @@ test('point/addChild reducerの確認',()=>{
 
 test('point/addChild reducer: contentsが空のとき',()=>{
   // storeの状態をリセット
-  store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
     id: 'point_4'
   };
@@ -92,8 +92,8 @@ test('point/addChild reducer: contentsが空のとき',()=>{
 
 test('point/addChild reducer: contentsがstringのとき',()=>{
   // storeの状態をリセット
-  store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
     id: 'point_5',
     contents: 'a string content'
@@ -106,8 +106,8 @@ test('point/addChild reducer: contentsがstringのとき',()=>{
 
 test('point/reorderChild reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(point_slice.actions.removeAll());
-  expect(store.getState().point).toMatchObject(initial_point_state);
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
     id: 'point_6',
     contents: [['evi_0',false],['point_1',true],['evi_1',false]]
@@ -122,6 +122,17 @@ test('point/reorderChild reducerの確認',()=>{
 });
 
 test('point/incrementID reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
   store.dispatch(point_slice.actions.incrementID());
   expect(store.getState().point.last_id_number).toBe(1);
+});
+
+test('generate_point_idの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().point).toEqual(initial_point_state);
+  expect(generate_point_id()).toBe('point_0');
+  expect(generate_point_id()).toBe('point_1');
 });

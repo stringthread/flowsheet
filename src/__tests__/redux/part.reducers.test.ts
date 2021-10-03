@@ -1,6 +1,6 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
-import {part_slice} from 'stores/slices/part';
+import {part_slice,generate_part_id} from 'stores/slices/part';
 import {mPart} from 'models/mPart';
 
 const initial_part_state: EntityStateWithLastID<mPart>={
@@ -16,13 +16,13 @@ test('part/removeAll reducerの確認',()=>{
   };
   store.dispatch(part_slice.actions.add(test_part));
   store.dispatch(part_slice.actions.removeAll());
-  expect(store.getState().part).toMatchObject(initial_part_state);
+  expect(store.getState().part).toEqual(initial_part_state);
 });
 
 test('part/add reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(part_slice.actions.removeAll());
-  expect(store.getState().part).toMatchObject(initial_part_state);
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
     id: 'part_0',
     name: '1AC'
@@ -40,8 +40,8 @@ test('part/add reducerの確認',()=>{
 
 test('part/removeOne reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(part_slice.actions.removeAll());
-  expect(store.getState().part).toMatchObject(initial_part_state);
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
     id: 'part_1',
     name: '1AC'
@@ -65,8 +65,8 @@ test('part/removeOne reducerの確認',()=>{
 
 test('part/addChild reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(part_slice.actions.removeAll());
-  expect(store.getState().part).toMatchObject(initial_part_state);
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
     id: 'part_3',
     name: '1AC',
@@ -80,8 +80,8 @@ test('part/addChild reducerの確認',()=>{
 
 test('part/addChild reducer: contentsが空のとき',()=>{
   // storeの状態をリセット
-  store.dispatch(part_slice.actions.removeAll());
-  expect(store.getState().part).toMatchObject(initial_part_state);
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
     id: 'part_4',
     name: '1AC'
@@ -94,8 +94,8 @@ test('part/addChild reducer: contentsが空のとき',()=>{
 
 test('part/reorderChild reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(part_slice.actions.removeAll());
-  expect(store.getState().part).toMatchObject(initial_part_state);
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
     id: 'part_6',
     contents: ['point_1','point_2','point_3']
@@ -110,6 +110,17 @@ test('part/reorderChild reducerの確認',()=>{
 });
 
 test('part/incrementID reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
   store.dispatch(part_slice.actions.incrementID());
   expect(store.getState().part.last_id_number).toBe(1);
+});
+
+test('generate_part_idの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().part).toEqual(initial_part_state);
+  expect(generate_part_id()).toBe('part_0');
+  expect(generate_part_id()).toBe('part_1');
 });

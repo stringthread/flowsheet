@@ -1,6 +1,6 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
-import {match_slice} from 'stores/slices/match';
+import {match_slice,generate_match_id} from 'stores/slices/match';
 import {mMatch} from 'models/mMatch';
 
 const initial_match_state: EntityStateWithLastID<mMatch>={
@@ -16,13 +16,13 @@ test('match/removeAll reducerの確認',()=>{
   };
   store.dispatch(match_slice.actions.add(test_match));
   store.dispatch(match_slice.actions.removeAll());
-  expect(store.getState().match).toMatchObject(initial_match_state);
+  expect(store.getState().match).toEqual(initial_match_state);
 });
 
 test('match/add reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(match_slice.actions.removeAll());
-  expect(store.getState().match).toMatchObject(initial_match_state);
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     id: 'match_0',
     winner: 'Aff'
@@ -40,8 +40,8 @@ test('match/add reducerの確認',()=>{
 
 test('match/removeOne reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(match_slice.actions.removeAll());
-  expect(store.getState().match).toMatchObject(initial_match_state);
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     id: 'match_1',
     winner: 'Aff'
@@ -65,8 +65,8 @@ test('match/removeOne reducerの確認',()=>{
 
 test('match/addChild reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(match_slice.actions.removeAll());
-  expect(store.getState().match).toMatchObject(initial_match_state);
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     id: 'match_3',
     winner: 'Aff',
@@ -80,8 +80,8 @@ test('match/addChild reducerの確認',()=>{
 
 test('match/addChild reducer: contentsが空のとき',()=>{
   // storeの状態をリセット
-  store.dispatch(match_slice.actions.removeAll());
-  expect(store.getState().match).toMatchObject(initial_match_state);
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     id: 'match_4',
     winner: 'Aff'
@@ -93,6 +93,17 @@ test('match/addChild reducer: contentsが空のとき',()=>{
 });
 
 test('match/incrementID reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
   store.dispatch(match_slice.actions.incrementID());
   expect(store.getState().match.last_id_number).toBe(1);
+});
+
+test('generate_match_idの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
+  expect(generate_match_id()).toBe('match_0');
+  expect(generate_match_id()).toBe('match_1');
 });

@@ -1,6 +1,6 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
-import {side_slice} from 'stores/slices/side';
+import {side_slice,generate_side_id} from 'stores/slices/side';
 import {mSide} from 'models/mSide';
 
 const initial_side_state: EntityStateWithLastID<mSide>={
@@ -16,13 +16,13 @@ test('side/removeAll reducerの確認',()=>{
   };
   store.dispatch(side_slice.actions.add(test_side));
   store.dispatch(side_slice.actions.removeAll());
-  expect(store.getState().side).toMatchObject(initial_side_state);
+  expect(store.getState().side).toEqual(initial_side_state);
 });
 
 test('side/add reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(side_slice.actions.removeAll());
-  expect(store.getState().side).toMatchObject(initial_side_state);
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_0',
     side: 'Aff'
@@ -40,8 +40,8 @@ test('side/add reducerの確認',()=>{
 
 test('side/removeOne reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(side_slice.actions.removeAll());
-  expect(store.getState().side).toMatchObject(initial_side_state);
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_1',
     side: 'Aff'
@@ -65,8 +65,8 @@ test('side/removeOne reducerの確認',()=>{
 
 test('side/addChild reducerの確認',()=>{
   // storeの状態をリセット
-  store.dispatch(side_slice.actions.removeAll());
-  expect(store.getState().side).toMatchObject(initial_side_state);
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_3',
     side: 'Aff',
@@ -80,8 +80,8 @@ test('side/addChild reducerの確認',()=>{
 
 test('side/addChild reducer: contentsが空のとき',()=>{
   // storeの状態をリセット
-  store.dispatch(side_slice.actions.removeAll());
-  expect(store.getState().side).toMatchObject(initial_side_state);
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_4',
     side: 'Aff'
@@ -93,6 +93,17 @@ test('side/addChild reducer: contentsが空のとき',()=>{
 });
 
 test('side/incrementID reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().side).toEqual(initial_side_state);
   store.dispatch(side_slice.actions.incrementID());
   expect(store.getState().side.last_id_number).toBe(1);
+});
+
+test('generate_side_idの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().side).toEqual(initial_side_state);
+  expect(generate_side_id()).toBe('side_0');
+  expect(generate_side_id()).toBe('side_1');
 });
