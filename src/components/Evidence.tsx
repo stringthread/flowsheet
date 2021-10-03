@@ -24,7 +24,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
   const evidence=useSelector((state:RootState)=>evidence_selectors.selectById(state,props.eviID));
   if(evidence===undefined) return null;
   return (
-    <div className='evidence'>
+    <div className='evidence' data-testid='evidence'>
       <EvidenceHeader metadata={evidence}/>
       <div className="evidenceContent">{evidence.content}</div>
     </div>
