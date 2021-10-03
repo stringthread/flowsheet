@@ -45,10 +45,3 @@ export const point_slice=createSlice({
   }
 });
 export const point_selectors=point_adapter.getSelectors<RootState>(state=>state.point);
-
-export const point_id_prefix='point_';
-export const generate_point_id=()=>{
-  const id_number=store.getState().point.last_id_number;
-  store.dispatch(point_slice.actions.incrementID());
-  return point_id_prefix+id_number.toString();
-}

@@ -35,10 +35,3 @@ export const side_slice=createSlice({
   }
 });
 export const side_selectors=side_adapter.getSelectors<RootState>(state=>state.side);
-
-export const side_id_prefix='side_';
-export const generate_side_id=()=>{
-  const id_number=store.getState().side.last_id_number;
-  store.dispatch(side_slice.actions.incrementID());
-  return side_id_prefix+id_number.toString();
-}

@@ -46,10 +46,3 @@ export const part_slice=createSlice({
   }
 });
 export const part_selectors=part_adapter.getSelectors<RootState>(state=>state.part);
-
-export const part_id_prefix='part_';
-export const generate_part_id=()=>{
-  const id_number=store.getState().part.last_id_number;
-  store.dispatch(part_slice.actions.incrementID());
-  return part_id_prefix+id_number.toString();
-}

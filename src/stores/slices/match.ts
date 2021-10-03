@@ -35,10 +35,3 @@ export const match_slice=createSlice({
   }
 });
 export const match_selectors=match_adapter.getSelectors<RootState>(state=>state.match);
-
-export const match_id_prefix='match_';
-export const generate_match_id=()=>{
-  const id_number=store.getState().match.last_id_number;
-  store.dispatch(match_slice.actions.incrementID());
-  return match_id_prefix+id_number.toString();
-}

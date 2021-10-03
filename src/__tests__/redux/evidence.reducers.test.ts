@@ -1,6 +1,7 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
-import {evidence_slice,generate_evidence_id} from 'stores/slices/evidence';
+import {evidence_slice} from 'stores/slices/evidence';
+import {generate_evidence_id} from 'stores/slices/id_generators';
 import {mEvidence} from 'models/mEvidence';
 
 const initial_evidence_state: EntityStateWithLastID<mEvidence>={

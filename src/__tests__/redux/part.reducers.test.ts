@@ -1,6 +1,7 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
-import {part_slice,generate_part_id} from 'stores/slices/part';
+import {part_slice} from 'stores/slices/part';
+import {generate_part_id} from 'stores/slices/id_generators';
 import {mPart} from 'models/mPart';
 
 const initial_part_state: EntityStateWithLastID<mPart>={
