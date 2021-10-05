@@ -30,6 +30,23 @@ test('evidence/add reducerの確認',()=>{
   expect(store.getState().evidence).toMatchObject(expected_evidence_state);
 });
 
+test('evidence/upsertOne reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(evidence_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_evidence_state);
+  const test_evidence_before: mEvidence={
+    id: 'evi_0',
+    content: 'before'
+  };
+  const test_evidence_after: mEvidence={
+    id: 'evi_0',
+    content: 'before'
+  };
+  store.dispatch(evidence_slice.actions.add(test_evidence_before));
+  store.dispatch(evidence_slice.actions.upsertOne(test_evidence_after));
+  expect(store.getState().evidence.entities.evi_0).toMatchObject(test_evidence_after);
+});
+
 test('evidence/removeOne reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(evidence_slice.actions.reset());

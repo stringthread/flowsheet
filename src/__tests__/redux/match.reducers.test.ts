@@ -39,6 +39,23 @@ test('match/add reducerの確認',()=>{
   expect(store.getState().match).toMatchObject(expected_match_state);
 });
 
+test('match/upsertOne reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(match_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_match_state);
+  const test_match_before: mMatch={
+    id: 'match_0',
+    topic: 'before'
+  };
+  const test_match_after: mMatch={
+    id: 'match_0',
+    topic: 'after'
+  };
+  store.dispatch(match_slice.actions.add(test_match_before));
+  store.dispatch(match_slice.actions.upsertOne(test_match_after));
+  expect(store.getState().match.entities.match_0).toMatchObject(test_match_after);
+});
+
 test('match/removeOne reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(match_slice.actions.reset());

@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState,store} from '../index';
+import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mMatch} from 'models/mMatch';
 
@@ -13,6 +13,9 @@ export const match_slice=createSlice({
   reducers: {
     add: (state,action:PayloadAction<mMatch>)=>{
       match_adapter.addOne(state,action.payload);
+    },
+    upsertOne: (state,action:PayloadAction<mMatch>)=>{
+      match_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<string>)=>{
       match_adapter.removeOne(state,action.payload);

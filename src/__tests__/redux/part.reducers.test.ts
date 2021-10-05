@@ -39,6 +39,23 @@ test('part/add reducerの確認',()=>{
   expect(store.getState().part).toMatchObject(expected_part_state);
 });
 
+test('part/upsertOne reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_part_state);
+  const test_part_before: mPart={
+    id: 'part_0',
+    name: '1AC',
+  };
+  const test_part_after: mPart={
+    id: 'part_0',
+    name: '1NC',
+  };
+  store.dispatch(part_slice.actions.add(test_part_before));
+  store.dispatch(part_slice.actions.upsertOne(test_part_after));
+  expect(store.getState().part.entities.part_0).toMatchObject(test_part_after);
+});
+
 test('part/removeOne reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(part_slice.actions.reset());
