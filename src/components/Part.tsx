@@ -12,7 +12,7 @@ export const Part: React.VFC<Props> = (props)=>{
   const part=useSelector((state:RootState)=>part_selectors.selectById(state,props.partID));
   if(part===undefined) return null;
   return (
-    <div className="part">
+    <div className="part" data-testid="part">
       <div className="partName">{part.name??''}</div>
       {part.contents?.map(
         content=><Point pointID={content} />
