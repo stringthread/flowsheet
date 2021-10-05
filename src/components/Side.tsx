@@ -12,7 +12,7 @@ export const Side: React.VFC<Props> = (props)=>{
   const side=useSelector((state:RootState)=>side_selectors.selectById(state,props.sideID));
   if(side===undefined) return null;
   return (
-    <div className="side">
+    <div className="side" data-testid='side'>
       <div className="sideName">{side.side}</div>
       {side.contents?.map(content=><Part partID={content} />)??null}
     </div>
