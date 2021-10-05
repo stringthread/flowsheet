@@ -1,5 +1,8 @@
 import React from 'react';
-import {mEvidence} from 'models/mEvidence'
+import {useSelector} from 'react-redux';
+import {RootState} from 'stores/index';
+import {mEvidence} from 'models/mEvidence';
+import {evidence_selectors} from 'stores/slices/evidence';
 
 type HeaderProps = {
   metadata: Omit<mEvidence, 'content'>;
@@ -14,12 +17,16 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>(
 );
 
 type Props = {
-  evi: mEvidence;
+  eviID: string;
 }
 
-export const Evidence: React.VFC<Props> = (props)=>(
-  <div className='evidence'>
-    <EvidenceHeader metadata={props.evi}/>
-    <div className="evidenceContent">{props.evi.content}</div>
-  </div>
-);
+export const Evidence: React.VFC<Props> = (props)=>{
+  const evidence=useSelector((state:RootState)=>evidence_selectors.selectById(state,props.eviID));
+  if(evidence===undefined) return null;
+  return (
+    <div className='evidence' data-testid='evidence'>
+      <EvidenceHeader metadata={evidence}/>
+      <div className="evidenceContent">{evidence.content}</div>
+    </div>
+  );
+};

@@ -1,6 +1,5 @@
-import {mPoint} from './mPoint';
-
 export interface mPart {
+  id: string;
   name?: string|number;
-  contents?: Array<mPoint>;
+  contents?: Array<string>; // mPointのID
 }
