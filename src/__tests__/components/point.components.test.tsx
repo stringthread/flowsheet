@@ -18,15 +18,15 @@ test('Point: pointIDに該当がなければ生成されない',()=>{
 });
 
 test('Point: contentsがないときナンバリングだけ描画',()=>{
-  const returned: mPoint = {
+  const returned_1: mPoint = {
     id: 'point_0',
     numbering: 'a'
   };
-  useSelectorMock.mockReturnValueOnce(returned);
+  useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValue(undefined);
   render(<Point pointID="point_0" />);
   const pointElement=screen.getByTestId('point')
   expect(pointElement).toBeInTheDocument();
-  expect(within(pointElement).getAllByText('')).toHaveLength(1);
+  expect(pointElement.childElementCount).toBe(1);
 });
 
 test('Point: contentsがevidenceのみのとき',()=>{

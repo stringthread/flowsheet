@@ -13,7 +13,6 @@ export interface mPoint {
   numbering?: number|string;
   children_numbering?: number|string;
   contents?: Array<[string,boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
-  _shorthands?: Map<string,number>; // _contentsのキーに変換
 }
 
 export const is_mPoint = (value: unknown): value is mPoint => {
@@ -21,8 +20,7 @@ export const is_mPoint = (value: unknown): value is mPoint => {
     multipleTypeof(value.id, ['string']) &&
     multipleTypeof(value.numbering, ['undefined','number','string']) &&
     multipleTypeof(value.children_numbering, ['undefined','number','string']) &&
-    ((value.contents instanceof Array || typeof value.contents === 'string')??true) &&
-    ((value._shorthands instanceof Map)??true);
+    ((value.contents instanceof Array || typeof value.contents === 'string')??true);
 }
 
 export const generate_point=(
@@ -31,7 +29,6 @@ export const generate_point=(
   const generated: mPoint= {
     ...from,
     id: generate_point_id(),
-    _shorthands: new Map<string,number>(),
   };
   store.dispatch(point_slice.actions.add(generated));
   return generated;

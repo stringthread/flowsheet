@@ -1,20 +1,24 @@
 import React from 'react';
 
-export interface TextInputProps {
-  onClick?: React.MouseEventHandler<HTMLElement>,
-  onChange?: React.ChangeEventHandler<HTMLElement>,
-  onBlur?: React.FocusEventHandler<HTMLElement>,
-  onFocus?: React.FocusEventHandler<HTMLElement>,
-  onKeyPress?: React.KeyboardEventHandler<HTMLElement>,
+export interface TextInputProps<T extends HTMLElement> {
+  onClick?: React.MouseEventHandler<T>,
+  onChange?: React.ChangeEventHandler<T>,
+  onBlur?: React.FocusEventHandler<T>,
+  onFocus?: React.FocusEventHandler<T>,
+  onKeyPress?: React.KeyboardEventHandler<T>,
   value?: string,
   placeholder?: string,
+  id?: string,
+  className?: string,
 }
 
 const empty_event_handler: React.EventHandler<React.SyntheticEvent>=()=>{};
 
-export const TextInput: React.VFC<TextInputProps> = (props)=>{
+export const TextInput: React.VFC<TextInputProps<HTMLInputElement>> = (props)=>{
   return (
     <input type="text"
+    id={props.id}
+    className={props.className}
     onClick={props.onClick??empty_event_handler}
     onChange={props.onChange??empty_event_handler}
     onBlur={props.onBlur??empty_event_handler}
@@ -25,9 +29,11 @@ export const TextInput: React.VFC<TextInputProps> = (props)=>{
   );
 };
 
-export const TextArea: React.VFC<TextInputProps> = (props)=>{
+export const TextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (props)=>{
   return (
     <textarea
+    id={props.id}
+    className={props.className}
     onClick={props.onClick??empty_event_handler}
     onChange={props.onChange??empty_event_handler}
     onBlur={props.onBlur??empty_event_handler}
