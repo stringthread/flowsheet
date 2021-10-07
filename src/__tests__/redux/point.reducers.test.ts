@@ -39,6 +39,23 @@ test('point/add reducerの確認',()=>{
   expect(store.getState().point).toMatchObject(expected_point_state);
 });
 
+test('point/upsertOne reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_point_state);
+  const test_point_before: mPoint={
+    id: 'point_0',
+    numbering: 0,
+  };
+  const test_point_after: mPoint={
+    id: 'point_0',
+    numbering: 1,
+  };
+  store.dispatch(point_slice.actions.add(test_point_before));
+  store.dispatch(point_slice.actions.upsertOne(test_point_after));
+  expect(store.getState().point.entities.point_0).toMatchObject(test_point_after);
+});
+
 test('point/removeOne reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(point_slice.actions.reset());

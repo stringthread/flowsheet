@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState,store} from '../index';
+import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mSide} from 'models/mSide';
 
@@ -13,6 +13,9 @@ export const side_slice=createSlice({
   reducers: {
     add: (state,action:PayloadAction<mSide>)=>{
       side_adapter.addOne(state,action.payload);
+    },
+    upsertOne: (state,action:PayloadAction<mSide>)=>{
+      side_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<string>)=>{
       side_adapter.removeOne(state,action.payload);

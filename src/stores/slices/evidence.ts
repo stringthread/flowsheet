@@ -14,6 +14,9 @@ export const evidence_slice=createSlice({
     add: (state,action:PayloadAction<mEvidence>)=>{
       evidence_adapter.addOne(state,action.payload);
     },
+    upsertOne: (state,action:PayloadAction<mEvidence>)=>{
+      evidence_adapter.upsertOne(state,action.payload);
+    },
     removeOne: (state,action:PayloadAction<string>)=>{
       evidence_adapter.removeOne(state,action.payload);
     },

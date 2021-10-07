@@ -39,6 +39,23 @@ test('side/add reducerの確認',()=>{
   expect(store.getState().side).toMatchObject(expected_side_state);
 });
 
+test('side/upsertOne reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_side_state);
+  const test_side_before: mSide={
+    id: 'side_0',
+    side: 'aff'
+  };
+  const test_side_after: mSide={
+    id: 'side_0',
+    side: 'neg'
+  };
+  store.dispatch(side_slice.actions.add(test_side_before));
+  store.dispatch(side_slice.actions.upsertOne(test_side_after));
+  expect(store.getState().side.entities.side_0).toMatchObject(test_side_after);
+});
+
 test('side/removeOne reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(side_slice.actions.reset());

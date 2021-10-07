@@ -1,5 +1,5 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState,store} from '../index';
+import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mPoint} from 'models/mPoint';
 import {reorder_array} from 'util/funcs';
@@ -14,6 +14,9 @@ export const point_slice=createSlice({
   reducers: {
     add: (state,action:PayloadAction<mPoint>)=>{
       point_adapter.addOne(state,action.payload);
+    },
+    upsertOne: (state,action:PayloadAction<mPoint>)=>{
+      point_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<string>)=>{
       point_adapter.removeOne(state,action.payload);

@@ -23,6 +23,6 @@ test('Evidence: useSelectorでオブジェクトが帰ってきたら描画',()=
   }
   useSelectorMock.mockReturnValueOnce(returned);
   render(<Evidence eviID="evi_dummy" />);
-  expect(screen.getByText(returned.author as string)).toBeInTheDocument();
-  expect(screen.getByText(returned.content as string)).toBeInTheDocument();
+  expect(screen.getByDisplayValue(returned.author as string)).toBeInTheDocument();
+  expect(screen.getByDisplayValue(returned.content as string)).toBeInTheDocument();
 });
