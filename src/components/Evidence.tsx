@@ -1,9 +1,10 @@
-import React from 'react';
+import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {RootState} from 'stores/index';
 import {mEvidence} from 'models/mEvidence';
 import {evidence_selectors,evidence_slice} from 'stores/slices/evidence';
 import {TextInput,TextArea} from './TextInput';
+import {typeSelected} from './App';
 
 type HeaderProps = {
   parentID: string;
@@ -50,14 +51,20 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
 
 type Props = {
   eviID: string;
+  setSelected: (_:typeSelected)=>void;
 }
 
 export const Evidence: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const evidence=useSelector((state:RootState)=>evidence_selectors.selectById(state,props.eviID));
+  const onClick=useCallback((e: React.MouseEvent)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    props.setSelected([props.eviID,'evidence']);
+  },[props.eviID,props.setSelected]);
   if(evidence===undefined) return null;
   return (
-    <div className='evidence' data-testid='evidence'>
+    <div className='evidence' data-testid='evidence' onClick={onClick}>
       <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
       <TextArea
         className="evidenceContent"
