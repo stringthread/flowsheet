@@ -1,7 +1,8 @@
-import {mEvidence} from './mEvidence'
+import {mEvidence, generate_evidence} from './mEvidence'
 import {isObject, multipleTypeof} from 'util/typeGuardUtils'
 import {store} from 'stores';
 import {point_slice} from 'stores/slices/point';
+import {evidence_slice} from 'stores/slices/evidence';
 import {generate_point_id} from 'stores/slices/id_generators';
 
 export type Claim = string;
@@ -33,3 +34,10 @@ export const generate_point=(
   store.dispatch(point_slice.actions.add(generated));
   return generated;
 }
+
+export const point_add_child=(parent:mPoint, is_point: boolean)=>{
+  const child=is_point?generate_point():generate_evidence();
+  store.dispatch((is_point?point_slice:evidence_slice).actions.add(child));
+  store.dispatch(point_slice.actions.addChild([parent.id,child.id,is_point]));
+  return store.getState().point.entities[parent.id]??null;
+};
