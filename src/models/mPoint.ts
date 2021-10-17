@@ -35,9 +35,9 @@ export const generate_point=(
   return generated;
 }
 
-export const point_add_child=(parent:mPoint, is_point: boolean)=>{
+export const point_add_child=(parent_id:mPoint['id'], is_point: boolean)=>{
   const child=is_point?generate_point():generate_evidence();
   store.dispatch((is_point?point_slice:evidence_slice).actions.add(child));
-  store.dispatch(point_slice.actions.addChild([parent.id,child.id,is_point]));
-  return store.getState().point.entities[parent.id]??null;
+  store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
+  return store.getState().point.entities[parent_id]??null;
 };
