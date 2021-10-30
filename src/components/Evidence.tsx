@@ -107,6 +107,10 @@ export const Evidence: React.VFC<Props> = (props)=>{
             content: e.currentTarget.value,
           }));
         }}
+        onChange={(e)=>{
+          e.currentTarget.style.height='0';
+          e.currentTarget.style.height=e.currentTarget.scrollHeight+'px';
+        }}
         css={styleEvidenceContent}
       />
     </div>
