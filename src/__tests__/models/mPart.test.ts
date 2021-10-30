@@ -33,8 +33,8 @@ test('part_add_child',()=>{
     contents: ['point_0','point_1'],
   };
   const generated=generate_part();
-  const modified=part_add_child(generated);
-  expect(modified).toEqual(expected_result);
+  const modified=part_add_child(generated.id);
+  expect(modified.id).toBe('point_1');
   expect(store.getState().part.entities[expected_result.id]).toEqual(expected_result);
-  expect(store.getState().point.entities['point_0']).toBeTruthy();
+  expect(store.getState().point.entities['point_1']).toBeTruthy();
 });
