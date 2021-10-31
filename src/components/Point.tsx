@@ -74,8 +74,7 @@ const stylePointChildrenWrap=css`
 const stylePoint=css`
   width: 100%;
   display: flex;
-  column-gap: 0.5em;
-  margin-bottom: 0.5em;
+  column-gap: 0;
 `;
 
 export const Point: React.VFC<Props> = (props)=>{

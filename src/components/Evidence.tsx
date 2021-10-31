@@ -77,6 +77,8 @@ const styleEvidence=css`
 `;
 
 const styleEvidenceContent=css`
+  box-sizing: border-box;
+  overflow: hidden;
   width: 100%;
   border: none !important;
   border-left: solid 1px black !important;

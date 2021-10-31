@@ -17,7 +17,8 @@ const stylePartName=css`
   font-weight: bold;
 `;
 const stylePartChildrenWrap=css`
-  padding: 1em;
+  padding: 6px;
+  padding-top: 0.5em;
 `;
 const stylePart=css`
   border: solid 1px black;
