@@ -1,4 +1,4 @@
-import React,{useCallback} from 'react';
+import React,{useState,useCallback} from 'react';
 import {css} from '@emotion/react';
 
 export interface TextInputProps<T extends HTMLElement> {
@@ -11,6 +11,7 @@ export interface TextInputProps<T extends HTMLElement> {
   placeholder?: string,
   id?: string,
   className?: string,
+  css?: ReturnType<typeof css>,
 }
 
 const empty_event_handler: React.EventHandler<React.SyntheticEvent>=()=>{};
@@ -41,8 +42,30 @@ export const TextInput: React.VFC<TextInputProps<HTMLInputElement>> = (props)=>{
     onKeyPress={props.onKeyPress??empty_event_handler}
     defaultValue={props.value??''}
     placeholder={props.placeholder??' '}
-    css={styleTextInput} />
+    css={css(props.css,styleTextInput)} />
   );
+};
+
+const styleStretchTextInput=css`
+  width: 0;
+`;
+
+export const StretchTextInput: React.VFC<TextInputProps<HTMLInputElement>> = (props)=>{
+  return (
+    <TextInput
+    {...props}
+    onChange={
+      useCallback((e: React.ChangeEvent<HTMLInputElement>)=>{
+        if(props.onChange!==undefined) props.onChange(e);
+        const minWidth=e.currentTarget.style.minWidth
+        e.currentTarget.style.width='0';
+        e.currentTarget.style.minWidth='0';
+        e.currentTarget.style.width=e.currentTarget.scrollWidth+'px';
+        e.currentTarget.style.minWidth=minWidth;
+      },[props])
+    }
+    css={css(props.css,styleStretchTextInput)} />
+  )
 };
 
 const styleTextArea=css(
@@ -83,8 +106,11 @@ export const StretchTextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (
     onChange={useCallback(
       (e)=>{
         if(props.onChange!==undefined) props.onChange(e);
+        const minHeight=e.currentTarget.style.minHeight
         e.currentTarget.style.height='0';
+        e.currentTarget.style.minHeight='0';
         e.currentTarget.style.height=e.currentTarget.scrollHeight+'px';
+        e.currentTarget.style.minHeight=minHeight;
       }
     ,[props])}
     css={styleStretchTextArea}
