@@ -2,7 +2,7 @@ import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mPoint} from 'models/mPoint';
+import {mPoint, is_Claim} from 'models/mPoint';
 import {Evidence} from './Evidence'
 import {typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
@@ -26,7 +26,7 @@ const stylePointClaim=css`
 
 const PointChild: React.VFC<ChildProps> = (props)=>{
   const dispatch=useDispatch();
-  if(typeof props.contents === 'string'){
+  if(is_Claim(props.contents)){
     return (
       <TextArea
         className="pointClaim"
@@ -79,18 +79,20 @@ export const Point: React.VFC<Props> = (props)=>{
   if(point===undefined) return null;
   return (
     <div className="point" data-testid="point" onClick={onClick} css={stylePoint}>
-      <TextInput
-        className="pointNumbering"
-        data-testid="pointNumbering"
-        value={point.numbering?.toString()}
-        onBlur={(e)=>{
-          dispatch(point_slice.actions.upsertOne({
-            id: props.pointID,
-            numbering: e.currentTarget.value,
-          }));
-        }}
-        css={stylePointNumbering}
-      />
+      {is_Claim(point.contents)?null:
+        <TextInput
+          className="pointNumbering"
+          data-testid="pointNumbering"
+          value={point.numbering?.toString()}
+          onBlur={(e)=>{
+            dispatch(point_slice.actions.upsertOne({
+              id: props.pointID,
+              numbering: e.currentTarget.value,
+            }));
+          }}
+          css={stylePointNumbering}
+        />
+      }
       <div className="pointChildrenWrap" data-testid="pointChildrenWrap" css={stylePointChildrenWrap}>
         {point.contents!==undefined?<PointChild parentID={props.pointID} contents={point.contents} setSelected={props.setSelected} />:null}
       </div>

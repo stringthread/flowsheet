@@ -7,6 +7,10 @@ import {generate_point_id} from 'stores/slices/id_generators';
 
 export type Claim = string;
 
+export const is_Claim=(value:unknown): value is Claim=>{
+  return typeof value=='string';
+}
+
 export type PointChild = Claim|mEvidence|mPoint;
 
 export interface mPoint {
