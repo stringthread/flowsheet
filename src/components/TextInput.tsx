@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useCallback} from 'react';
 import {css} from '@emotion/react';
 
 export interface TextInputProps<T extends HTMLElement> {
@@ -68,3 +68,26 @@ export const TextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (props)=
     </textarea>
   );
 };
+
+const styleStretchTextArea=css(
+  styleTextArea,
+  css`
+    box-sizing: content-box;
+    height: 1em;
+  `
+);
+
+export const StretchTextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (props)=>{
+  return (
+    <TextArea {...props}
+    onChange={useCallback(
+      (e)=>{
+        if(props.onChange!==undefined) props.onChange(e);
+        e.currentTarget.style.height='0';
+        e.currentTarget.style.height=e.currentTarget.scrollHeight+'px';
+      }
+    ,[props])}
+    css={styleStretchTextArea}
+     />
+  );
+}

@@ -4,7 +4,7 @@ import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
 import {mEvidence} from 'models/mEvidence';
 import {evidence_selectors,evidence_slice} from 'stores/slices/evidence';
-import {TextInput,TextArea} from './TextInput';
+import {TextInput,StretchTextArea} from './TextInput';
 import {typeSelected} from './App';
 
 type HeaderProps = {
@@ -98,7 +98,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
   return (
     <div className='evidence' data-testid='evidence' onClick={onClick} css={styleEvidence}>
       <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
-      <TextArea
+      <StretchTextArea
         className="evidenceContent"
         value={evidence.content}
         onBlur={(e)=>{
@@ -106,10 +106,6 @@ export const Evidence: React.VFC<Props> = (props)=>{
             id: props.eviID,
             content: e.currentTarget.value,
           }));
-        }}
-        onChange={(e)=>{
-          e.currentTarget.style.height='0';
-          e.currentTarget.style.height=e.currentTarget.scrollHeight+'px';
         }}
         css={styleEvidenceContent}
       />

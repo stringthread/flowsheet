@@ -6,7 +6,7 @@ import {mPoint, is_Claim} from 'models/mPoint';
 import {Evidence} from './Evidence'
 import {typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
-import {TextInput,TextArea} from './TextInput';
+import {TextInput,StretchTextArea} from './TextInput';
 
 type Props = {
   pointID: string;
@@ -20,7 +20,9 @@ type ChildProps = {
 };
 
 const stylePointClaim=css`
+  box-sizing: content-box;
   width: 100%;
+  height: 1em;
   border: none !important;
 `;
 
@@ -28,7 +30,7 @@ const PointChild: React.VFC<ChildProps> = (props)=>{
   const dispatch=useDispatch();
   if(is_Claim(props.contents)){
     return (
-      <TextArea
+      <StretchTextArea
         className="pointClaim"
         placeholder=" "
         value={props.contents}
