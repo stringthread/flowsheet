@@ -27,5 +27,5 @@ export const part_add_child=(parent_id:mPart['id'])=>{
   const child=generate_point();
   store.dispatch(point_slice.actions.add(child));
   store.dispatch(part_slice.actions.addChild([parent_id,child.id]));
-  return store.getState().part.entities[parent_id]??null;
+  return child;
 }

@@ -31,8 +31,8 @@ test('point_add_child: Evidence',()=>{
     contents: [['evi_0',false]],
   };
   const generated=generate_point();
-  const modified=point_add_child(generated,false);
-  expect(modified).toEqual(expected_result);
+  const modified=point_add_child(generated.id,false);
+  expect(modified.id).toBe('evi_0');
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
   expect(store.getState().evidence.entities['evi_0']).toBeTruthy();
 });
@@ -43,8 +43,8 @@ test('point_add_child: Point',()=>{
     contents: [['point_1',true]],
   };
   const generated=generate_point();
-  const modified=point_add_child(generated,true);
-  expect(modified).toEqual(expected_result);
+  const modified=point_add_child(generated.id,true);
+  expect(modified.id).toBe('point_1');
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
   expect(store.getState().point.entities['point_1']).toBeTruthy();
 });

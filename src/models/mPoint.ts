@@ -7,6 +7,10 @@ import {generate_point_id} from 'stores/slices/id_generators';
 
 export type Claim = string;
 
+export const is_Claim=(value:unknown): value is Claim=>{
+  return typeof value=='string';
+}
+
 export type PointChild = Claim|mEvidence|mPoint;
 
 export interface mPoint {
@@ -39,5 +43,5 @@ export const point_add_child=(parent_id:mPoint['id'], is_point: boolean)=>{
   const child=is_point?generate_point():generate_evidence();
   store.dispatch((is_point?point_slice:evidence_slice).actions.add(child));
   store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
-  return store.getState().point.entities[parent_id]??null;
+  return child;
 };
