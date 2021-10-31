@@ -1,4 +1,4 @@
-import React,{useState,useCallback} from 'react';
+import React,{useState,useCallback,useLayoutEffect} from 'react';
 import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
@@ -10,10 +10,13 @@ import {mPoint,point_add_child} from 'models/mPoint';
 export type typeSelected=[string|undefined,string|undefined];
 
 function App() {
-  const [matchID,setMatchID]=useState<string>(generate_match({
-    aff: ['AC','NQ','1NR','1AR','2NR','2AR'],
-    neg: ['NC','AQ','1AR','2NR','2AR'],
-  }).id); // TODO: sideの構成をハードコーディングしているため、設定用Repositoryなどに切り出す
+  const [matchID,setMatchID]=useState<string>('');
+  useLayoutEffect(()=>{
+    setMatchID(generate_match({
+      aff: ['AC','NQ','1NR','1AR','2NR','2AR'],
+      neg: ['NC','AQ','1AR','2NR','2AR'],
+    }).id); // TODO: sideの構成をハードコーディングしているため、設定用Repositoryなどに切り出す
+  },[]);
   const [selected, setSelected]=useState<typeSelected>([undefined,undefined]); // [選択された要素のID, 要素種別]
   const add_claim_btn=(e: React.MouseEvent)=>{
     if(selected[0]==undefined) return;
