@@ -4,13 +4,27 @@ import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
 import {mEvidence} from 'models/mEvidence';
 import {evidence_selectors,evidence_slice} from 'stores/slices/evidence';
-import {TextInput,StretchTextArea} from './TextInput';
+import {StretchTextInput,StretchTextArea} from './TextInput';
 import {typeSelected} from './App';
 
 type HeaderProps = {
   parentID: string;
   metadata: Omit<mEvidence, 'content'>;
 }
+
+const styleEvidenceHeadContent=css`
+  display: inline-block;
+  min-width: 2em;
+  width: 1em;
+  height: 1em;
+  flex-grow: 0;
+  flex-shrink: 0;
+  &:not(:placeholder-shown):not(:focus){
+    padding-right: 0;
+    padding-left: 0;
+    border: none;
+  }
+`;
 
 const styleEvidenceHeader=css`
   border-bottom: solid 1px black;
@@ -19,9 +33,6 @@ const styleEvidenceHeader=css`
     display: inline;
     padding: 0 0.2em;
   }
-  & input{
-    width: 6em;
-  }
 `;
 
 const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
@@ -29,7 +40,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
   return (
     <div className="evidenceHeader" css={styleEvidenceHeader}>
       <span className="evidenceAbout">
-        <TextInput
+        <StretchTextInput
           value={props.metadata.about_author??''}
           onBlur={(e)=>{
             dispatch(evidence_slice.actions.upsertOne({
@@ -37,10 +48,11 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
               about_author: e.currentTarget.value,
             }));
           }}
+          css={styleEvidenceHeadContent}
         />
       </span>
       <span className="evidenceAuthor">
-        <TextInput
+        <StretchTextInput
           className="evidenceAuthor"
           value={props.metadata.author??''}
           onBlur={(e)=>{
@@ -49,10 +61,11 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
               author: e.currentTarget.value,
             }));
           }}
+          css={styleEvidenceHeadContent}
         />
       </span>
       <span className="evidenceYear">
-        <TextInput
+        <StretchTextInput
           className="evidenceYear"
           value={props.metadata.year?.toString()??''}
           onBlur={(e)=>{
@@ -61,6 +74,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
               year: e.currentTarget.value,
             }));
           }}
+          css={styleEvidenceHeadContent}
         />
       </span>
     </div>
