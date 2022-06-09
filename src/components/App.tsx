@@ -8,10 +8,13 @@ import {mPoint} from 'models/mPoint';
 import {generate_match} from 'services/match';
 import {point_add_child, append_claim, append_point} from 'services/point';
 
+import hotkeys from 'hotkeys-js';
+
 export type typeSelected=string|undefined;
 
 function App() {
   const [matchID,setMatchID]=useState<string>('');
+  // 初めに1回だけ実行
   useLayoutEffect(()=>{
     setMatchID(generate_match({
       aff: ['AC','NQ','1NR','1AR','2NR','2AR'],
@@ -30,14 +33,64 @@ function App() {
   const add_evidence_btn=(e: React.MouseEvent)=>{
     if(selected==undefined) return;
     if(id_is_mPoint(selected)) point_add_child(selected,false);
+  const add_point=()=>{
+    if(selected[0]==undefined) return;
+    if(selected[1]=='part') part_add_child(selected[0]);
+    else if(selected[1]=='point') point_add_child(selected[0],true);
   };
+  const add_point_to_part=()=>{
+    if(selected[0]==undefined) return;
+    if(selected[1]=='part') part_add_child(selected[0]);
+    else if(selected[1]=='point') point_add_child(selected[0],true); // TODO: 親のPartを見つけてpart_add_child()にする
+  };
+  const draw_line=()=>{}; // TODO: 宣言のみ。実装は後日
+  const add_evidence=()=>{
+    if(selected[0]==undefined) return;
+    if(selected[1]=='point') point_add_child(selected[0],false);
+  };
+  const keyMaps = [
+    {
+      sequence: 'ctrl+alt+c',
+      handler: add_claim,
+    },
+    {
+      sequence: 'ctrl+alt+e',
+      handler: add_evidence,
+    },
+    {
+      sequence: 'ctrl+alt+p',
+      handler: add_point,
+    },
+    {
+      sequence: 'ctrl+alt+shift+p',
+      handler: add_point_to_part,
+    },
+    {
+      sequence: 'ctrl+alt+c',
+      handler: draw_line,
+    },
+  ];
+  const sequences = keyMaps.map(keyMap => keyMap.sequence)
+  // 初めに1回だけ実行
+  useLayoutEffect(()=>{
+    setMatchID(generate_match({
+      aff: ['AC','NQ','1NR','1AR','2NR','2AR'],
+      neg: ['NC','AQ','1AR','2NR','2AR'],
+    }).id); // TODO: sideの構成をハードコーディングしているため、設定用Repositoryなどに切り出す
+    hotkeys(sequences.join(','), (e, handler) => {
+      const keyMap = keyMaps.find(({ sequence }) => sequence === handler.key);
+      if (!keyMap) return;
+      keyMap.handler(e);
+    });
+  },[]);
+  
   return (
     <Provider store={store}>
       <div className="App">
         <Match matchID={matchID} setSelected={setSelected} />
-        <button onClick={add_claim_btn}>Add Claim</button>
-        <button onClick={add_point_btn}>Add Point</button>
-        <button onClick={add_evidence_btn}>Add Evidence</button>
+        <button onClick={add_claim}>Add Claim</button>
+        <button onClick={add_point}>Add Point</button>
+        <button onClick={add_evidence}>Add Evidence</button>
       </div>
     </Provider>
   );
