@@ -16,6 +16,7 @@ test('evidence/add reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     id: 'evi_0',
+    parent: 'point_0',
     author: 'test author',
     content: 'test_content'
   };
@@ -36,10 +37,12 @@ test('evidence/upsertOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence_before: mEvidence={
     id: 'evi_0',
+    parent: 'point_0',
     content: 'before'
   };
   const test_evidence_after: mEvidence={
     id: 'evi_0',
+    parent: 'point_0',
     content: 'before'
   };
   store.dispatch(evidence_slice.actions.add(test_evidence_before));
@@ -53,6 +56,7 @@ test('evidence/removeOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     id: 'evi_0',
+    parent: 'point_0',
     author: 'test author',
     content: 'test_content'
   };
@@ -72,6 +76,7 @@ test('evidence/removeAll reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     id: 'evi_0',
+    parent: 'point_0',
     author: 'test author',
     content: 'test_content'
   };
