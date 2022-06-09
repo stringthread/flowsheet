@@ -21,7 +21,7 @@ function App() {
     }).id); // TODO: sideの構成をハードコーディングしているため、設定用Repositoryなどに切り出す
   },[]);
   const [selected, setSelected]=useState<typeSelected>([undefined,undefined]); // [選択された要素のID, 要素種別]
-  const add_claim=()=>{
+  const add_claim=(_?:Event|React.SyntheticEvent)=>{
     if(selected[0]==undefined) return;
     let child:mPoint|undefined=undefined;
     if(selected[1]=='part') child=part_add_child(selected[0]);
@@ -31,18 +31,18 @@ function App() {
       contents: '', // string型にすればClaimとして認識される
     }));
   };
-  const add_point=()=>{
+  const add_point=(_?:Event|React.SyntheticEvent)=>{
     if(selected[0]==undefined) return;
     if(selected[1]=='part') part_add_child(selected[0]);
     else if(selected[1]=='point') point_add_child(selected[0],true);
   };
-  const add_point_to_part=()=>{
+  const add_point_to_part=(_?:Event|React.SyntheticEvent)=>{
     if(selected[0]==undefined) return;
     if(selected[1]=='part') part_add_child(selected[0]);
     else if(selected[1]=='point') point_add_child(selected[0],true); // TODO: 親のPartを見つけてpart_add_child()にする
   };
-  const draw_line=()=>{}; // TODO: 宣言のみ。実装は後日
-  const add_evidence=()=>{
+  const draw_line=(_?:Event|React.SyntheticEvent)=>{}; // TODO: 宣言のみ。実装は後日
+  const add_evidence=(_?:Event|React.SyntheticEvent)=>{
     if(selected[0]==undefined) return;
     if(selected[1]=='point') point_add_child(selected[0],false);
   };
