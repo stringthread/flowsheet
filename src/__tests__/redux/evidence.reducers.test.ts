@@ -90,6 +90,25 @@ test('evidence/removeAll reducerの確認',()=>{
   expect(store.getState().evidence).toMatchObject(expected_evidence_state);
 });
 
+test('evidence/setParent reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(evidence_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_evidence_state);
+  const test_evidence: mEvidence={
+    id: 'evi_0',
+    parent: 'point_0',
+    author: 'test author',
+    content: 'test_content'
+  };
+  const expected_evidence: mEvidence={
+    ...test_evidence,
+    parent: 'point_new'
+  }
+  store.dispatch(evidence_slice.actions.add(test_evidence));
+  store.dispatch(evidence_slice.actions.setParent(['evi_0','point_new']));
+  expect(store.getState().evidence.entities.evi_0).toMatchObject(expected_evidence);
+});
+
 test('evidence/incrementID reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(evidence_slice.actions.reset());

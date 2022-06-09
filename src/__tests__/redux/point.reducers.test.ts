@@ -149,6 +149,24 @@ test('point/reorderChild reducerの確認',()=>{
   expect(store.getState().point.entities.point_6?.contents).toEqual(expected_point_content_2);
 });
 
+test('point/setParent reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(point_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_point_state);
+  const test_point_before: mPoint={
+    id: 'point_0',
+    parent: 'part_0',
+    numbering: 0,
+  };
+  const test_point_after: mPoint={
+    ...test_point_before,
+    parent: 'part_new'
+  };
+  store.dispatch(point_slice.actions.add(test_point_before));
+  store.dispatch(point_slice.actions.setParent(['point_0','part_new']));
+  expect(store.getState().point.entities.point_0).toMatchObject(test_point_after);
+});
+
 test('point/incrementID reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(point_slice.actions.reset());

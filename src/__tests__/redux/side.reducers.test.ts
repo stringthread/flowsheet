@@ -118,6 +118,24 @@ test('side/addChild reducer: contentsが空のとき',()=>{
   expect(store.getState().side.entities.side_4?.contents).toEqual(expected_side_content);
 });
 
+test('side/setParent reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_side_state);
+  const test_side_before: mSide={
+    id: 'side_0',
+    parent: 'match_0',
+    side: 'aff'
+  };
+  const test_side_after: mSide={
+    ...test_side_before,
+    parent: 'match_new'
+  };
+  store.dispatch(side_slice.actions.add(test_side_before));
+  store.dispatch(side_slice.actions.setParent(['side_0','match_new']));
+  expect(store.getState().side.entities.side_0).toMatchObject(test_side_after);
+});
+
 test('side/incrementID reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(side_slice.actions.reset());

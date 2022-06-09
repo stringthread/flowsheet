@@ -26,6 +26,13 @@ export const evidence_slice=createSlice({
     incrementID: state=>{
       state.last_id_number++;
     },
+    // Payload[a,b]->ID===aの要素の親をbに設定する
+    setParent: (state,action:PayloadAction<[string,string]>)=>{
+      const [id,parent]=action.payload;
+      const entity=state.entities[id];
+      if(entity===undefined) return;
+      entity.parent=parent;
+    },
     reset: ()=>evidence_initialState,
   }
 });

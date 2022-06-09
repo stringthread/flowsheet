@@ -136,6 +136,24 @@ test('part/reorderChild reducerの確認',()=>{
   expect(store.getState().part.entities.part_6?.contents).toEqual(expected_part_content_2);
 });
 
+test('part/setParent reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(part_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_part_state);
+  const test_part_before: mPart={
+    id: 'part_0',
+    parent: 'side_0',
+    name: '1AC',
+  };
+  const test_part_after: mPart={
+    ...test_part_before,
+    parent: 'side_new',
+  };
+  store.dispatch(part_slice.actions.add(test_part_before));
+  store.dispatch(part_slice.actions.setParent(['part_0','side_new']));
+  expect(store.getState().part.entities.part_0).toMatchObject(test_part_after);
+});
+
 test('part/incrementID reducerの確認',()=>{
   // storeの状態をリセット
   store.dispatch(part_slice.actions.reset());
