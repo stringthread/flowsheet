@@ -11,26 +11,29 @@ beforeEach(()=>{
 test('generate_point: 引数あり',()=>{
   const expected_result:mPoint = {
     id: 'point_0',
+    parent: 'part_0',
     numbering: 1,
   };
-  expect(generate_point(expected_result)).toEqual(expected_result);
+  expect(generate_point('part_0',expected_result)).toEqual(expected_result);
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
 });
 
 test('generate_point: 引数なし',()=>{
   const expected_result:mPoint = {
     id: 'point_0',
+    parent: 'part_0',
   };
-  expect(generate_point()).toEqual(expected_result);
+  expect(generate_point('part_0')).toEqual(expected_result);
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
 });
 
 test('point_add_child: Evidence',()=>{
   const expected_result:mPoint = {
     id: 'point_0',
+    parent: 'part_0',
     contents: [['evi_0',false]],
   };
-  const generated=generate_point();
+  const generated=generate_point('part_0');
   const modified=point_add_child(generated.id,false);
   expect(modified.id).toBe('evi_0');
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
@@ -40,9 +43,10 @@ test('point_add_child: Evidence',()=>{
 test('point_add_child: Point',()=>{
   const expected_result:mPoint = {
     id: 'point_0',
+    parent: 'part_0',
     contents: [['point_1',true]],
   };
-  const generated=generate_point();
+  const generated=generate_point('part_0');
   const modified=point_add_child(generated.id,true);
   expect(modified.id).toBe('point_1');
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);

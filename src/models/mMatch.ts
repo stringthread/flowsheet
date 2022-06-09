@@ -20,17 +20,17 @@ export const generate_match=(
   sides?:Record<NonNullable<mSide['side']>,Array<mPart['name']>>,
   from?: Omit<mMatch,'id'|'contents'>
 ):mMatch=>{
-  const contents: Array<string>=[];
-  if(sides!==undefined){
-    for(const i in sides){
-      contents.push(generate_side(sides[i],{side:i}).id); // TODO: reduxに保存する処理を追加
-    }
-  }
   const generated: mMatch= {
     ...from,
     id: generate_match_id(),
-    contents,
   };
+  const contents: Array<string>=[];
+  if(sides!==undefined){
+    for(const i in sides){
+      contents.push(generate_side(generated.id,sides[i],{side:i}).id); // TODO: reduxに保存する処理を追加
+    }
+  }
+  generated.contents=contents;
   store.dispatch(match_slice.actions.add(generated));
   return generated;
 }

@@ -31,6 +31,13 @@ export const side_slice=createSlice({
       if(entity.contents===undefined) entity.contents=[];
       entity.contents.push(new_part);
     },
+    // Payload[a,b]->ID===aの要素の親をbに設定する
+    setParent: (state,action:PayloadAction<[string,string]>)=>{
+      const [id,parent]=action.payload;
+      const entity=state.entities[id];
+      if(entity===undefined) return;
+      entity.parent=parent;
+    },
     incrementID: state=>{
       state.last_id_number++;
     },

@@ -9,16 +9,18 @@ beforeEach(()=>{
 test('generate_evidence: 引数あり',()=>{
   const expected_result:mEvidence = {
     id: 'evi_0',
+    parent: 'point_0',
     author: 'test_author'
   };
-  expect(generate_evidence(expected_result)).toEqual(expected_result);
+  expect(generate_evidence('point_0',expected_result)).toEqual(expected_result);
   expect(store.getState().evidence.entities[expected_result.id]).toEqual(expected_result);
 });
 
 test('generate_evidence: 引数なし',()=>{
   const expected_result:mEvidence = {
     id: 'evi_0',
+    parent: 'point_0'
   };
-  expect(generate_evidence()).toEqual(expected_result);
+  expect(generate_evidence('point_0')).toEqual(expected_result);
   expect(store.getState().evidence.entities[expected_result.id]).toEqual(expected_result);
 });
