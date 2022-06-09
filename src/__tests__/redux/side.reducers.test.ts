@@ -13,6 +13,7 @@ const initial_side_state: EntityStateWithLastID<mSide>={
 test('side/removeAll reducerの確認',()=>{
   const test_side: mSide={
     id: 'side_2',
+    parent: 'match_0',
     side: 'Aff'
   };
   store.dispatch(side_slice.actions.add(test_side));
@@ -26,6 +27,7 @@ test('side/add reducerの確認',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_0',
+    parent: 'match_0',
     side: 'Aff'
   };
   const expected_side_state: EntityStateWithLastID<mSide>={
@@ -45,10 +47,12 @@ test('side/upsertOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_side_state);
   const test_side_before: mSide={
     id: 'side_0',
+    parent: 'match_0',
     side: 'aff'
   };
   const test_side_after: mSide={
     id: 'side_0',
+    parent: 'match_0',
     side: 'neg'
   };
   store.dispatch(side_slice.actions.add(test_side_before));
@@ -62,10 +66,12 @@ test('side/removeOne reducerの確認',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_1',
+    parent: 'match_0',
     side: 'Aff'
   };
   const test_side_2: mSide={
     id: 'side_2',
+    parent: 'match_0',
     side: 'Aff'
   };
   const expected_side_state: EntityStateWithLastID<mSide>={
@@ -87,6 +93,7 @@ test('side/addChild reducerの確認',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_3',
+    parent: 'match_0',
     side: 'Aff',
     contents: ['point_0']
   };
@@ -102,12 +109,31 @@ test('side/addChild reducer: contentsが空のとき',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     id: 'side_4',
+    parent: 'match_0',
     side: 'Aff'
   };
   const expected_side_content: mSide['contents']=['point_0']
   store.dispatch(side_slice.actions.add(test_side));
   store.dispatch(side_slice.actions.addChild(['side_4',expected_side_content[0]]));
   expect(store.getState().side.entities.side_4?.contents).toEqual(expected_side_content);
+});
+
+test('side/setParent reducerの確認',()=>{
+  // storeの状態をリセット
+  store.dispatch(side_slice.actions.reset());
+  expect(store.getState().match).toEqual(initial_side_state);
+  const test_side_before: mSide={
+    id: 'side_0',
+    parent: 'match_0',
+    side: 'aff'
+  };
+  const test_side_after: mSide={
+    ...test_side_before,
+    parent: 'match_new'
+  };
+  store.dispatch(side_slice.actions.add(test_side_before));
+  store.dispatch(side_slice.actions.setParent(['side_0','match_new']));
+  expect(store.getState().side.entities.side_0).toMatchObject(test_side_after);
 });
 
 test('side/incrementID reducerの確認',()=>{
