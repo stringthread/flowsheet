@@ -1,6 +1,6 @@
 import {baseModel} from './baseModel';
-import {mEvidence, generate_evidence} from './mEvidence'
-import {isObject, multipleTypeof} from 'util/typeGuardUtils'
+import {mEvidence, generate_evidence} from './mEvidence';
+import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
@@ -25,11 +25,7 @@ export interface mPoint extends baseModel {
 }
 
 export const is_mPoint = (value: unknown): value is mPoint => {
-  return isObject<mPoint>(value) &&
-    multipleTypeof(value.id, ['string']) &&
-    multipleTypeof(value.numbering, ['undefined','number','string']) &&
-    multipleTypeof(value.children_numbering, ['undefined','number','string']) &&
-    ((value.contents instanceof Array || typeof value.contents === 'string')??true);
+  return isObject<mPoint>(value) && value.typesigniture==mPointSymbol;
 }
 
 export const generate_point=(

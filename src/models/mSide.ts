@@ -1,3 +1,4 @@
+import {isObject} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {generate_side_id} from 'stores/slices/id_generators';
@@ -12,6 +13,10 @@ export interface mSide extends baseModel {
   parent: baseModel['id'];
   contents?: Array<string>; // mPartのID
 }
+
+export const is_mSide=(value: unknown): value is mSide =>{
+  return isObject<mSide>(value) && value.typesigniture==mSideSymbol;
+};
 
 export const generate_side=(
   parent: baseModel['id'],

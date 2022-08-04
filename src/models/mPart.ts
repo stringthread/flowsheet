@@ -1,3 +1,4 @@
+import {isObject} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
@@ -13,6 +14,10 @@ export interface mPart extends baseModel {
   name?: string|number;
   contents?: Array<string>; // mPointのID
 }
+
+export const is_mPart=(value: unknown): value is mPart =>{
+  return isObject<mPart>(value) && value.typesigniture==mPartSymbol;
+};
 
 export const generate_part=(
   parent: baseModel['id'],

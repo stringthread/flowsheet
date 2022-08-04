@@ -1,4 +1,4 @@
-import {isObject, multipleTypeof} from 'util/typeGuardUtils'
+import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/slices/id_generators';
@@ -16,12 +16,7 @@ export interface mEvidence extends baseModel {
 }
 
 export const is_mEvidence = (value: unknown): value is mEvidence => {
-  return isObject<mEvidence>(value) &&
-    multipleTypeof(value.id, ['string']) &&
-    multipleTypeof(value.about_author, ['undefined','string']) &&
-    multipleTypeof(value.author, ['undefined','string']) &&
-    multipleTypeof(value.year, ['undefined','number','string']) &&
-    multipleTypeof(value.contents, ['undefined','string']);
+  return isObject<mEvidence>(value) && value.typesigniture==mEvidenceSymbol;
 }
 
 export const generate_evidence=(

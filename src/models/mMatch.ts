@@ -1,3 +1,4 @@
+import {isObject} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {match_slice} from 'stores/slices/match';
 import {generate_match_id} from 'stores/slices/id_generators';
@@ -18,6 +19,10 @@ export interface mMatch extends baseModel {
   note?: string;
   contents?: Array<string>; // mSideのID
 }
+
+export const is_mMatch=(value: unknown): value is mMatch =>{
+  return isObject<mMatch>(value) && value.typesigniture==mMatchSymbol;
+};
 
 export const generate_match=(
   sides?:Record<NonNullable<mSide['side']>,Array<mPart['name']>>,
