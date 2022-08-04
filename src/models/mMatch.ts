@@ -17,7 +17,7 @@ export interface mMatch extends baseModel {
   opponent?: string;
   member?: Map<mPart['name'],string>; // パート名からメンバ名への対応
   note?: string;
-  contents?: Array<string>; // mSideのID
+  contents?: Array<baseModel['id']>; // mSideのID
 }
 
 export const is_mMatch=(value: unknown): value is mMatch =>{

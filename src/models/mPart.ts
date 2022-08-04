@@ -12,7 +12,7 @@ export interface mPart extends baseModel {
   typesigniture: typeof mPartSymbol,
   parent: baseModel['id'];
   name?: string|number;
-  contents?: Array<string>; // mPointのID
+  contents?: Array<baseModel['id']>; // mPointのID
 }
 
 export const is_mPart=(value: unknown): value is mPart =>{

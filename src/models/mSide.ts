@@ -11,7 +11,7 @@ export interface mSide extends baseModel {
   typesigniture: typeof mSideSymbol,
   side?: string; // TODO: enumにする
   parent: baseModel['id'];
-  contents?: Array<string>; // mPartのID
+  contents?: Array<baseModel['id']>; // mPartのID
 }
 
 export const is_mSide=(value: unknown): value is mSide =>{

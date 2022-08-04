@@ -21,7 +21,7 @@ export interface mPoint extends baseModel {
   parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;
-  contents?: Array<[string,boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
+  contents?: Array<[baseModel['id'],boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
 }
 
 export const is_mPoint = (value: unknown): value is mPoint => {
