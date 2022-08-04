@@ -2,15 +2,17 @@ import {isObject, multipleTypeof} from 'util/typeGuardUtils'
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/slices/id_generators';
+import {baseModel} from './baseModel';
 import {mPoint} from './mPoint'
 
-export interface mEvidence {
-  id: string;
-  parent: mPoint['id'];
+const mEvidenceSymbol=Symbol('mEvidence');
+
+export interface mEvidence extends baseModel {
+  parent: baseModel['id'];
   about_author?: string;
   author?: string;
   year?: number|string;
-  content?: string;
+  contents?: string;
 }
 
 export const is_mEvidence = (value: unknown): value is mEvidence => {
@@ -19,7 +21,7 @@ export const is_mEvidence = (value: unknown): value is mEvidence => {
     multipleTypeof(value.about_author, ['undefined','string']) &&
     multipleTypeof(value.author, ['undefined','string']) &&
     multipleTypeof(value.year, ['undefined','number','string']) &&
-    multipleTypeof(value.content, ['undefined','string']);
+    multipleTypeof(value.contents, ['undefined','string']);
 }
 
 export const generate_evidence=(
@@ -28,6 +30,7 @@ export const generate_evidence=(
 ):mEvidence=>{
   const generated: mEvidence= {
     ...from,
+    typesigniture: mEvidenceSymbol,
     id: generate_evidence_id(),
     parent,
   };

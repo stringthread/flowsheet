@@ -1,3 +1,4 @@
+import {baseModel} from './baseModel';
 import {mPart} from './mPart'
 import {mEvidence, generate_evidence} from './mEvidence'
 import {isObject, multipleTypeof} from 'util/typeGuardUtils'
@@ -12,12 +13,12 @@ export const is_Claim=(value:unknown): value is Claim=>{
   return typeof value=='string';
 }
 
-type PointParent = mPart|mPoint;
 export type PointChild = Claim|mEvidence|mPoint;
 
-export interface mPoint {
-  id: string;
-  parent: PointParent['id'];
+const mPointSymbol=Symbol('mPoint');
+
+export interface mPoint extends baseModel {
+  parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;
   contents?: Array<[string,boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
@@ -32,11 +33,12 @@ export const is_mPoint = (value: unknown): value is mPoint => {
 }
 
 export const generate_point=(
-  parent: PointParent['id'],
-  from?:Omit<mPoint,'id'|'parent'|'contents'|'_shorthands'>
+  parent: baseModel['id'],
+  from?:Omit<mPoint,'typesigniture'|'id'|'parent'|'contents'|'_shorthands'>
 ):mPoint=>{
   const generated: mPoint= {
     ...from,
+    typesigniture: mPointSymbol,
     id: generate_point_id(),
     parent
   };

@@ -1,11 +1,13 @@
 import {store} from 'stores';
 import {match_slice} from 'stores/slices/match';
 import {generate_match_id} from 'stores/slices/id_generators';
+import {baseModel} from './baseModel';
 import {mSide,generate_side} from './mSide';
 import {mPart} from './mPart';
 
-export interface mMatch {
-  id: string;
+const mMatchSymbol=Symbol('mMatch');
+
+export interface mMatch extends baseModel {
   topic?: string;
   date?: Date|string;
   side?: mSide['side'];
@@ -22,6 +24,7 @@ export const generate_match=(
 ):mMatch=>{
   const generated: mMatch= {
     ...from,
+    typesigniture: mMatchSymbol,
     id: generate_match_id(),
   };
   const contents: Array<string>=[];

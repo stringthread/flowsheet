@@ -1,11 +1,13 @@
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {generate_side_id} from 'stores/slices/id_generators';
+import {baseModel} from './baseModel';
 import {mMatch} from './mMatch';
 import {mPart,generate_part} from './mPart';
 
-export interface mSide {
-  id: string;
+const mSideSymbol=Symbol('mSide');
+
+export interface mSide extends baseModel {
   side?: string; // TODO: enumにする
   parent: mMatch['id'];
   contents?: Array<string>; // mPartのID
@@ -14,10 +16,11 @@ export interface mSide {
 export const generate_side=(
   parent: mMatch['id'],
   parts?:Array<mPart['name']>,
-  from?:Omit<mSide,'id'|'parent'|'contents'>
+  from?:Omit<mSide,'typesigniture'|'id'|'parent'|'contents'>
 ):mSide=>{
   const generated: mSide= {
     ...from,
+    typesigniture: mSideSymbol,
     id: generate_side_id(),
     parent,
   };

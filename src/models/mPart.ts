@@ -2,11 +2,13 @@ import {store} from 'stores';
 import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
 import {generate_part_id} from 'stores/slices/id_generators';
+import {baseModel} from './baseModel';
 import {mSide} from 'models/mSide';
 import {generate_point} from 'models/mPoint';
 
-export interface mPart {
-  id: string;
+const mPartSymbol=Symbol('mPart');
+
+export interface mPart extends baseModel {
   parent: mSide['id'];
   name?: string|number;
   contents?: Array<string>; // mPointのID
@@ -14,10 +16,11 @@ export interface mPart {
 
 export const generate_part=(
   parent: mSide['id'],
-  from?:Omit<mPart,'id'|'parent'|'contents'>,
+  from?:Omit<mPart,'typesigniture'|'id'|'parent'|'contents'>,
 ):mPart=>{
   const generated: mPart= {
     ...from,
+    typesigniture: mPartSymbol,
     id: generate_part_id(),
     parent,
   };
