@@ -47,9 +47,15 @@ export const generate_point=(
   return generated;
 }
 
-export const point_add_child=(parent_id:mPoint['id'], is_point: boolean)=>{
-  const child=is_point?generate_point(parent_id):generate_evidence(parent_id);
-  store.dispatch((is_point?point_slice:evidence_slice).actions.add(child));
+export const point_add_child=(parent_id:mPoint['id'], is_point: boolean): mPoint|mEvidence=>{
+  let child: mPoint|mEvidence;
+  if(is_point) {
+    child=generate_point(parent_id);
+    store.dispatch(point_slice.actions.add(child));
+  } else {
+    child=generate_evidence(parent_id);
+    store.dispatch(evidence_slice.actions.add(child));
+  }
   store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
   return child;
 };
