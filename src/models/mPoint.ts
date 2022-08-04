@@ -18,6 +18,7 @@ export type PointChild = Claim|mEvidence|mPoint;
 const mPointSymbol=Symbol('mPoint');
 
 export interface mPoint extends baseModel {
+  typesigniture: typeof mPointSymbol,
   parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;

@@ -8,6 +8,7 @@ import {mPart} from './mPart';
 const mMatchSymbol=Symbol('mMatch');
 
 export interface mMatch extends baseModel {
+  typesigniture: typeof mMatchSymbol,
   topic?: string;
   date?: Date|string;
   side?: mSide['side'];

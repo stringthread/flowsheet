@@ -8,6 +8,7 @@ import {mPoint} from './mPoint'
 const mEvidenceSymbol=Symbol('mEvidence');
 
 export interface mEvidence extends baseModel {
+  typesigniture: typeof mEvidenceSymbol,
   parent: baseModel['id'];
   about_author?: string;
   author?: string;

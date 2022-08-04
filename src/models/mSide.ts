@@ -8,6 +8,7 @@ import {mPart,generate_part} from './mPart';
 const mSideSymbol=Symbol('mSide');
 
 export interface mSide extends baseModel {
+  typesigniture: typeof mSideSymbol,
   side?: string; // TODO: enumにする
   parent: mMatch['id'];
   contents?: Array<string>; // mPartのID
