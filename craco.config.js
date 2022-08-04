@@ -6,6 +6,6 @@ module.exports = {
         { runtime: "automatic", importSource: "@emotion/react" },
       ],
     ],
-    plugins: ["@emotion/babel-plugin"],
+    plugins: ["babel-plugin-rewire","@emotion/babel-plugin"],
   },
 };

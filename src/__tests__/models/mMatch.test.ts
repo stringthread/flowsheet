@@ -2,7 +2,7 @@ import {store} from 'stores';
 import {match_slice} from 'stores/slices/match';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mMatch,generate_match} from 'models/mMatch';
+import {mMatch,generate_match,__RewireAPI__} from 'models/mMatch';
 import {mPart} from 'models/mPart';
 
 beforeEach(()=>{
@@ -10,12 +10,14 @@ beforeEach(()=>{
   store.dispatch(side_slice.actions.reset());
   store.dispatch(part_slice.actions.reset());
 });
+const mMatchSymbol=__RewireAPI__.__get__('mMatchSymbol');
 
 test('generate_match: 引数sides',()=>{
   const input_sides={
     'aff':['1AC'],
   };
   const expected_result:mMatch = {
+    typesigniture: mMatchSymbol,
     id: 'match_0',
     contents: ['side_0'],
   };
@@ -30,9 +32,11 @@ test('generate_match: 2引数',()=>{
     'aff': ['1AC'],
   };
   const input_match:Omit<mMatch,'id'> = {
+    typesigniture: mMatchSymbol,
     topic: 'test_topic',
   };
   const expected_result:mMatch = {
+    typesigniture: mMatchSymbol,
     id: 'match_0',
     topic: input_match.topic,
     contents: ['side_0'],
@@ -45,6 +49,7 @@ test('generate_match: 2引数',()=>{
 
 test('generate_match: 引数なし',()=>{
   const expected_result:mMatch = {
+    typesigniture: mMatchSymbol,
     id: 'match_0',
     contents: [],
   };

@@ -1,15 +1,17 @@
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mSide,generate_side} from 'models/mSide';
+import {mSide,generate_side,__RewireAPI__} from 'models/mSide';
 
 beforeEach(()=>{
   store.dispatch(side_slice.actions.reset());
   store.dispatch(part_slice.actions.reset());
 });
+const mSideSymbol=__RewireAPI__.__get__('mSideSymbol');
 
 test('generate_side: 引数parts',()=>{
   const expected_result:mSide = {
+    typesigniture: mSideSymbol,
     id: 'side_0',
     parent: 'match_0',
     side: undefined,
@@ -21,6 +23,7 @@ test('generate_side: 引数parts',()=>{
 
 test('generate_side: 2引数',()=>{
   const expected_result:mSide = {
+    typesigniture: mSideSymbol,
     id: 'side_0',
     parent: 'match_0',
     side: 'test_side',
@@ -35,6 +38,7 @@ test('generate_side: 2引数',()=>{
 
 test('generate_side: 引数なし',()=>{
   const expected_result:mSide = {
+    typesigniture: mSideSymbol,
     id: 'side_0',
     parent: 'match_0',
     side: undefined,

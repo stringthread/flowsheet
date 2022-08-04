@@ -2,16 +2,18 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {part_slice} from 'stores/slices/part';
 import {generate_part_id} from 'stores/ids/id_generators';
-import {mPart} from 'models/mPart';
+import {mPart,__RewireAPI__} from 'models/mPart';
 
 const initial_part_state: EntityStateWithLastID<mPart>={
   ids: [],
   entities: {},
   last_id_number: 0
 }
+const mPartSymbol=__RewireAPI__.__get__('mPartSymbol');
 
 test('part/removeAll reducerの確認',()=>{
   const test_part: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_2',
     parent: 'side_0',
     name: '1AC'
@@ -26,6 +28,7 @@ test('part/add reducerの確認',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     name: '1AC'
@@ -46,11 +49,13 @@ test('part/upsertOne reducerの確認',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_part_state);
   const test_part_before: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     name: '1AC',
   };
   const test_part_after: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     name: '1NC',
@@ -65,11 +70,13 @@ test('part/removeOne reducerの確認',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_1',
     parent: 'side_0',
     name: '1AC'
   };
   const test_part_2: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_2',
     parent: 'side_0',
     name: '1AC'
@@ -92,6 +99,7 @@ test('part/addChild reducerの確認',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_3',
     parent: 'side_0',
     name: '1AC',
@@ -108,6 +116,7 @@ test('part/addChild reducer: contentsが空のとき',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_4',
     parent: 'side_0',
     name: '1AC'
@@ -123,6 +132,7 @@ test('part/reorderChild reducerの確認',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().part).toEqual(initial_part_state);
   const test_part: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_6',
     parent: 'side_0',
     contents: ['point_1','point_2','point_3']
@@ -141,6 +151,7 @@ test('part/setParent reducerの確認',()=>{
   store.dispatch(part_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_part_state);
   const test_part_before: mPart={
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     name: '1AC',
