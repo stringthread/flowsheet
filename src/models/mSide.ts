@@ -1,7 +1,7 @@
 import {isObject} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
-import {generate_side_id} from 'stores/slices/id_generators';
+import {generate_side_id} from 'stores/ids/id_generators';
 import {baseModel} from './baseModel';
 import {mPart,generate_part} from './mPart';
 

@@ -1,7 +1,7 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {side_slice} from 'stores/slices/side';
-import {generate_side_id} from 'stores/slices/id_generators';
+import {generate_side_id} from 'stores/ids/id_generators';
 import {mSide} from 'models/mSide';
 
 const initial_side_state: EntityStateWithLastID<mSide>={

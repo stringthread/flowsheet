@@ -1,7 +1,7 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {match_slice} from 'stores/slices/match';
-import {generate_match_id} from 'stores/slices/id_generators';
+import {generate_match_id} from 'stores/ids/id_generators';
 import {mMatch} from 'models/mMatch';
 
 const initial_match_state: EntityStateWithLastID<mMatch>={

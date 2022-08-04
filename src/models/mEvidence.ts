@@ -1,7 +1,7 @@
 import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
-import {generate_evidence_id} from 'stores/slices/id_generators';
+import {generate_evidence_id} from 'stores/ids/id_generators';
 import {baseModel} from './baseModel';
 
 const mEvidenceSymbol=Symbol('mEvidence');

@@ -2,7 +2,7 @@ import {isObject} from 'util/typeGuardUtils';
 import {store} from 'stores';
 import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
-import {generate_part_id} from 'stores/slices/id_generators';
+import {generate_part_id} from 'stores/ids/id_generators';
 import {baseModel} from './baseModel';
 import {generate_point} from 'models/mPoint';
 

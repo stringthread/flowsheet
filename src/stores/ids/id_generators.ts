@@ -1,9 +1,9 @@
 import {store} from '../index';
-import {evidence_slice} from './evidence';
-import {point_slice} from './point';
-import {part_slice} from './part';
-import {side_slice} from './side';
-import {match_slice} from './match';
+import {evidence_slice} from '../slices/evidence';
+import {point_slice} from '../slices/point';
+import {part_slice} from '../slices/part';
+import {side_slice} from '../slices/side';
+import {match_slice} from '../slices/match';
 
 export const evidence_id_prefix='evi_';
 export const point_id_prefix='point_';
