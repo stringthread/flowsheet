@@ -1,5 +1,4 @@
 import {baseModel} from './baseModel';
-import {mPart} from './mPart'
 import {mEvidence, generate_evidence} from './mEvidence'
 import {isObject, multipleTypeof} from 'util/typeGuardUtils'
 import {store} from 'stores';

@@ -2,7 +2,6 @@ import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {generate_side_id} from 'stores/slices/id_generators';
 import {baseModel} from './baseModel';
-import {mMatch} from './mMatch';
 import {mPart,generate_part} from './mPart';
 
 const mSideSymbol=Symbol('mSide');
@@ -10,12 +9,12 @@ const mSideSymbol=Symbol('mSide');
 export interface mSide extends baseModel {
   typesigniture: typeof mSideSymbol,
   side?: string; // TODO: enumにする
-  parent: mMatch['id'];
+  parent: baseModel['id'];
   contents?: Array<string>; // mPartのID
 }
 
 export const generate_side=(
-  parent: mMatch['id'],
+  parent: baseModel['id'],
   parts?:Array<mPart['name']>,
   from?:Omit<mSide,'typesigniture'|'id'|'parent'|'contents'>
 ):mSide=>{

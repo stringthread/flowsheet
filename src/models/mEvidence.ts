@@ -3,7 +3,6 @@ import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/slices/id_generators';
 import {baseModel} from './baseModel';
-import {mPoint} from './mPoint'
 
 const mEvidenceSymbol=Symbol('mEvidence');
 
@@ -26,7 +25,7 @@ export const is_mEvidence = (value: unknown): value is mEvidence => {
 }
 
 export const generate_evidence=(
-  parent: mPoint['id'],
+  parent: baseModel['id'],
   from?: Omit<mEvidence,'id'|'content'>
 ):mEvidence=>{
   const generated: mEvidence= {

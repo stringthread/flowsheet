@@ -3,20 +3,19 @@ import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
 import {generate_part_id} from 'stores/slices/id_generators';
 import {baseModel} from './baseModel';
-import {mSide} from 'models/mSide';
 import {generate_point} from 'models/mPoint';
 
 const mPartSymbol=Symbol('mPart');
 
 export interface mPart extends baseModel {
   typesigniture: typeof mPartSymbol,
-  parent: mSide['id'];
+  parent: baseModel['id'];
   name?: string|number;
   contents?: Array<string>; // mPointのID
 }
 
 export const generate_part=(
-  parent: mSide['id'],
+  parent: baseModel['id'],
   from?:Omit<mPart,'typesigniture'|'id'|'parent'|'contents'>,
 ):mPart=>{
   const generated: mPart= {
