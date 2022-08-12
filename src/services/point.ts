@@ -2,7 +2,9 @@ import {baseModel} from 'models/baseModel';
 import {mEvidence} from 'models/mEvidence';
 import {mPoint,mPointSignature} from 'models/mPoint';
 import {generate_evidence} from './evidence'
+import { part_add_child } from './part';
 import {store} from 'stores';
+import {id_is_mPart,id_is_mPoint} from 'stores/ids';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_point_id} from 'stores/ids/id_generators';
@@ -35,3 +37,22 @@ export function point_add_child(parent_id:mPoint['id'], is_point: boolean): mPoi
   store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
   return child;
 }
+
+export const append_claim=(parent_id: baseModel['id']): mPoint|undefined=>{
+  let child:mPoint|undefined=undefined;
+  if(id_is_mPart(parent_id)) child=part_add_child(parent_id);
+  else if(id_is_mPoint(parent_id)) child=point_add_child(parent_id,true);
+  if(child===undefined) return undefined;
+  child={
+    ...child,
+    contents: '', // string型にすればClaimとして認識される
+  };
+  store.dispatch(point_slice.actions.upsertOne(child));
+  return child;
+};
+export const append_point=(parent_id: baseModel['id']): mPoint|undefined=>{
+  let child:mPoint|undefined=undefined;
+  if(id_is_mPart(parent_id)) child=part_add_child(parent_id);
+  else if(id_is_mPoint(parent_id)) child=point_add_child(parent_id,true);
+  return child;
+};
