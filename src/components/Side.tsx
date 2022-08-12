@@ -29,7 +29,7 @@ export const Side: React.VFC<Props> = (props)=>{
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
-    props.setSelected([props.sideID,'side']);
+    props.setSelected(props.sideID);
   },[props.sideID,props.setSelected]);
   if(side===undefined) return null;
   return (

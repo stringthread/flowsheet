@@ -108,7 +108,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
-    props.setSelected([props.eviID,'evidence']);
+    props.setSelected(props.eviID);
   },[props.eviID,props.setSelected]);
   if(evidence===undefined) return null;
   return (

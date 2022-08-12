@@ -83,7 +83,7 @@ export const Point: React.VFC<Props> = (props)=>{
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
-    props.setSelected([props.pointID,'point']);
+    props.setSelected(props.pointID);
   },[props.pointID,props.setSelected]);
   if(point===undefined) return null;
   return (

@@ -29,7 +29,7 @@ export const Part: React.VFC<Props> = (props)=>{
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
-    props.setSelected([props.partID,'part']);
+    props.setSelected(props.partID);
   },[props.partID,props.setSelected]);
   if(part===undefined) return null;
   return (

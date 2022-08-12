@@ -48,7 +48,7 @@ export const Match: React.VFC<Props> = (props)=>{
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
-    props.setSelected([props.matchID,'match']);
+    props.setSelected(props.matchID);
   },[props.matchID,props.setSelected]);
   const match=useSelector((state:RootState)=>match_selectors.selectById(state,props.matchID));
   if(match===undefined) return null;
