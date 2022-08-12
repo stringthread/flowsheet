@@ -3,7 +3,7 @@ import {baseModel} from './baseModel';
 import {mSide} from './mSide';
 import {mPart} from './mPart';
 
-export const mMatchSymbol=Symbol('mMatch');
+export const mMatchSymbol='mMatch';
 
 export interface mMatch extends baseModel {
   typesigniture: typeof mMatchSymbol,

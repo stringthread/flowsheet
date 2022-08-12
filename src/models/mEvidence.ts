@@ -1,7 +1,7 @@
 import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import {baseModel} from './baseModel';
 
-export const mEvidenceSymbol=Symbol('mEvidence');
+export const mEvidenceSymbol='mEvidence';
 
 export interface mEvidence extends baseModel {
   typesigniture: typeof mEvidenceSymbol,

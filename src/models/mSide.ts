@@ -1,7 +1,7 @@
 import {isObject} from 'util/typeGuardUtils';
 import {baseModel} from './baseModel';
 
-export const mSideSymbol=Symbol('mSide');
+export const mSideSymbol='mSide';
 
 export interface mSide extends baseModel {
   typesigniture: typeof mSideSymbol,
