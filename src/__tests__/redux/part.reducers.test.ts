@@ -2,14 +2,13 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {part_slice} from 'stores/slices/part';
 import {generate_part_id} from 'stores/ids/id_generators';
-import {mPart,__RewireAPI__} from 'models/mPart';
+import {mPart,mPartSymbol} from 'models/mPart';
 
 const initial_part_state: EntityStateWithLastID<mPart>={
   ids: [],
   entities: {},
   last_id_number: 0
 }
-const mPartSymbol=__RewireAPI__.__get__('mPartSymbol');
 
 test('part/removeAll reducerの確認',()=>{
   const test_part: mPart={

@@ -2,14 +2,13 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/ids/id_generators';
-import {mEvidence,__RewireAPI__} from 'models/mEvidence';
+import {mEvidence,mEvidenceSymbol} from 'models/mEvidence';
 
 const initial_evidence_state: EntityStateWithLastID<mEvidence>={
   ids: [],
   entities: {},
   last_id_number: 0
 };
-const mEvidenceSymbol=__RewireAPI__.__get__('mEvidenceSymbol');
 
 test('evidence/add reducerの確認',()=>{
   // storeの状態をリセット

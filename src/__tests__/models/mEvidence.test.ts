@@ -1,11 +1,10 @@
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mEvidence,generate_evidence,__RewireAPI__} from 'models/mEvidence';
+import {mEvidence,generate_evidence,mEvidenceSymbol} from 'models/mEvidence';
 
 beforeEach(()=>{
   store.dispatch(evidence_slice.actions.reset());
 });
-const mEvidenceSymbol=__RewireAPI__.__get__('mEvidenceSymbol');
 
 test('generate_evidence: 引数あり',()=>{
   const expected_result:mEvidence = {

@@ -2,14 +2,13 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {match_slice} from 'stores/slices/match';
 import {generate_match_id} from 'stores/ids/id_generators';
-import {mMatch,__RewireAPI__} from 'models/mMatch';
+import {mMatch,mMatchSymbol} from 'models/mMatch';
 
 const initial_match_state: EntityStateWithLastID<mMatch>={
   ids: [],
   entities: {},
   last_id_number: 0
 }
-const mMatchSymbol=__RewireAPI__.__get__('mMatchSymbol');
 
 test('match/removeAll reducerの確認',()=>{
   const test_match: mMatch={

@@ -2,14 +2,13 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {point_slice} from 'stores/slices/point';
 import {generate_point_id} from 'stores/ids/id_generators';
-import {mPoint,__RewireAPI__} from 'models/mPoint';
+import {mPoint,mPointSymbol} from 'models/mPoint';
 
 const initial_point_state: EntityStateWithLastID<mPoint>={
   ids: [],
   entities: {},
   last_id_number: 0
 }
-const mPointSymbol=__RewireAPI__.__get__('mPointSymbol');
 
 test('point/removeAll reducerの確認',()=>{
   const test_point: mPoint={

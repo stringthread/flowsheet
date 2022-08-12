@@ -2,14 +2,13 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {side_slice} from 'stores/slices/side';
 import {generate_side_id} from 'stores/ids/id_generators';
-import {mSide,__RewireAPI__} from 'models/mSide';
+import {mSide,mSideSymbol} from 'models/mSide';
 
 const initial_side_state: EntityStateWithLastID<mSide>={
   ids: [],
   entities: {},
   last_id_number: 0
 }
-const mSideSymbol=__RewireAPI__.__get__('mSideSymbol');
 
 test('side/removeAll reducerの確認',()=>{
   const test_side: mSide={

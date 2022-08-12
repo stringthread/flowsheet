@@ -2,7 +2,7 @@ import {store} from 'stores';
 import {match_slice} from 'stores/slices/match';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mMatch,generate_match,__RewireAPI__} from 'models/mMatch';
+import {mMatch,generate_match,mMatchSymbol} from 'models/mMatch';
 import {mPart} from 'models/mPart';
 
 beforeEach(()=>{
@@ -10,7 +10,6 @@ beforeEach(()=>{
   store.dispatch(side_slice.actions.reset());
   store.dispatch(part_slice.actions.reset());
 });
-const mMatchSymbol=__RewireAPI__.__get__('mMatchSymbol');
 
 test('generate_match: 引数sides',()=>{
   const input_sides={

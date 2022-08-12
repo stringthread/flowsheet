@@ -3,14 +3,13 @@ import {render,screen,within} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 import {useSelector} from 'react-redux';
 import {Point} from 'components/Point';
-import {mPoint, __RewireAPI__} from 'models/mPoint';
+import {mPoint, mPointSymbol} from 'models/mPoint';
 
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mPoint|undefined>;
 jest.mock('components/Evidence',()=>({
   Evidence: ()=>(<div data-testid="evidence"></div>)
 }));
-const mPointSymbol=__RewireAPI__.__get__('mPointSymbol');
 
 test('Point: pointIDに該当がなければ生成されない',()=>{
   useSelectorMock.mockReturnValueOnce(undefined);

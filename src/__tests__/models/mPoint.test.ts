@@ -1,13 +1,12 @@
 import {store} from 'stores';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mPoint,generate_point,point_add_child,__RewireAPI__} from 'models/mPoint';
+import {mPoint,generate_point,point_add_child,mPointSymbol} from 'models/mPoint';
 
 beforeEach(()=>{
   store.dispatch(point_slice.actions.reset());
   store.dispatch(evidence_slice.actions.reset());
 });
-const mPointSymbol=__RewireAPI__.__get__('mPointSymbol');
 
 test('generate_point: 引数あり',()=>{
   const expected_result:mPoint = {

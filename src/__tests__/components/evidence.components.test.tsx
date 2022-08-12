@@ -1,14 +1,12 @@
 import React from 'react';
 import {render,screen} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
-import rewire from 'rewire';
 import {useSelector} from 'react-redux';
 import {Evidence} from 'components/Evidence';
-import {mEvidence, __RewireAPI__} from 'models/mEvidence';
+import {mEvidence, mEvidenceSymbol} from 'models/mEvidence';
 
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mEvidence|undefined>;
-const mEvidenceSymbol=__RewireAPI__.__get__('mEvidenceSymbol');
 
 test('Evidence: eviIDに該当がなければ生成されない',()=>{
   useSelectorMock.mockReturnValueOnce(undefined);

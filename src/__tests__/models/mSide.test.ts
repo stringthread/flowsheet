@@ -1,13 +1,12 @@
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mSide,generate_side,__RewireAPI__} from 'models/mSide';
+import {mSide,generate_side,mSideSymbol} from 'models/mSide';
 
 beforeEach(()=>{
   store.dispatch(side_slice.actions.reset());
   store.dispatch(part_slice.actions.reset());
 });
-const mSideSymbol=__RewireAPI__.__get__('mSideSymbol');
 
 test('generate_side: 引数parts',()=>{
   const expected_result:mSide = {

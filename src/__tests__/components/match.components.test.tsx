@@ -3,14 +3,13 @@ import {render,screen,within} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 import {useSelector} from 'react-redux';
 import {Match} from 'components/Match';
-import {mMatch, __RewireAPI__} from 'models/mMatch';
+import {mMatch, mMatchSymbol} from 'models/mMatch';
 
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mMatch|undefined>;
 jest.mock('components/Side',()=>({
   Side: ()=>(<div data-testid="side"></div>)
 }));
-const mMatchSymbol=__RewireAPI__.__get__('mMatchSymbol');
 
 test('Match: matchIDに該当がなければ生成されない',()=>{
   useSelectorMock.mockReturnValueOnce(undefined);
