@@ -1,7 +1,8 @@
 import {store} from 'stores';
 import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
-import {mPart,generate_part,part_add_child} from 'models/mPart';
+import {mPart,mPartSymbol} from 'models/mPart';
+import {generate_part,part_add_child} from 'services/part';
 
 beforeEach(()=>{
   store.dispatch(part_slice.actions.reset());
@@ -10,6 +11,7 @@ beforeEach(()=>{
 
 test('generate_part: 引数あり',()=>{
   const expected_result:mPart = {
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     name: 'test_name',
@@ -21,6 +23,7 @@ test('generate_part: 引数あり',()=>{
 
 test('generate_part: 引数なし',()=>{
   const expected_result:mPart = {
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     contents: ['point_0'], // 後々仕様変更変更する可能性あり
@@ -31,6 +34,7 @@ test('generate_part: 引数なし',()=>{
 
 test('part_add_child',()=>{
   const expected_result:mPart = {
+    typesigniture: mPartSymbol,
     id: 'part_0',
     parent: 'side_0',
     contents: ['point_0','point_1'],

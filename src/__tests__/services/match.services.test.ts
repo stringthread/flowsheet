@@ -2,8 +2,9 @@ import {store} from 'stores';
 import {match_slice} from 'stores/slices/match';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mMatch,generate_match} from 'models/mMatch';
+import {mMatch,mMatchSymbol} from 'models/mMatch';
 import {mPart} from 'models/mPart';
+import {generate_match} from 'services/match';
 
 beforeEach(()=>{
   store.dispatch(match_slice.actions.reset());
@@ -16,6 +17,7 @@ test('generate_match: 引数sides',()=>{
     'aff':['1AC'],
   };
   const expected_result:mMatch = {
+    typesigniture: mMatchSymbol,
     id: 'match_0',
     contents: ['side_0'],
   };
@@ -30,9 +32,11 @@ test('generate_match: 2引数',()=>{
     'aff': ['1AC'],
   };
   const input_match:Omit<mMatch,'id'> = {
+    typesigniture: mMatchSymbol,
     topic: 'test_topic',
   };
   const expected_result:mMatch = {
+    typesigniture: mMatchSymbol,
     id: 'match_0',
     topic: input_match.topic,
     contents: ['side_0'],
@@ -45,6 +49,7 @@ test('generate_match: 2引数',()=>{
 
 test('generate_match: 引数なし',()=>{
   const expected_result:mMatch = {
+    typesigniture: mMatchSymbol,
     id: 'match_0',
     contents: [],
   };

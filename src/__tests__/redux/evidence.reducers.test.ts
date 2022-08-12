@@ -2,7 +2,7 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/ids/id_generators';
-import {mEvidence} from 'models/mEvidence';
+import {mEvidence,mEvidenceSymbol} from 'models/mEvidence';
 
 const initial_evidence_state: EntityStateWithLastID<mEvidence>={
   ids: [],
@@ -15,10 +15,11 @@ test('evidence/add reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
+    typesigniture: mEvidenceSymbol,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
-    content: 'test_content'
+    contents: 'test_contents'
   };
   const expected_evidence_state: EntityStateWithLastID<mEvidence>={
     ids: ['evi_0'],
@@ -36,14 +37,16 @@ test('evidence/upsertOne reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence_before: mEvidence={
+    typesigniture: mEvidenceSymbol,
     id: 'evi_0',
     parent: 'point_0',
-    content: 'before'
+    contents: 'before'
   };
   const test_evidence_after: mEvidence={
+    typesigniture: mEvidenceSymbol,
     id: 'evi_0',
     parent: 'point_0',
-    content: 'before'
+    contents: 'before'
   };
   store.dispatch(evidence_slice.actions.add(test_evidence_before));
   store.dispatch(evidence_slice.actions.upsertOne(test_evidence_after));
@@ -55,10 +58,11 @@ test('evidence/removeOne reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
+    typesigniture: mEvidenceSymbol,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
-    content: 'test_content'
+    contents: 'test_contents'
   };
   const expected_evidence_state: EntityStateWithLastID<mEvidence>={
     ids: [],
@@ -75,10 +79,11 @@ test('evidence/removeAll reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
+    typesigniture: mEvidenceSymbol,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
-    content: 'test_content'
+    contents: 'test_contents'
   };
   const expected_evidence_state: EntityStateWithLastID<mEvidence>={
     ids: [],
@@ -95,10 +100,11 @@ test('evidence/setParent reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
+    typesigniture: mEvidenceSymbol,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
-    content: 'test_content'
+    contents: 'test_contents'
   };
   const expected_evidence: mEvidence={
     ...test_evidence,
