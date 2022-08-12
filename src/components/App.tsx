@@ -31,14 +31,14 @@ function App() {
     append_point(selected);
   };
   const add_point_to_part=(_?:Event|React.SyntheticEvent)=>{
-    if(selected[0]==undefined) return;
-    if(selected[1]=='part') part_add_child(selected[0]);
-    else if(selected[1]=='point') point_add_child(selected[0],true); // TODO: 親のPartを見つけてpart_add_child()にする
+    if(selected==undefined) return;
+    if(id_is_mPart(selected)) part_add_child(selected);
+    else if(id_is_mPoint(selected)) point_add_child(selected,true); // TODO: 親のPartを見つけてpart_add_child()にする
   };
   const draw_line=(_?:Event|React.SyntheticEvent)=>{}; // TODO: 宣言のみ。実装は後日
   const add_evidence=(_?:Event|React.SyntheticEvent)=>{
-    if(selected[0]==undefined) return;
-    if(selected[1]=='point') point_add_child(selected[0],false);
+    if(selected==undefined) return;
+    if(id_is_mPoint(selected)) point_add_child(selected,false);
   };
   const keyMaps = [
     {
