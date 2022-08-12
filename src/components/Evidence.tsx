@@ -116,11 +116,11 @@ export const Evidence: React.VFC<Props> = (props)=>{
       <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
       <StretchTextArea
         className="evidenceContent"
-        value={evidence.content}
+        value={evidence.contents}
         onBlur={(e)=>{
           dispatch(evidence_slice.actions.upsertOne({
             id: props.eviID,
-            content: e.currentTarget.value,
+            contents: e.currentTarget.value,
           }));
         }}
         css={styleEvidenceContent}
