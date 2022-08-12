@@ -1,7 +1,7 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {mPoint} from 'models/mPoint';
+import {is_mPoint, mPoint,mPointSymbol} from 'models/mPoint';
 import {reorder_array} from 'util/funcs';
 
 const point_adapter=createEntityAdapter<mPoint>();
@@ -15,8 +15,12 @@ export const point_slice=createSlice({
     add: (state,action:PayloadAction<mPoint>)=>{
       point_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<mPoint>)=>{
-      point_adapter.upsertOne(state,action.payload);
+    upsertOne: (state,action:PayloadAction<Pick<mPoint,'id'>&Partial<mPoint>>)=>{
+      const point={
+        ...state.entities[action.payload.id],
+        ...action.payload
+      };
+      if(is_mPoint(point)) point_adapter.upsertOne(state,point);
     },
     removeOne: (state,action:PayloadAction<string>)=>{
       point_adapter.removeOne(state,action.payload);
