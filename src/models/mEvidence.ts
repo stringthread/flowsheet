@@ -1,3 +1,4 @@
+import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import {baseModel} from './baseModel';
 
 export const mEvidenceSymbol=Symbol('mEvidence');
@@ -9,4 +10,8 @@ export interface mEvidence extends baseModel {
   author?: string;
   year?: number|string;
   contents?: string;
+}
+
+export const is_mEvidence = (value: unknown): value is mEvidence => {
+  return isObject<mEvidence>(value) && value.typesigniture==mEvidenceSymbol;
 }
