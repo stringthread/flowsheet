@@ -3,7 +3,7 @@ import {match_slice} from 'stores/slices/match';
 import {generate_match_id} from 'stores/ids/id_generators';
 import {mPart} from 'models/mPart';
 import {mSide} from 'models/mSide';
-import {mMatch, mMatchSymbol} from 'models/mMatch';
+import {mMatch, mMatchSignature} from 'models/mMatch';
 import {generate_side} from  './side';
 
 export const generate_match=(
@@ -12,7 +12,7 @@ export const generate_match=(
 ):mMatch=>{
   const generated: mMatch= {
     ...from,
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: generate_match_id(),
   };
   const contents: Array<string>=[];

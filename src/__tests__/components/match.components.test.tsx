@@ -3,7 +3,7 @@ import {render,screen,within} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 import {useSelector} from 'react-redux';
 import {Match} from 'components/Match';
-import {mMatch, mMatchSymbol} from 'models/mMatch';
+import {mMatch, mMatchSignature} from 'models/mMatch';
 
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mMatch|undefined>;
@@ -19,7 +19,7 @@ test('Match: matchIDに該当がなければ生成されない',()=>{
 
 test('Match: contentsがないときパート名だけ描画',()=>{
   const returned: mMatch = {
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_0',
     topic: '一院制',
   };
@@ -34,7 +34,7 @@ test('Match: contentsがないときパート名だけ描画',()=>{
 
 test('Match: contentsがあるとき',()=>{
   const returned: mMatch = {
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_0',
     topic: '一院制',
     contents: ['side_0']

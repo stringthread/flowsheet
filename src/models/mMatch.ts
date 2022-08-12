@@ -3,10 +3,10 @@ import {baseModel} from './baseModel';
 import {mSide} from './mSide';
 import {mPart} from './mPart';
 
-export const mMatchSymbol='mMatch';
+export const mMatchSignature='mMatch';
 
 export interface mMatch extends baseModel {
-  typesigniture: typeof mMatchSymbol,
+  type_signature: typeof mMatchSignature,
   topic?: string;
   date?: Date|string;
   side?: mSide['side'];
@@ -18,5 +18,5 @@ export interface mMatch extends baseModel {
 }
 
 export const is_mMatch=(value: unknown): value is mMatch =>{
-  return isObject<mMatch>(value) && value.typesigniture==mMatchSymbol;
+  return isObject<mMatch>(value) && value.type_signature==mMatchSignature;
 };

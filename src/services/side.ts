@@ -4,18 +4,18 @@ import {side_slice} from 'stores/slices/side';
 import {generate_side_id} from 'stores/ids/id_generators';
 import {baseModel} from 'models/baseModel';
 import {mPart} from 'models/mPart';
-import {mSide, mSideSymbol} from 'models/mSide';
+import {mSide, mSideSignature} from 'models/mSide';
 import {generate_part} from './part';
 
 
 export const generate_side=(
   parent: baseModel['id'],
   parts?:Array<mPart['name']>,
-  from?:Omit<mSide,'typesigniture'|'id'|'parent'|'contents'>
+  from?:Omit<mSide,'type_signature'|'id'|'parent'|'contents'>
 ):mSide=>{
   const generated: mSide= {
     ...from,
-    typesigniture: mSideSymbol,
+    type_signature: mSideSignature,
     id: generate_side_id(),
     parent,
   };

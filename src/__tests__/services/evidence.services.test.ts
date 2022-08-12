@@ -1,6 +1,6 @@
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mEvidence, mEvidenceSymbol} from 'models/mEvidence';
+import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
 import {generate_evidence} from 'services/evidence';
 
 beforeEach(()=>{
@@ -9,7 +9,7 @@ beforeEach(()=>{
 
 test('generate_evidence: 引数あり',()=>{
   const expected_result:mEvidence = {
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test_author'
@@ -20,7 +20,7 @@ test('generate_evidence: 引数あり',()=>{
 
 test('generate_evidence: 引数なし',()=>{
   const expected_result:mEvidence = {
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0'
   };

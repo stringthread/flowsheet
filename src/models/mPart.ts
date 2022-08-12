@@ -1,15 +1,15 @@
 import {isObject} from 'util/typeGuardUtils';
 import {baseModel} from './baseModel';
 
-export const mPartSymbol='mPart';
+export const mPartSignature='mPart';
 
 export interface mPart extends baseModel {
-  typesigniture: typeof mPartSymbol,
+  type_signature: typeof mPartSignature,
   parent: baseModel['id'];
   name?: string|number;
   contents?: Array<baseModel['id']>; // mPointのID
 }
 
 export const is_mPart=(value: unknown): value is mPart =>{
-  return isObject<mPart>(value) && value.typesigniture==mPartSymbol;
+  return isObject<mPart>(value) && value.type_signature==mPartSignature;
 };

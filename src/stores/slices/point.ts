@@ -1,7 +1,7 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {is_mPoint, mPoint,mPointSymbol} from 'models/mPoint';
+import {is_mPoint, mPoint,mPointSignature} from 'models/mPoint';
 import {reorder_array} from 'util/funcs';
 
 const point_adapter=createEntityAdapter<mPoint>();

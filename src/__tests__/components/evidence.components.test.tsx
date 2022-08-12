@@ -3,7 +3,7 @@ import {render,screen} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 import {useSelector} from 'react-redux';
 import {Evidence} from 'components/Evidence';
-import {mEvidence, mEvidenceSymbol} from 'models/mEvidence';
+import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
 
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mEvidence|undefined>;
@@ -16,7 +16,7 @@ test('Evidence: eviIDに該当がなければ生成されない',()=>{
 
 test('Evidence: useSelectorでオブジェクトが帰ってきたら描画',()=>{
   const returned: mEvidence = {
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     parent: 'point_dummy',
     id: 'evi_0',
     author: 'Test Author',

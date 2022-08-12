@@ -3,16 +3,16 @@ import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
 import {generate_part_id} from 'stores/ids/id_generators';
 import {baseModel} from 'models/baseModel';
-import {mPart, mPartSymbol} from 'models/mPart';
+import {mPart, mPartSignature} from 'models/mPart';
 import {generate_point} from 'services/point';
 
 export const generate_part=(
   parent: baseModel['id'],
-  from?:Omit<mPart,'typesigniture'|'id'|'parent'|'contents'>,
+  from?:Omit<mPart,'type_signature'|'id'|'parent'|'contents'>,
 ):mPart=>{
   const generated: mPart= {
     ...from,
-    typesigniture: mPartSymbol,
+    type_signature: mPartSignature,
     id: generate_part_id(),
     parent,
   };

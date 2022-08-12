@@ -2,7 +2,7 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/ids/id_generators';
-import {mEvidence,mEvidenceSymbol} from 'models/mEvidence';
+import {mEvidence,mEvidenceSignature} from 'models/mEvidence';
 
 const initial_evidence_state: EntityStateWithLastID<mEvidence>={
   ids: [],
@@ -15,7 +15,7 @@ test('evidence/add reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
@@ -37,13 +37,13 @@ test('evidence/upsertOne reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence_before: mEvidence={
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     contents: 'before'
   };
   const test_evidence_after: mEvidence={
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     contents: 'before'
@@ -58,7 +58,7 @@ test('evidence/removeOne reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
@@ -79,7 +79,7 @@ test('evidence/removeAll reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',
@@ -100,7 +100,7 @@ test('evidence/setParent reducerの確認',()=>{
   store.dispatch(evidence_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test author',

@@ -1,10 +1,10 @@
 import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import {baseModel} from './baseModel';
 
-export const mEvidenceSymbol='mEvidence';
+export const mEvidenceSignature='mEvidence';
 
 export interface mEvidence extends baseModel {
-  typesigniture: typeof mEvidenceSymbol,
+  type_signature: typeof mEvidenceSignature,
   parent: baseModel['id'];
   about_author?: string;
   author?: string;
@@ -13,5 +13,5 @@ export interface mEvidence extends baseModel {
 }
 
 export const is_mEvidence = (value: unknown): value is mEvidence => {
-  return isObject<mEvidence>(value) && value.typesigniture==mEvidenceSymbol;
+  return isObject<mEvidence>(value) && value.type_signature==mEvidenceSignature;
 }

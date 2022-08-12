@@ -2,7 +2,7 @@ import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {match_slice} from 'stores/slices/match';
 import {generate_match_id} from 'stores/ids/id_generators';
-import {mMatch,mMatchSymbol} from 'models/mMatch';
+import {mMatch,mMatchSignature} from 'models/mMatch';
 
 const initial_match_state: EntityStateWithLastID<mMatch>={
   ids: [],
@@ -12,7 +12,7 @@ const initial_match_state: EntityStateWithLastID<mMatch>={
 
 test('match/removeAll reducerの確認',()=>{
   const test_match: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_2',
     winner: 'Aff'
   };
@@ -26,7 +26,7 @@ test('match/add reducerの確認',()=>{
   store.dispatch(match_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_0',
     winner: 'Aff'
   };
@@ -46,12 +46,12 @@ test('match/upsertOne reducerの確認',()=>{
   store.dispatch(match_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match_before: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_0',
     topic: 'before'
   };
   const test_match_after: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_0',
     topic: 'after'
   };
@@ -65,12 +65,12 @@ test('match/removeOne reducerの確認',()=>{
   store.dispatch(match_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_1',
     winner: 'Aff'
   };
   const test_match_2: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_2',
     winner: 'Aff'
   };
@@ -92,7 +92,7 @@ test('match/addChild reducerの確認',()=>{
   store.dispatch(match_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_3',
     winner: 'Aff',
     contents: ['part_0']
@@ -108,7 +108,7 @@ test('match/addChild reducer: contentsが空のとき',()=>{
   store.dispatch(match_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
-    typesigniture: mMatchSymbol,
+    type_signature: mMatchSignature,
     id: 'match_4',
     winner: 'Aff'
   };

@@ -10,10 +10,10 @@ export const is_Claim=(value:unknown): value is Claim=>{
 
 export type PointChild = Claim|mEvidence|mPoint;
 
-export const mPointSymbol='mPoint';
+export const mPointSignature='mPoint';
 
 export interface mPoint extends baseModel {
-  typesigniture: typeof mPointSymbol,
+  type_signature: typeof mPointSignature,
   parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;
@@ -21,5 +21,5 @@ export interface mPoint extends baseModel {
 }
 
 export const is_mPoint = (value: unknown): value is mPoint => {
-  return isObject<mPoint>(value) && value.typesigniture==mPointSymbol;
+  return isObject<mPoint>(value) && value.type_signature==mPointSignature;
 }

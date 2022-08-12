@@ -1,7 +1,7 @@
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mSide,mSideSymbol} from 'models/mSide';
+import {mSide,mSideSignature} from 'models/mSide';
 import {generate_side} from 'services/side';
 
 beforeEach(()=>{
@@ -11,7 +11,7 @@ beforeEach(()=>{
 
 test('generate_side: 引数parts',()=>{
   const expected_result:mSide = {
-    typesigniture: mSideSymbol,
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: undefined,
@@ -23,7 +23,7 @@ test('generate_side: 引数parts',()=>{
 
 test('generate_side: 2引数',()=>{
   const expected_result:mSide = {
-    typesigniture: mSideSymbol,
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: 'test_side',
@@ -38,7 +38,7 @@ test('generate_side: 2引数',()=>{
 
 test('generate_side: 引数なし',()=>{
   const expected_result:mSide = {
-    typesigniture: mSideSymbol,
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: undefined,

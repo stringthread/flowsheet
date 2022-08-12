@@ -3,7 +3,7 @@ import {render,screen,within} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'
 import {useSelector} from 'react-redux';
 import {Side} from 'components/Side';
-import {mSide, mSideSymbol} from 'models/mSide';
+import {mSide, mSideSignature} from 'models/mSide';
 
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mSide|undefined>;
@@ -19,7 +19,7 @@ test('Side: sideIDに該当がなければ生成されない',()=>{
 
 test('Side: contentsがないときパート名だけ描画',()=>{
   const returned: mSide = {
-    typesigniture: mSideSymbol,
+    type_signature: mSideSignature,
     parent: 'match_dummy',
     id: 'side_0',
     side: 'aff',
@@ -34,7 +34,7 @@ test('Side: contentsがないときパート名だけ描画',()=>{
 
 test('Side: contentsがあるとき',()=>{
   const returned: mSide = {
-    typesigniture: mSideSymbol,
+    type_signature: mSideSignature,
     parent: 'match_dummy',
     id: 'side_0',
     side: 'aff',

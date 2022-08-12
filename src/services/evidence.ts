@@ -2,7 +2,7 @@ import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/ids/id_generators';
 import {baseModel} from 'models/baseModel';
-import {mEvidence, mEvidenceSymbol} from 'models/mEvidence';
+import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
 
 export const generate_evidence=(
   parent: baseModel['id'],
@@ -10,7 +10,7 @@ export const generate_evidence=(
 ):mEvidence=>{
   const generated: mEvidence= {
     ...from,
-    typesigniture: mEvidenceSymbol,
+    type_signature: mEvidenceSignature,
     id: generate_evidence_id(),
     parent,
   };
