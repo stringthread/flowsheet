@@ -1,7 +1,8 @@
 import {store} from 'stores';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mSide,generate_side,mSideSymbol} from 'models/mSide';
+import {mSide,mSideSymbol} from 'models/mSide';
+import {generate_side} from 'services/side';
 
 beforeEach(()=>{
   store.dispatch(side_slice.actions.reset());
