@@ -6,7 +6,7 @@ import {mPart} from './mPart';
 export const mMatchSignature='mMatch';
 
 export interface mMatch extends baseModel {
-  type_signature: typeof mMatchSignature,
+  type_signature: typeof mMatchSignature;
   topic?: string;
   date?: Date|string;
   side?: mSide['side'];

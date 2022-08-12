@@ -4,7 +4,7 @@ import {baseModel} from './baseModel';
 export const mSideSignature='mSide';
 
 export interface mSide extends baseModel {
-  type_signature: typeof mSideSignature,
+  type_signature: typeof mSideSignature;
   side?: string; // TODO: enumにする
   parent: baseModel['id'];
   contents?: Array<baseModel['id']>; // mPartのID

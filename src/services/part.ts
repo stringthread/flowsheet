@@ -17,7 +17,7 @@ export const generate_part=(
     parent,
   };
   const child_point=generate_point(generated.id); // NOTE: 仮実装
-  generated.contents=[child_point.id], // NOTE: 仮実装
+  generated.contents=[child_point.id]; // NOTE: 仮実装
   store.dispatch(part_slice.actions.add(generated));
   return generated;
 }

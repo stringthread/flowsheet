@@ -4,7 +4,7 @@ import {baseModel} from './baseModel';
 export const mPartSignature='mPart';
 
 export interface mPart extends baseModel {
-  type_signature: typeof mPartSignature,
+  type_signature: typeof mPartSignature;
   parent: baseModel['id'];
   name?: string|number;
   contents?: Array<baseModel['id']>; // mPointのID

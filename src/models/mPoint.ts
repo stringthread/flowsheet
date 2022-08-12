@@ -13,7 +13,7 @@ export type PointChild = Claim|mEvidence|mPoint;
 export const mPointSignature='mPoint';
 
 export interface mPoint extends baseModel {
-  type_signature: typeof mPointSignature,
+  type_signature: typeof mPointSignature;
   parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;

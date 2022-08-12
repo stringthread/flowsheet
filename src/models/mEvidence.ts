@@ -4,7 +4,7 @@ import {baseModel} from './baseModel';
 export const mEvidenceSignature='mEvidence';
 
 export interface mEvidence extends baseModel {
-  type_signature: typeof mEvidenceSignature,
+  type_signature: typeof mEvidenceSignature;
   parent: baseModel['id'];
   about_author?: string;
   author?: string;
