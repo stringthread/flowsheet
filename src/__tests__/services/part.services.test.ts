@@ -1,7 +1,8 @@
 import {store} from 'stores';
 import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
-import {mPart,generate_part,part_add_child,mPartSymbol} from 'models/mPart';
+import {mPart,mPartSymbol} from 'models/mPart';
+import {generate_part,part_add_child} from 'services/part';
 
 beforeEach(()=>{
   store.dispatch(part_slice.actions.reset());
