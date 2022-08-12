@@ -28,7 +28,7 @@ test('Point: contentsがないときナンバリングだけ描画',()=>{
   render(<Point pointID="point_0" setSelected={(_)=>{}} />);
   const pointElement=screen.getByTestId('point')
   expect(pointElement).toBeInTheDocument();
-  expect(pointElement.childElementCount).toBe(1);
+  expect(pointElement.children[1].childElementCount).toBe(0);
 });
 
 test('Point: contentsがevidenceのみのとき',()=>{
@@ -94,5 +94,5 @@ test('Point: contentsが複数のとき',()=>{
   };
   useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValueOnce(returned_2);
   render(<Point pointID="point_0" setSelected={(_)=>{}} />);
-  expect(screen.getAllByTestId('point')[0].children).toHaveLength(3);
+  expect(screen.getAllByTestId('point')[0].children[1].children).toHaveLength(2);
 });
