@@ -1,8 +1,8 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {side_slice} from 'stores/slices/side';
-import {generate_side_id} from 'stores/slices/id_generators';
-import {mSide} from 'models/mSide';
+import {generate_side_id} from 'stores/ids/id_generators';
+import {mSide,mSideSignature} from 'models/mSide';
 
 const initial_side_state: EntityStateWithLastID<mSide>={
   ids: [],
@@ -12,6 +12,7 @@ const initial_side_state: EntityStateWithLastID<mSide>={
 
 test('side/removeAll reducerの確認',()=>{
   const test_side: mSide={
+    type_signature: mSideSignature,
     id: 'side_2',
     parent: 'match_0',
     side: 'Aff'
@@ -26,6 +27,7 @@ test('side/add reducerの確認',()=>{
   store.dispatch(side_slice.actions.reset());
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: 'Aff'
@@ -46,11 +48,13 @@ test('side/upsertOne reducerの確認',()=>{
   store.dispatch(side_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_side_state);
   const test_side_before: mSide={
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: 'aff'
   };
   const test_side_after: mSide={
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: 'neg'
@@ -65,11 +69,13 @@ test('side/removeOne reducerの確認',()=>{
   store.dispatch(side_slice.actions.reset());
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
+    type_signature: mSideSignature,
     id: 'side_1',
     parent: 'match_0',
     side: 'Aff'
   };
   const test_side_2: mSide={
+    type_signature: mSideSignature,
     id: 'side_2',
     parent: 'match_0',
     side: 'Aff'
@@ -92,6 +98,7 @@ test('side/addChild reducerの確認',()=>{
   store.dispatch(side_slice.actions.reset());
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
+    type_signature: mSideSignature,
     id: 'side_3',
     parent: 'match_0',
     side: 'Aff',
@@ -108,6 +115,7 @@ test('side/addChild reducer: contentsが空のとき',()=>{
   store.dispatch(side_slice.actions.reset());
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
+    type_signature: mSideSignature,
     id: 'side_4',
     parent: 'match_0',
     side: 'Aff'
@@ -123,6 +131,7 @@ test('side/setParent reducerの確認',()=>{
   store.dispatch(side_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_side_state);
   const test_side_before: mSide={
+    type_signature: mSideSignature,
     id: 'side_0',
     parent: 'match_0',
     side: 'aff'

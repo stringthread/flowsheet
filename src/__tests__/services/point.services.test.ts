@@ -1,7 +1,8 @@
 import {store} from 'stores';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mPoint,generate_point,point_add_child} from 'models/mPoint';
+import {mPoint,mPointSignature} from 'models/mPoint';
+import {generate_point,point_add_child} from 'services/point';
 
 beforeEach(()=>{
   store.dispatch(point_slice.actions.reset());
@@ -10,6 +11,7 @@ beforeEach(()=>{
 
 test('generate_point: 引数あり',()=>{
   const expected_result:mPoint = {
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     numbering: 1,
@@ -20,6 +22,7 @@ test('generate_point: 引数あり',()=>{
 
 test('generate_point: 引数なし',()=>{
   const expected_result:mPoint = {
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
   };
@@ -29,6 +32,7 @@ test('generate_point: 引数なし',()=>{
 
 test('point_add_child: Evidence',()=>{
   const expected_result:mPoint = {
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     contents: [['evi_0',false]],
@@ -42,6 +46,7 @@ test('point_add_child: Evidence',()=>{
 
 test('point_add_child: Point',()=>{
   const expected_result:mPoint = {
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     contents: [['point_1',true]],

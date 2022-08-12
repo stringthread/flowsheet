@@ -1,8 +1,8 @@
 import {store} from 'stores/index';
 import {EntityStateWithLastID} from 'stores/slices/EntityStateWithLastID';
 import {point_slice} from 'stores/slices/point';
-import {generate_point_id} from 'stores/slices/id_generators';
-import {mPoint} from 'models/mPoint';
+import {generate_point_id} from 'stores/ids/id_generators';
+import {mPoint,mPointSignature} from 'models/mPoint';
 
 const initial_point_state: EntityStateWithLastID<mPoint>={
   ids: [],
@@ -12,6 +12,7 @@ const initial_point_state: EntityStateWithLastID<mPoint>={
 
 test('point/removeAll reducerの確認',()=>{
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_2',
     parent: 'part_0',
     numbering: 1
@@ -26,6 +27,7 @@ test('point/add reducerの確認',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     numbering: 1
@@ -46,11 +48,13 @@ test('point/upsertOne reducerの確認',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_point_state);
   const test_point_before: mPoint={
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     numbering: 0,
   };
   const test_point_after: mPoint={
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     numbering: 1,
@@ -65,11 +69,13 @@ test('point/removeOne reducerの確認',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_1',
     parent: 'part_0',
     numbering: 1
   };
   const test_point_2: mPoint={
+    type_signature: mPointSignature,
     id: 'point_2',
     parent: 'part_0',
     numbering: 2
@@ -92,6 +98,7 @@ test('point/addChild reducerの確認',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_3',
     parent: 'part_0',
     contents: [['evi_0',false]]
@@ -107,6 +114,7 @@ test('point/addChild reducer: contentsが空のとき',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_4',
     parent: 'part_0',
   };
@@ -121,6 +129,7 @@ test('point/addChild reducer: contentsがstringのとき',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_5',
     parent: 'part_0',
     contents: 'a string content'
@@ -136,6 +145,7 @@ test('point/reorderChild reducerの確認',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().point).toEqual(initial_point_state);
   const test_point: mPoint={
+    type_signature: mPointSignature,
     id: 'point_6',
     parent: 'part_0',
     contents: [['evi_0',false],['point_1',true],['evi_1',false]]
@@ -154,6 +164,7 @@ test('point/setParent reducerの確認',()=>{
   store.dispatch(point_slice.actions.reset());
   expect(store.getState().match).toEqual(initial_point_state);
   const test_point_before: mPoint={
+    type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
     numbering: 0,

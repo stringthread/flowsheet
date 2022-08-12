@@ -8,4 +8,10 @@ module.exports = {
     ],
     plugins: ["@emotion/babel-plugin"],
   },
+  jest: {
+    configure: {
+      silent: false,
+      verbose: false,
+    }
+  }
 };

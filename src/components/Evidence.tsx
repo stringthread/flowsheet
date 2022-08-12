@@ -108,7 +108,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
-    props.setSelected([props.eviID,'evidence']);
+    props.setSelected(props.eviID);
   },[props.eviID,props.setSelected]);
   if(evidence===undefined) return null;
   return (
@@ -116,11 +116,11 @@ export const Evidence: React.VFC<Props> = (props)=>{
       <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
       <StretchTextArea
         className="evidenceContent"
-        value={evidence.content}
+        value={evidence.contents}
         onBlur={(e)=>{
           dispatch(evidence_slice.actions.upsertOne({
             id: props.eviID,
-            content: e.currentTarget.value,
+            contents: e.currentTarget.value,
           }));
         }}
         css={styleEvidenceContent}

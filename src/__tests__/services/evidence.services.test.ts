@@ -1,6 +1,7 @@
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mEvidence,generate_evidence} from 'models/mEvidence';
+import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
+import {generate_evidence} from 'services/evidence';
 
 beforeEach(()=>{
   store.dispatch(evidence_slice.actions.reset());
@@ -8,6 +9,7 @@ beforeEach(()=>{
 
 test('generate_evidence: 引数あり',()=>{
   const expected_result:mEvidence = {
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0',
     author: 'test_author'
@@ -18,6 +20,7 @@ test('generate_evidence: 引数あり',()=>{
 
 test('generate_evidence: 引数なし',()=>{
   const expected_result:mEvidence = {
+    type_signature: mEvidenceSignature,
     id: 'evi_0',
     parent: 'point_0'
   };

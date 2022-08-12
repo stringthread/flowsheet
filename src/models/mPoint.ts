@@ -1,10 +1,6 @@
-import {mPart} from './mPart'
-import {mEvidence, generate_evidence} from './mEvidence'
-import {isObject, multipleTypeof} from 'util/typeGuardUtils'
-import {store} from 'stores';
-import {point_slice} from 'stores/slices/point';
-import {evidence_slice} from 'stores/slices/evidence';
-import {generate_point_id} from 'stores/slices/id_generators';
+import {baseModel} from './baseModel';
+import {mEvidence} from './mEvidence';
+import {isObject} from 'util/typeGuardUtils';
 
 export type Claim = string;
 
@@ -12,41 +8,18 @@ export const is_Claim=(value:unknown): value is Claim=>{
   return typeof value=='string';
 }
 
-type PointParent = mPart|mPoint;
 export type PointChild = Claim|mEvidence|mPoint;
 
-export interface mPoint {
-  id: string;
-  parent: PointParent['id'];
+export const mPointSignature='mPoint';
+
+export interface mPoint extends baseModel {
+  type_signature: typeof mPointSignature,
+  parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;
-  contents?: Array<[string,boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
+  contents?: Array<[baseModel['id'],boolean]>|Claim; // [PointChildのID,isPoint]かClaim単体
 }
 
 export const is_mPoint = (value: unknown): value is mPoint => {
-  return isObject<mPoint>(value) &&
-    multipleTypeof(value.id, ['string']) &&
-    multipleTypeof(value.numbering, ['undefined','number','string']) &&
-    multipleTypeof(value.children_numbering, ['undefined','number','string']) &&
-    ((value.contents instanceof Array || typeof value.contents === 'string')??true);
+  return isObject<mPoint>(value) && value.type_signature==mPointSignature;
 }
-
-export const generate_point=(
-  parent: PointParent['id'],
-  from?:Omit<mPoint,'id'|'parent'|'contents'|'_shorthands'>
-):mPoint=>{
-  const generated: mPoint= {
-    ...from,
-    id: generate_point_id(),
-    parent
-  };
-  store.dispatch(point_slice.actions.add(generated));
-  return generated;
-}
-
-export const point_add_child=(parent_id:mPoint['id'], is_point: boolean)=>{
-  const child=is_point?generate_point(parent_id):generate_evidence(parent_id);
-  store.dispatch((is_point?point_slice:evidence_slice).actions.add(child));
-  store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
-  return child;
-};
