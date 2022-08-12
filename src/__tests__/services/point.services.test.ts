@@ -1,7 +1,8 @@
 import {store} from 'stores';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mPoint,generate_point,point_add_child,mPointSymbol} from 'models/mPoint';
+import {mPoint,mPointSymbol} from 'models/mPoint';
+import {generate_point,point_add_child} from 'services/point';
 
 beforeEach(()=>{
   store.dispatch(point_slice.actions.reset());
