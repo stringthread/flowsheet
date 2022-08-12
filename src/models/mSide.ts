@@ -5,7 +5,7 @@ import {generate_side_id} from 'stores/ids/id_generators';
 import {baseModel} from './baseModel';
 import {mPart,generate_part} from './mPart';
 
-const mSideSymbol=Symbol('mSide');
+export const mSideSymbol=Symbol('mSide');
 
 export interface mSide extends baseModel {
   typesigniture: typeof mSideSymbol,

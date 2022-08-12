@@ -4,7 +4,7 @@ import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/ids/id_generators';
 import {baseModel} from './baseModel';
 
-const mEvidenceSymbol=Symbol('mEvidence');
+export const mEvidenceSymbol=Symbol('mEvidence');
 
 export interface mEvidence extends baseModel {
   typesigniture: typeof mEvidenceSymbol,

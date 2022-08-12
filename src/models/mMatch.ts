@@ -6,7 +6,7 @@ import {baseModel} from './baseModel';
 import {mSide,generate_side} from './mSide';
 import {mPart} from './mPart';
 
-const mMatchSymbol=Symbol('mMatch');
+export const mMatchSymbol=Symbol('mMatch');
 
 export interface mMatch extends baseModel {
   typesigniture: typeof mMatchSymbol,

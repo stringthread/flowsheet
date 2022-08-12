@@ -14,7 +14,7 @@ export const is_Claim=(value:unknown): value is Claim=>{
 
 export type PointChild = Claim|mEvidence|mPoint;
 
-const mPointSymbol=Symbol('mPoint');
+export const mPointSymbol=Symbol('mPoint');
 
 export interface mPoint extends baseModel {
   typesigniture: typeof mPointSymbol,

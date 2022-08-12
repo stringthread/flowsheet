@@ -6,7 +6,7 @@ import {generate_part_id} from 'stores/ids/id_generators';
 import {baseModel} from './baseModel';
 import {generate_point} from 'models/mPoint';
 
-const mPartSymbol=Symbol('mPart');
+export const mPartSymbol=Symbol('mPart');
 
 export interface mPart extends baseModel {
   typesigniture: typeof mPartSymbol,
