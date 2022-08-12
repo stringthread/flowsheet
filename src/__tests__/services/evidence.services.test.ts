@@ -1,6 +1,7 @@
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mEvidence,generate_evidence,mEvidenceSymbol} from 'models/mEvidence';
+import {mEvidence, mEvidenceSymbol} from 'models/mEvidence';
+import {generate_evidence} from 'services/evidence';
 
 beforeEach(()=>{
   store.dispatch(evidence_slice.actions.reset());
