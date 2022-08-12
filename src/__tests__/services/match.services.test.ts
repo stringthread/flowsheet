@@ -2,8 +2,9 @@ import {store} from 'stores';
 import {match_slice} from 'stores/slices/match';
 import {side_slice} from 'stores/slices/side';
 import {part_slice} from 'stores/slices/part';
-import {mMatch,generate_match,mMatchSymbol} from 'models/mMatch';
+import {mMatch,mMatchSymbol} from 'models/mMatch';
 import {mPart} from 'models/mPart';
+import {generate_match} from 'services/match';
 
 beforeEach(()=>{
   store.dispatch(match_slice.actions.reset());
