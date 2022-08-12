@@ -21,7 +21,9 @@ export const generate_point=(
   return generated;
 }
 
-export const point_add_child=(parent_id:mPoint['id'], is_point: boolean): mPoint|mEvidence=>{
+export function point_add_child(parent_id:mPoint['id'], is_point: true): mPoint;
+export function point_add_child(parent_id:mPoint['id'], is_point: false): mEvidence;
+export function point_add_child(parent_id:mPoint['id'], is_point: boolean): mPoint|mEvidence{
   let child: mPoint|mEvidence;
   if(is_point) {
     child=generate_point(parent_id);
@@ -32,4 +34,4 @@ export const point_add_child=(parent_id:mPoint['id'], is_point: boolean): mPoint
   }
   store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
   return child;
-};
+}
