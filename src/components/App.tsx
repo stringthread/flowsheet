@@ -3,9 +3,10 @@ import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
 import {Match} from './Match';
-import {generate_match} from 'models/mMatch';
-import {part_add_child} from 'models/mPart';
-import {mPoint,point_add_child} from 'models/mPoint';
+import {mPoint} from 'models/mPoint';
+import {generate_match} from 'services/match';
+import {part_add_child} from 'services/part';
+import {point_add_child} from 'services/point';
 
 export type typeSelected=[string|undefined,string|undefined];
 
