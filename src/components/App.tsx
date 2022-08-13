@@ -6,7 +6,7 @@ import {id_is_mPart, id_is_mPoint} from 'stores/ids';
 import {Match} from './Match';
 import {mPoint} from 'models/mPoint';
 import {generate_match} from 'services/match';
-import {point_add_child, append_claim, append_point, append_point_to_part} from 'services/point';
+import {point_add_child, append_claim, append_sibling_point, append_point_to_part} from 'services/point';
 
 import {useHotkeys} from 'react-hotkeys-hook';
 
@@ -30,7 +30,7 @@ function App() {
   const add_point=(e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
     if(selected==undefined) return;
-    append_point(selected);
+    append_sibling_point(selected);
   };
   const add_point_to_part=(e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
