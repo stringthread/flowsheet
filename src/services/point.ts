@@ -6,13 +6,12 @@ import {generate_evidence} from './evidence'
 import { generate_claim } from './claim';
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim} from './id';
+import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
 import {generate_point_id} from 'stores/ids/id_generators';
-declare function get_parent_id (id: baseModel['id']): baseModel['id']; // TODO: 別の部分で実装したら削除
-declare function next_content_id (id: baseModel['id']): baseModel['id']|null; // TODO: 別の部分で実装したら削除
+import { mMatchSignature } from 'models/mMatch';
 declare function reorder_child (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void; // TODO: 別の部分で実装したら削除
 
 export const generate_point=(
@@ -62,7 +61,10 @@ export const append_claim=(parent_id: baseModel['id']): mClaim|undefined=>{
   return switch_for_append(
     parent_id,
     (id)=>append_claim(part_add_child(id).id),
-    (id)=>append_claim(get_parent_id(id)),
+    (id)=>{
+      const parent_id=get_parent_id(id);
+      if(parent_id!==undefined&&parent_id!==null) return append_claim(parent_id);
+    },
     (id)=>point_add_child(id,mClaimSignature)
   );
 };
@@ -70,18 +72,29 @@ export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined
   return switch_for_append(
     parent_id,
     (id)=>part_add_child(id),
-    (id)=>append_sibling_point(get_parent_id(id)),
-    (id)=>point_add_child(get_parent_id(id),mPointSignature)
+    (id)=>{
+      const parent_id=get_parent_id(id);
+      if(parent_id===undefined||parent_id===null) return;
+      return append_sibling_point(parent_id);
+    },
+    (id)=>{
+      const parent_id=get_parent_id(id);
+      if(parent_id===undefined||parent_id===null) return;
+      const child=point_add_child(parent_id, mPointSignature);
+      const reorder_before=next_content_id(id);
+      if(reorder_before===undefined) return;
+      reorder_child(parent_id, child.id, reorder_before);
+      return child;
+    }
   );
 };
 export const append_point_to_part=(parent_id: baseModel['id']): mPoint|undefined=>{
-  const point_store=store.getState().point
-  let _parent_id: baseModel['id']|undefined=parent_id;
-  while(_parent_id!==undefined && !id_is_mPart(_parent_id)){
-    _parent_id=point_store.entities[_parent_id]?.parent;
+  let _parent_id: baseModel['id']|null|undefined=parent_id;
+  while(_parent_id && !id_is_mPart(_parent_id)){
+    _parent_id=get_parent_id(_parent_id);
   }
   let child:mPoint|undefined=undefined;
-  if(_parent_id!==undefined && id_is_mPart(_parent_id)) child=part_add_child(_parent_id);
+  if(_parent_id && id_is_mPart(_parent_id)) child=part_add_child(_parent_id);
   return child;
 };
 export const append_point_child=(parent_id: baseModel['id']): mPoint|undefined=>{
@@ -90,9 +103,12 @@ export const append_point_child=(parent_id: baseModel['id']): mPoint|undefined=>
     (id)=>part_add_child(id),
     (id)=>{
       const parent_id=get_parent_id(id);
+      if(parent_id===undefined||parent_id===null) return;
       const child=append_point_child(parent_id);
       if(child===undefined) return;
-      reorder_child(parent_id, child.id, next_content_id(id));
+      const reorder_before=next_content_id(id);
+      if(reorder_before===undefined) return;
+      reorder_child(parent_id, child.id, reorder_before);
       return child;
     },
     (id)=>point_add_child(id,mPointSignature)
