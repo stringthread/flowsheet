@@ -1,11 +1,13 @@
 import {store} from 'stores';
+import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import {mPoint,mPointSignature} from 'models/mPoint';
-import {generate_point,point_add_child,append_claim,append_point} from 'services/point';
-import {generate_part} from 'services/part';
+import {generate_point,point_add_child,append_claim,append_point,append_point_to_part} from 'services/point';
+import {generate_part, part_add_child} from 'services/part';
 
 beforeEach(()=>{
+  store.dispatch(part_slice.actions.reset());
   store.dispatch(point_slice.actions.reset());
   store.dispatch(evidence_slice.actions.reset());
 });
@@ -105,4 +107,34 @@ test('append_point: Part',()=>{
   expect(result_in_redux).toBeTruthy();
   if(result_in_redux===undefined) return;
   expect(result_in_redux.contents).not.toBe('');
+});
+
+test('append_point_to_part: Point', ()=>{
+  const part=generate_part('side_0');
+  const point1=part_add_child(part.id);
+  const point2=point_add_child(point1.id, true);
+  const result=append_point_to_part(point2.id);
+  expect(result).not.toBeUndefined();
+  if(result===undefined) return;
+  const result_in_redux=store.getState().point.entities[result.id];
+  expect(result_in_redux).not.toBeUndefined();
+  if(result_in_redux===undefined) return;
+  expect(result_in_redux.contents).not.toBe('');
+  const part_in_redux=store.getState().part.entities[part.id];
+  if(part_in_redux===undefined) return;
+  expect(part_in_redux.contents).toContain(result.id);
+});
+
+test('append_point_to_part: Part', ()=>{
+  const part=generate_part('side_0');
+  const result=append_point_to_part(part.id);
+  expect(result).not.toBeUndefined();
+  if(result===undefined) return;
+  const result_in_redux=store.getState().point.entities[result.id];
+  expect(result_in_redux).not.toBeUndefined();
+  if(result_in_redux===undefined) return;
+  expect(result_in_redux.contents).not.toBe('');
+  const part_in_redux=store.getState().part.entities[part.id];
+  if(part_in_redux===undefined) return;
+  expect(part_in_redux.contents).toContain(result.id);
 });
