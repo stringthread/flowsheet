@@ -59,7 +59,7 @@ export const append_point=(parent_id: baseModel['id']): mPoint|undefined=>{
 export const append_point_to_part=(parent_id: baseModel['id']): mPoint|undefined=>{
   const point_store=store.getState().point
   let _parent_id: baseModel['id']|undefined=parent_id;
-  while(_parent_id!==undefined && id_is_mPoint(_parent_id)){
+  while(_parent_id!==undefined && !id_is_mPart(_parent_id)){
     _parent_id=point_store.entities[_parent_id]?.parent;
   }
   let child:mPoint|undefined=undefined;
