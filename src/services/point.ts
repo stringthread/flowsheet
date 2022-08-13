@@ -4,7 +4,7 @@ import {mPoint,mPointSignature} from 'models/mPoint';
 import {generate_evidence} from './evidence'
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint} from 'stores/ids';
+import {id_is_mEvidence, id_is_mPart,id_is_mPoint} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_point_id} from 'stores/ids/id_generators';

@@ -2,7 +2,7 @@ import React,{useState,useCallback,useLayoutEffect} from 'react';
 import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
-import {id_is_mPart, id_is_mPoint} from 'stores/ids';
+import {id_is_mPart, id_is_mPoint} from 'services/id';
 import {Match} from './Match';
 import {mPoint} from 'models/mPoint';
 import {generate_match} from 'services/match';

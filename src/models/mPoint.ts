@@ -23,3 +23,7 @@ export interface mPoint extends baseModel {
 export const is_mPoint = (value: unknown): value is mPoint => {
   return isObject<mPoint>(value) && value.type_signature==mPointSignature;
 }
+
+export const is_mClaim = (value: unknown): boolean => {
+  return is_mPoint(value) && (typeof value.contents==='string');
+}
