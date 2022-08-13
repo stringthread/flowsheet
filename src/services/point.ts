@@ -12,7 +12,6 @@ import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
 import {generate_point_id} from 'stores/ids/id_generators';
 import { mMatchSignature } from 'models/mMatch';
-declare function reorder_child (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void; // TODO: 別の部分で実装したら削除
 
 export const generate_point=(
   parent: baseModel['id'],
@@ -46,6 +45,10 @@ export function point_add_child(parent_id:mPoint['id'], type: baseModel['type_si
   store.dispatch(point_slice.actions.addChild([parent_id,child.id]));
   return child;
 }
+
+export const reorder_child = (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void =>{
+  store.dispatch(point_slice.actions.reorderChild([parent,target,before]));
+};
 
 const switch_for_append=<T>(
   id: baseModel['id'],
