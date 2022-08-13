@@ -6,7 +6,7 @@ import {id_is_mPart, id_is_mPoint} from 'stores/ids';
 import {Match} from './Match';
 import {mPoint} from 'models/mPoint';
 import {generate_match} from 'services/match';
-import {point_add_child, append_claim, append_point} from 'services/point';
+import {point_add_child, append_claim, append_point, append_point_to_part} from 'services/point';
 
 import hotkeys from 'hotkeys-js';
 
@@ -32,8 +32,7 @@ function App() {
   };
   const add_point_to_part=(_?:Event|React.SyntheticEvent)=>{
     if(selected==undefined) return;
-    if(id_is_mPart(selected)) part_add_child(selected);
-    else if(id_is_mPoint(selected)) point_add_child(selected,true); // TODO: 親のPartを見つけてpart_add_child()にする
+    append_point_to_part(selected);
   };
   const draw_line=(_?:Event|React.SyntheticEvent)=>{}; // TODO: 宣言のみ。実装は後日
   const add_evidence=(_?:Event|React.SyntheticEvent)=>{
@@ -82,6 +81,7 @@ function App() {
         <Match matchID={matchID} setSelected={setSelected} />
         <button onClick={add_claim}>Add Claim</button>
         <button onClick={add_point}>Add Point</button>
+        <button onClick={add_point_to_part}>Add Point to Part</button>
         <button onClick={add_evidence}>Add Evidence</button>
       </div>
     </Provider>
