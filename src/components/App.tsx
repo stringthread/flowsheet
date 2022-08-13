@@ -22,20 +22,28 @@ function App() {
     }).id); // TODO: sideの構成をハードコーディングしているため、設定用Repositoryなどに切り出す
   },[]);
   const [selected, setSelected]=useState<typeSelected>(undefined);
-  const add_claim=(_?:Event|React.SyntheticEvent)=>{
+  const add_claim=(e?:Event|React.SyntheticEvent)=>{
+    e?.preventDefault();
     if(selected==undefined) return;
     append_claim(selected);
   };
-  const add_point=(_?:Event|React.SyntheticEvent)=>{
+  const add_point=(e?:Event|React.SyntheticEvent)=>{
+    e?.preventDefault();
     if(selected==undefined) return;
     append_point(selected);
   };
-  const add_point_to_part=(_?:Event|React.SyntheticEvent)=>{
+  const add_point_to_part=(e?:Event|React.SyntheticEvent)=>{
+    e?.preventDefault();
     if(selected==undefined) return;
     append_point_to_part(selected);
   };
-  const draw_line=(_?:Event|React.SyntheticEvent)=>{}; // TODO: 宣言のみ。実装は後日
-  const add_evidence=(_?:Event|React.SyntheticEvent)=>{
+  const draw_line=(e?:Event|React.SyntheticEvent)=>{
+    e?.preventDefault();
+    if(selected==undefined) return;
+    // TODO: 実装は後日
+  };
+  const add_evidence=(e?:Event|React.SyntheticEvent)=>{
+    e?.preventDefault();
     if(selected==undefined) return;
     if(id_is_mPoint(selected)) point_add_child(selected,false);
   };
