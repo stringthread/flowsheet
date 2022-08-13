@@ -38,6 +38,7 @@ export const Claim: React.VFC<Props> = (props)=>{
           contents: e.currentTarget.value,
         }));
       }}
+      onClick={onClick}
       css={stylePointClaim}
     />
   );

@@ -2,10 +2,12 @@ import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mPoint, is_Claim} from 'models/mPoint';
+import {mPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
+import {Claim} from './Claim';
 import {typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
+import {id_is_mEvidence, id_is_mClaim, id_is_mPoint} from 'services/id';
 import {StretchTextInput,StretchTextArea} from './TextInput';
 
 type Props = {
@@ -27,27 +29,15 @@ const stylePointClaim=css`
 `;
 
 const PointChild: React.VFC<ChildProps> = (props)=>{
-  const dispatch=useDispatch();
-  if(is_Claim(props.contents)){
-    return (
-      <StretchTextArea
-        className="pointClaim"
-        placeholder=" "
-        value={props.contents}
-        onBlur={(e)=>{
-          dispatch(point_slice.actions.upsertOne({
-            id: props.parentID,
-            contents: e.currentTarget.value,
-          }));
-        }}
-        css={stylePointClaim}
-      />
-    );
-  }
   return (
     <>
     {props.contents?.map(
-      contents=>contents[1]?<Point pointID={contents[0]} setSelected={props.setSelected} />:<Evidence eviID={contents[0]} setSelected={props.setSelected} />
+      id=>{
+        if(id_is_mEvidence(id)) return <Evidence eviID={id} setSelected={props.setSelected} />;
+        if(id_is_mClaim(id)) return <Claim claimID={id} setSelected={props.setSelected} />;
+        if(id_is_mPoint(id)) return <Point pointID={id} setSelected={props.setSelected} />;
+        return null;
+      }
     )}
     </>
   );
@@ -88,8 +78,7 @@ export const Point: React.VFC<Props> = (props)=>{
   if(point===undefined) return null;
   return (
     <div className="point" data-testid="point" onClick={onClick} css={stylePoint}>
-      {is_Claim(point.contents)?null:
-        <StretchTextInput
+      {<StretchTextInput
           className="pointNumbering"
           data-testid="pointNumbering"
           value={point.numbering?.toString()}

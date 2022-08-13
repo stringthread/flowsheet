@@ -1,14 +1,16 @@
 import {baseModel} from 'models/baseModel';
-import {mEvidence} from 'models/mEvidence';
+import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
+import { mClaim, mClaimSignature } from 'models/mClaim';
 import {mPoint,mPointSignature} from 'models/mPoint';
 import {generate_evidence} from './evidence'
+import { generate_claim } from './claim';
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint} from './id';
+import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
+import { claim_slice } from 'stores/slices/claim';
 import {generate_point_id} from 'stores/ids/id_generators';
-declare function id_is_mClaim (id:baseModel['id']):boolean; // TODO: id_is_mClaimを実装したら削除
 declare function get_parent_id (id: baseModel['id']): baseModel['id']; // TODO: 別の部分で実装したら削除
 declare function next_content_id (id: baseModel['id']): baseModel['id']|null; // TODO: 別の部分で実装したら削除
 declare function reorder_child (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void; // TODO: 別の部分で実装したら削除
@@ -27,18 +29,22 @@ export const generate_point=(
   return generated;
 }
 
-export function point_add_child(parent_id:mPoint['id'], is_point: true): mPoint;
-export function point_add_child(parent_id:mPoint['id'], is_point: false): mEvidence;
-export function point_add_child(parent_id:mPoint['id'], is_point: boolean): mPoint|mEvidence{
-  let child: mPoint|mEvidence;
-  if(is_point) {
+export function point_add_child(parent_id:mPoint['id'], type: mPoint['type_signature']): mPoint;
+export function point_add_child(parent_id:mPoint['id'], type: mClaim['type_signature']): mClaim;
+export function point_add_child(parent_id:mPoint['id'], type: mEvidence['type_signature']): mEvidence;
+export function point_add_child(parent_id:mPoint['id'], type: baseModel['type_signature']): mPoint|mEvidence|mClaim{
+  let child: mPoint|mEvidence|mClaim;
+  if(type===mPointSignature) {
     child=generate_point(parent_id);
     store.dispatch(point_slice.actions.add(child));
-  } else {
+  } else if(type===mEvidenceSignature) {
     child=generate_evidence(parent_id);
     store.dispatch(evidence_slice.actions.add(child));
+  } else {
+    child=generate_claim(parent_id);
+    store.dispatch(claim_slice.actions.add(child));
   }
-  store.dispatch(point_slice.actions.addChild([parent_id,child.id,is_point]));
+  store.dispatch(point_slice.actions.addChild([parent_id,child.id]));
   return child;
 }
 
@@ -52,27 +58,20 @@ const switch_for_append=<T>(
   if(id_is_mEvidence(id) || id_is_mClaim(id)) return claim_evi(id);
   if(id_is_mPoint(id)) return point(id);
 };
-export const append_claim=(parent_id: baseModel['id']): mPoint|undefined=>{
-  const _child=switch_for_append(
+export const append_claim=(parent_id: baseModel['id']): mClaim|undefined=>{
+  return switch_for_append(
     parent_id,
-    (id)=>part_add_child(id),
+    (id)=>append_claim(part_add_child(id).id),
     (id)=>append_claim(get_parent_id(id)),
-    (id)=>point_add_child(id,true)
+    (id)=>point_add_child(id,mClaimSignature)
   );
-  if(_child===undefined) return undefined;
-  const child={
-    ..._child,
-    contents: '', // string型にすればClaimとして認識される
-  };
-  store.dispatch(point_slice.actions.upsertOne(child));
-  return child;
 };
 export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined=>{
   return switch_for_append(
     parent_id,
     (id)=>part_add_child(id),
     (id)=>append_sibling_point(get_parent_id(id)),
-    (id)=>point_add_child(get_parent_id(id),true)
+    (id)=>point_add_child(get_parent_id(id),mPointSignature)
   );
 };
 export const append_point_to_part=(parent_id: baseModel['id']): mPoint|undefined=>{
@@ -96,6 +95,6 @@ export const append_point_child=(parent_id: baseModel['id']): mPoint|undefined=>
       reorder_child(parent_id, child.id, next_content_id(id));
       return child;
     },
-    (id)=>point_add_child(id,true)
+    (id)=>point_add_child(id,mPointSignature)
   )
 }

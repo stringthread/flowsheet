@@ -3,8 +3,10 @@ import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import {mPoint,mPointSignature} from 'models/mPoint';
+import { mEvidenceSignature } from 'models/mEvidence';
 import {generate_point,point_add_child,append_claim,append_point,append_point_to_part} from 'services/point';
 import {generate_part, part_add_child} from 'services/part';
+import { mClaim, mClaimSignature } from 'models/mClaim';
 
 beforeEach(()=>{
   store.dispatch(part_slice.actions.reset());
@@ -38,10 +40,10 @@ test('point_add_child: Evidence',()=>{
     type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
-    contents: [['evi_0',false]],
+    contents: ['evi_0'],
   };
   const generated=generate_point('part_0');
-  const modified=point_add_child(generated.id,false);
+  const modified=point_add_child(generated.id,mEvidenceSignature);
   expect(modified.id).toBe('evi_0');
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
   expect(store.getState().evidence.entities['evi_0']).toBeTruthy();
@@ -52,10 +54,10 @@ test('point_add_child: Point',()=>{
     type_signature: mPointSignature,
     id: 'point_0',
     parent: 'part_0',
-    contents: [['point_1',true]],
+    contents: ['point_1'],
   };
   const generated=generate_point('part_0');
-  const modified=point_add_child(generated.id,true);
+  const modified=point_add_child(generated.id,mPointSignature);
   expect(modified.id).toBe('point_1');
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
   expect(store.getState().point.entities['point_1']).toBeTruthy();
@@ -63,16 +65,16 @@ test('point_add_child: Point',()=>{
 
 test('append_claim: Point',()=>{
   const parent=generate_point('part_0');
-  const expected_result:mPoint = {
-    type_signature: mPointSignature,
-    id: 'point_1',
+  const expected_result:mClaim = {
+    type_signature: mClaimSignature,
+    id: 'claim_0',
     parent: parent.id,
     contents: '',
   };
   const modified=append_claim(parent.id);
   expect(modified).not.toBeUndefined();
   if(modified===undefined) return;
-  expect(modified.id).toBe('point_1');
+  expect(modified.id).toBe(expected_result.id);
   expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
 });
 
@@ -112,7 +114,7 @@ test('append_point: Part',()=>{
 test('append_point_to_part: Point', ()=>{
   const part=generate_part('side_0');
   const point1=part_add_child(part.id);
-  const point2=point_add_child(point1.id, true);
+  const point2=point_add_child(point1.id, mPointSignature);
   const result=append_point_to_part(point2.id);
   expect(result).not.toBeUndefined();
   if(result===undefined) return;
