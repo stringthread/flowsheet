@@ -1,5 +1,6 @@
 import {isObject} from 'util/typeGuardUtils';
 import {baseModel, ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
+import { mPointId } from './mPoint';
 import { mSide } from './mSide';
 
 export const mPartSignature='mPart';
@@ -15,7 +16,7 @@ export interface mPart extends baseModel {
   id: mPartId;
   parent: mSide['id'];
   name?: string|number;
-  contents?: Array<baseModel['id']>; // mPointのID
+  contents?: Array<mPointId>;
 }
 
 export const is_mPart=(value: unknown): value is mPart =>{

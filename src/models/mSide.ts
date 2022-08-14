@@ -1,7 +1,7 @@
 import {isObject} from 'util/typeGuardUtils';
 import {baseModel, ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
 import { mMatch } from './mMatch';
-import { mPart } from './mPart';
+import { mPart, mPartId } from './mPart';
 
 export const mSideSignature='mSide';
 
@@ -16,7 +16,7 @@ export interface mSide extends baseModel {
   id: mSideId;
   side?: string; // TODO: enumにする
   parent: mMatch['id'];
-  contents?: Array<mPart['id']>; // mPartのID
+  contents?: Array<mPartId>;
 }
 
 export const is_mSide=(value: unknown): value is mSide =>{

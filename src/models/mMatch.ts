@@ -1,6 +1,6 @@
 import {isObject} from 'util/typeGuardUtils';
 import {baseModel, ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
-import {mSide} from './mSide';
+import {mSide, mSideId} from './mSide';
 import {mPart} from './mPart';
 
 export const mMatchSignature='mMatch';
@@ -21,7 +21,7 @@ export interface mMatch extends baseModel {
   opponent?: string;
   member?: Map<mPart['name'],string>; // パート名からメンバ名への対応
   note?: string;
-  contents?: Array<baseModel['id']>; // mSideのID
+  contents?: Array<mSideId>;
 }
 
 export const is_mMatch=(value: unknown): value is mMatch =>{
