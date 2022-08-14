@@ -1,4 +1,4 @@
-import {baseModel, ID_TYPE} from './baseModel';
+import {baseModel, ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
 import {mEvidence} from './mEvidence';
 import {mClaim} from './mClaim';
 import {isObject} from 'util/typeGuardUtils';
@@ -8,8 +8,11 @@ export type PointChild = mPoint|mEvidence|mPoint;
 
 export const mPointSignature='mPoint';
 
+export const point_id_prefix='point_';
 declare const mPointIdSymbol: unique symbol;
 export type mPointId = ID_TYPE&{[mPointIdSymbol]: never};
+export const is_mPointId=(id:string): id is mPointId => is_ID_TYPE(id) && id.startsWith(point_id_prefix);
+export const to_mPointId=(seed:string) => to_ID_TYPE(point_id_prefix + seed) as mPointId;
 
 export interface mPoint extends baseModel {
   type_signature: typeof mPointSignature;

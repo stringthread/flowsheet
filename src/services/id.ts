@@ -1,12 +1,11 @@
-import {ID_TYPE, evidence_id_prefix, claim_id_prefix, point_id_prefix, part_id_prefix, side_id_prefix, match_id_prefix} from '../stores/ids/id_generators'
-import { baseModel } from 'models/baseModel';
-import { mMatchSignature } from 'models/mMatch';
-import { mSideSignature } from 'models/mSide';
-import { mPartSignature } from 'models/mPart';
-import { mPointSignature } from 'models/mPoint';
-import { mEvidenceSignature } from 'models/mEvidence';
+import { ID_TYPE } from 'models/baseModel';
+import { mMatchSignature, is_mMatchId } from 'models/mMatch';
+import { mSideSignature, is_mSideId } from 'models/mSide';
+import { mPartSignature, is_mPartId } from 'models/mPart';
+import { mPointSignature, is_mPointId } from 'models/mPoint';
+import { mClaimSignature, is_mClaimId } from 'models/mClaim';
+import { mEvidenceSignature, is_mEvidenceId } from 'models/mEvidence';
 import { store } from 'stores';
-import { mClaimSignature } from 'models/mClaim';
 import { match_slice } from 'stores/slices/match';
 import { side_slice } from 'stores/slices/side';
 import { part_slice } from 'stores/slices/part';
@@ -14,32 +13,13 @@ import { point_slice } from 'stores/slices/point';
 import { claim_slice } from 'stores/slices/claim';
 import { evidence_slice } from 'stores/slices/evidence';
 
-export const id_is_mMatch=(id:ID_TYPE):boolean=>{
-  return id.startsWith(match_id_prefix);
-}
-export const id_is_mSide=(id:ID_TYPE):boolean=>{
-  return id.startsWith(side_id_prefix);
-}
-export const id_is_mPart=(id:ID_TYPE):boolean=>{
-  return id.startsWith(part_id_prefix);
-}
-export const id_is_mPoint=(id:ID_TYPE):boolean=>{
-  return id.startsWith(point_id_prefix);
-}
-export const id_is_mClaim=(id:ID_TYPE):boolean=>{
-  return id.startsWith(claim_id_prefix);
-}
-export const id_is_mEvidence=(id:ID_TYPE):boolean=>{
-  return id.startsWith(evidence_id_prefix);
-}
-
 export const id_to_type=(id:ID_TYPE)=>{
-  if(id_is_mMatch(id)) return mMatchSignature;
-  if(id_is_mSide(id)) return mSideSignature;
-  if(id_is_mPart(id)) return mPartSignature;
-  if(id_is_mPoint(id)) return mPointSignature;
-  if(id_is_mClaim(id)) return mClaimSignature;
-  if(id_is_mEvidence(id)) return mEvidenceSignature;
+  if(is_mMatchId(id)) return mMatchSignature;
+  if(is_mSideId(id)) return mSideSignature;
+  if(is_mPartId(id)) return mPartSignature;
+  if(is_mPointId(id)) return mPointSignature;
+  if(is_mClaimId(id)) return mClaimSignature;
+  if(is_mEvidenceId(id)) return mEvidenceSignature;
 };
 export const type_to_store={
   [mMatchSignature]: ()=>store.getState().match,
