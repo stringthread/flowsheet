@@ -48,6 +48,12 @@ export const id_to_store=(id:ID_TYPE)=>{
   if(type!==undefined) return type_to_store[type];
 }
 
+export const get_from_id=(id:ID_TYPE)=>{
+  const type_store=id_to_store(id);
+  if(type_store===undefined) return;
+  return type_store().entities[id];
+};
+
 // 引数idに対応する要素がなければundefined、idの要素に親がなければnull
 export const get_parent_id=(id:ID_TYPE):ID_TYPE|null|undefined=>{
   const type_signature = id_to_type(id);
