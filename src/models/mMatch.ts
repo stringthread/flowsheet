@@ -1,12 +1,16 @@
 import {isObject} from 'util/typeGuardUtils';
-import {baseModel} from './baseModel';
+import {baseModel, ID_TYPE} from './baseModel';
 import {mSide} from './mSide';
 import {mPart} from './mPart';
 
 export const mMatchSignature='mMatch';
 
+declare const mMatchIdSymbol: unique symbol;
+export type mMatchId = ID_TYPE&{[mMatchIdSymbol]: never};
+
 export interface mMatch extends baseModel {
   type_signature: typeof mMatchSignature;
+  id: mMatchId;
   topic?: string;
   date?: Date|string;
   side?: mSide['side'];

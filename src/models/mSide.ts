@@ -1,13 +1,19 @@
 import {isObject} from 'util/typeGuardUtils';
-import {baseModel} from './baseModel';
+import {baseModel, ID_TYPE} from './baseModel';
+import { mMatch } from './mMatch';
+import { mPart } from './mPart';
 
 export const mSideSignature='mSide';
 
+declare const mSideIdSymbol: unique symbol;
+export type mSideId = ID_TYPE&{[mSideIdSymbol]: never};
+
 export interface mSide extends baseModel {
   type_signature: typeof mSideSignature;
+  id: mSideId;
   side?: string; // TODO: enumにする
-  parent: baseModel['id'];
-  contents?: Array<baseModel['id']>; // mPartのID
+  parent: mMatch['id'];
+  contents?: Array<mPart['id']>; // mPartのID
 }
 
 export const is_mSide=(value: unknown): value is mSide =>{

@@ -1,11 +1,16 @@
 import {isObject, multipleTypeof} from 'util/typeGuardUtils';
-import {baseModel} from './baseModel';
+import {baseModel, ID_TYPE} from './baseModel';
+import { mPoint } from './mPoint';
 
 export const mClaimSignature='mClaim';
 
+declare const mClaimIdSymbol: unique symbol;
+export type mClaimId = ID_TYPE&{[mClaimIdSymbol]: never};
+
 export interface mClaim extends baseModel {
   type_signature: typeof mClaimSignature;
-  parent: baseModel['id'];
+  id: mClaimId;
+  parent: mPoint['id'];
   contents?: string;
 }
 
