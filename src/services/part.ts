@@ -6,11 +6,11 @@ import {baseModel} from 'models/baseModel';
 import {mPart, mPartSignature} from 'models/mPart';
 import {generate_point} from 'services/point';
 import { get_from_id } from './id';
-import { is_mSide } from 'models/mSide';
+import { is_mSide, mSideId } from 'models/mSide';
 import { side_slice } from 'stores/slices/side';
 
 export const generate_part=(
-  parent: baseModel['id'],
+  parent: mSideId,
   from?:Omit<mPart,'type_signature'|'id'|'parent'|'contents'>,
 ):mPart=>{
   const parent_obj=get_from_id(parent);

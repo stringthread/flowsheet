@@ -1,8 +1,9 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {is_mPoint, mPoint,mPointSignature} from 'models/mPoint';
+import {is_mPoint, mPoint,mPointId,mPointSignature, PointChildId} from 'models/mPoint';
 import {reorder_array} from 'util/funcs';
+import { mPartId } from 'models/mPart';
 
 const point_adapter=createEntityAdapter<mPoint>();
 const point_initialState:EntityStateWithLastID<mPoint>=point_adapter.getInitialState({
@@ -22,14 +23,14 @@ export const point_slice=createSlice({
       };
       if(is_mPoint(point)) point_adapter.upsertOne(state,point);
     },
-    removeOne: (state,action:PayloadAction<string>)=>{
+    removeOne: (state,action:PayloadAction<mPointId>)=>{
       point_adapter.removeOne(state,action.payload);
     },
     removeAll: state=>{
       point_adapter.removeAll(state);
     },
     // Payload[a,b]: ID==aの要素にあるcontentsの末尾にbを追加する
-    addChild: (state,action:PayloadAction<[string,string]>)=>{
+    addChild: (state,action:PayloadAction<[mPointId,PointChildId]>)=>{
       const [id, new_part]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined||typeof entity.contents==='string') return;
@@ -37,7 +38,7 @@ export const point_slice=createSlice({
       entity.contents.push(new_part);
     },
     // Payload[a,b,c]->ID===aの要素にあるcontentsに対してreorder_array(b,c)を実行する
-    reorderChild: (state,action:PayloadAction<[string,string,string|null]>)=>{
+    reorderChild: (state,action:PayloadAction<[mPointId,PointChildId,PointChildId|null]>)=>{
       const [id, child_target, before]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;
@@ -46,7 +47,7 @@ export const point_slice=createSlice({
       entity.contents=reorder_array(contents,child_target,before,(e,t)=>e===t);
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[string,string]>)=>{
+    setParent: (state,action:PayloadAction<[mPointId,mPartId]>)=>{
       const [id,parent]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;

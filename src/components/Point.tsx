@@ -2,21 +2,22 @@ import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mPoint} from 'models/mPoint';
+import {is_mPointId, mPoint, mPointId} from 'models/mPoint';
 import {Evidence} from './Evidence'
 import {Claim} from './Claim';
 import {typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
-import {id_is_mEvidence, id_is_mClaim, id_is_mPoint} from 'services/id';
 import {StretchTextInput,StretchTextArea} from './TextInput';
+import { is_mClaimId } from 'models/mClaim';
+import { is_mEvidenceId } from 'models/mEvidence';
 
 type Props = {
-  pointID: string;
+  pointID: mPointId;
   setSelected: (_:typeSelected)=>void;
 }
 
 type ChildProps = {
-  parentID:string;
+  parentID:mPointId;
   contents:mPoint['contents'];
   setSelected: (_:typeSelected)=>void;
 };
@@ -33,9 +34,9 @@ const PointChild: React.VFC<ChildProps> = (props)=>{
     <>
     {props.contents?.map(
       id=>{
-        if(id_is_mEvidence(id)) return <Evidence eviID={id} setSelected={props.setSelected} />;
-        if(id_is_mClaim(id)) return <Claim claimID={id} setSelected={props.setSelected} />;
-        if(id_is_mPoint(id)) return <Point pointID={id} setSelected={props.setSelected} />;
+        if(is_mEvidenceId(id)) return <Evidence eviID={id} setSelected={props.setSelected} />;
+        if(is_mClaimId(id)) return <Claim claimID={id} setSelected={props.setSelected} />;
+        if(is_mPointId(id)) return <Point pointID={id} setSelected={props.setSelected} />;
         return null;
       }
     )}

@@ -1,22 +1,23 @@
 import {baseModel} from 'models/baseModel';
-import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
-import { mClaim, mClaimSignature } from 'models/mClaim';
-import {is_mPoint, mPoint,mPointSignature} from 'models/mPoint';
+import {mEvidence, mEvidenceSignature, is_mEvidenceId, mEvidenceId} from 'models/mEvidence';
+import { mClaim, mClaimSignature, is_mClaimId, mClaimId } from 'models/mClaim';
+import {is_mPoint, mPoint, mPointSignature, is_mPointId, mPointId, PointChildId} from 'models/mPoint';
 import {generate_evidence} from './evidence'
 import { generate_claim } from './claim';
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice} from './id';
+import { get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
 import {generate_point_id} from 'stores/ids/id_generators';
 import { mMatchSignature } from 'models/mMatch';
-import { is_mPart } from 'models/mPart';
+import { is_mPart, is_mPartId, mPartId } from 'models/mPart';
 import { part_slice } from 'stores/slices/part';
+import { assertNever } from 'util/utilityTypes';
 
 export const generate_point=(
-  parent: baseModel['id'],
+  parent: mPartId|mPointId,
   from?:Omit<mPoint,'type_signature'|'id'|'parent'|'contents'|'_shorthands'>
 ):mPoint=>{
   const parent_obj=get_from_id(parent);
@@ -28,7 +29,8 @@ export const generate_point=(
     parent
   };
   store.dispatch(point_slice.actions.add(generated));
-  store.dispatch((id_to_slice(parent) as typeof part_slice|typeof point_slice)?.actions.addChild([parent, generated.id])); // TODO: asで誤魔化している。#31で早急に修正
+  if(is_mPartId(parent)) store.dispatch(id_to_slice(parent).actions.addChild([parent, generated.id]));
+  else if(is_mPointId(parent)) store.dispatch(id_to_slice(parent).actions.addChild([parent, generated.id]));
   return generated;
 }
 
@@ -50,21 +52,23 @@ export function point_add_child(parent_id:mPoint['id'], type: baseModel['type_si
   return child;
 }
 
-export const reorder_child = (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void =>{
+export const reorder_child = (parent: mPointId, target:PointChildId, before:PointChildId|null): void =>{
   store.dispatch(point_slice.actions.reorderChild([parent,target,before]));
 };
 
+type accept_switch_for_append=mPartId|mEvidenceId|mClaimId|mPointId;
 const switch_for_append=<T>(
-  id: baseModel['id'],
-  part: (id:baseModel['id'])=>T,
-  claim_evi: (id:baseModel['id'])=>T,
-  point: (id:baseModel['id'])=>T
+  id: accept_switch_for_append,
+  part: (id:mPartId)=>T,
+  claim_evi: (id:mEvidenceId|mClaimId)=>T,
+  point: (id:mPointId)=>T
 ): T|undefined =>{
-  if(id_is_mPart(id)) return part(id);
-  if(id_is_mEvidence(id) || id_is_mClaim(id)) return claim_evi(id);
-  if(id_is_mPoint(id)) return point(id);
+  if(is_mPartId(id)) return part(id);
+  if(is_mEvidenceId(id) || is_mClaimId(id)) return claim_evi(id);
+  if(is_mPointId(id)) return point(id);
+  assertNever(id);
 };
-export const append_claim=(parent_id: baseModel['id']): mClaim|undefined=>{
+export const append_claim=(parent_id: accept_switch_for_append): mClaim|undefined=>{
   return switch_for_append(
     parent_id,
     (id)=>append_claim(part_add_child(id).id),
@@ -75,7 +79,7 @@ export const append_claim=(parent_id: baseModel['id']): mClaim|undefined=>{
     (id)=>point_add_child(id,mClaimSignature)
   );
 };
-export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined=>{
+export const append_sibling_point=(parent_id: accept_switch_for_append): mPoint|undefined=>{
   return switch_for_append(
     parent_id,
     (id)=>part_add_child(id),
@@ -95,16 +99,16 @@ export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined
     }
   );
 };
-export const append_point_to_part=(parent_id: baseModel['id']): mPoint|undefined=>{
+export const append_point_to_part=(parent_id: accept_switch_for_append): mPoint|undefined=>{
   let _parent_id: baseModel['id']|null|undefined=parent_id;
-  while(_parent_id && !id_is_mPart(_parent_id)){
+  while(_parent_id && !is_mPartId(_parent_id)){
     _parent_id=get_parent_id(_parent_id);
   }
   let child:mPoint|undefined=undefined;
-  if(_parent_id && id_is_mPart(_parent_id)) child=part_add_child(_parent_id);
+  if(_parent_id && is_mPartId(_parent_id)) child=part_add_child(_parent_id);
   return child;
 };
-export const append_point_child=(parent_id: baseModel['id']): mPoint|undefined=>{
+export const append_point_child=(parent_id: accept_switch_for_append): mPoint|undefined=>{
   return switch_for_append(
     parent_id,
     (id)=>part_add_child(id),

@@ -1,14 +1,13 @@
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
 import {generate_evidence_id} from 'stores/ids/id_generators';
-import {baseModel} from 'models/baseModel';
 import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
 import { get_from_id } from './id';
-import { is_mPoint } from 'models/mPoint';
+import { is_mPoint, mPointId } from 'models/mPoint';
 import { point_slice } from 'stores/slices/point';
 
 export const generate_evidence=(
-  parent: baseModel['id'],
+  parent: mPointId,
   from?: Omit<mEvidence,'id'|'content'>
 ):mEvidence=>{
   const parent_obj=get_from_id(parent);

@@ -5,9 +5,10 @@ import {RootState} from 'stores/index';
 import {Part} from './Part';
 import {typeSelected} from './App';
 import {side_selectors} from 'stores/slices/side';
+import { mSideId } from 'models/mSide';
 
 type Props = {
-  sideID: string;
+  sideID: mSideId;
   setSelected: (_:typeSelected)=>void;
 }
 

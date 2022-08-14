@@ -2,7 +2,7 @@ import React,{useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mMatch} from 'models/mMatch';
+import {mMatch, mMatchId} from 'models/mMatch';
 import {typeSelected} from './App';
 import {Side} from './Side';
 import { match_selectors } from 'stores/slices/match';
@@ -34,7 +34,7 @@ const MatchHeader: React.VFC<HeaderProps> = (props)=>(
 );
 
 type Props = {
-  matchID: string;
+  matchID: mMatchId;
   setSelected: (_:typeSelected)=>void;
 }
 

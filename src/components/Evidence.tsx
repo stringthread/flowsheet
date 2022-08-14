@@ -2,13 +2,13 @@ import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mEvidence} from 'models/mEvidence';
+import {mEvidence, mEvidenceId} from 'models/mEvidence';
 import {evidence_selectors,evidence_slice} from 'stores/slices/evidence';
 import {StretchTextInput,StretchTextArea} from './TextInput';
 import {typeSelected} from './App';
 
 type HeaderProps = {
-  parentID: string;
+  parentID: mEvidenceId;
   metadata: Omit<mEvidence, 'content'>;
 }
 
@@ -82,7 +82,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
 };
 
 type Props = {
-  eviID: string;
+  eviID: mEvidenceId;
   setSelected: (_:typeSelected)=>void;
 }
 

@@ -1,5 +1,5 @@
 import {isObject} from 'util/typeGuardUtils';
-import {baseModel, ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
+import {baseModel, BASE_ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
 import { mMatch } from './mMatch';
 import { mPart, mPartId } from './mPart';
 
@@ -7,7 +7,7 @@ export const mSideSignature='mSide';
 
 export const side_id_prefix='side_';
 declare const mSideIdSymbol: unique symbol;
-export type mSideId = ID_TYPE&{[mSideIdSymbol]: never};
+export type mSideId = BASE_ID_TYPE&{[mSideIdSymbol]: never};
 export const is_mSideId=(id:string): id is mSideId => is_ID_TYPE(id) && id.startsWith(side_id_prefix);
 export const to_mSideId=(seed:string) => to_ID_TYPE(side_id_prefix + seed) as mSideId;
 

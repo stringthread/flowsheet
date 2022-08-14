@@ -2,19 +2,20 @@ import React,{useState,useCallback,useLayoutEffect} from 'react';
 import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
-import {id_is_mPart, id_is_mPoint} from 'services/id';
 import {Match} from './Match';
-import {mPoint} from 'models/mPoint';
+import { ID_TYPE } from 'models';
+import { mMatchId, to_mMatchId } from 'models/mMatch';
+import {is_mPointId, mPoint} from 'models/mPoint';
 import { mEvidenceSignature } from 'models/mEvidence';
 import {generate_match} from 'services/match';
 import {point_add_child, append_claim, append_sibling_point, append_point_to_part} from 'services/point';
 
 import {useHotkeys} from 'react-hotkeys-hook';
 
-export type typeSelected=string|undefined;
+export type typeSelected=ID_TYPE|undefined;
 
 function App() {
-  const [matchID,setMatchID]=useState<string>('');
+  const [matchID,setMatchID]=useState<mMatchId>(to_mMatchId(''));
   // 初めに1回だけ実行
   useLayoutEffect(()=>{
     setMatchID(generate_match({
@@ -46,7 +47,7 @@ function App() {
   const add_evidence=(e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
     if(selected==undefined) return;
-    if(id_is_mPoint(selected)) point_add_child(selected,mEvidenceSignature);
+    if(is_mPointId(selected)) point_add_child(selected,mEvidenceSignature);
   };
   useHotkeys('alt+c', add_claim, { enableOnTags: ['INPUT','TEXTAREA'] });
   useHotkeys('alt+e', add_evidence, { enableOnTags: ['INPUT','TEXTAREA'] });
