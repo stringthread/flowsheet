@@ -1,22 +1,26 @@
 import {baseModel} from 'models/baseModel';
 import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
 import { mClaim, mClaimSignature } from 'models/mClaim';
-import {mPoint,mPointSignature} from 'models/mPoint';
+import {is_mPoint, mPoint,mPointSignature} from 'models/mPoint';
 import {generate_evidence} from './evidence'
 import { generate_claim } from './claim';
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store} from './id';
+import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
 import {generate_point_id} from 'stores/ids/id_generators';
 import { mMatchSignature } from 'models/mMatch';
+import { is_mPart } from 'models/mPart';
+import { part_slice } from 'stores/slices/part';
 
 export const generate_point=(
   parent: baseModel['id'],
   from?:Omit<mPoint,'type_signature'|'id'|'parent'|'contents'|'_shorthands'>
 ):mPoint=>{
+  const parent_obj=get_from_id(parent);
+  if(!is_mPart(parent_obj)&&!is_mPoint(parent_obj)) throw TypeError('argument `parent` does not match mPart|mPoint');
   const generated: mPoint= {
     ...from,
     type_signature: mPointSignature,
@@ -24,6 +28,7 @@ export const generate_point=(
     parent
   };
   store.dispatch(point_slice.actions.add(generated));
+  store.dispatch((id_to_slice(parent) as typeof part_slice|typeof point_slice)?.actions.addChild([parent, generated.id])); // TODO: asで誤魔化している。#31で早急に修正
   return generated;
 }
 
@@ -42,7 +47,6 @@ export function point_add_child(parent_id:mPoint['id'], type: baseModel['type_si
     child=generate_claim(parent_id);
     store.dispatch(claim_slice.actions.add(child));
   }
-  store.dispatch(point_slice.actions.addChild([parent_id,child.id]));
   return child;
 }
 

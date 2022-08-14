@@ -2,95 +2,144 @@ import {store} from 'stores';
 import {part_slice} from 'stores/slices/part';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
-import {mPoint,mPointSignature} from 'models/mPoint';
+import {is_mPoint, mPoint,mPointSignature} from 'models/mPoint';
 import { mEvidenceSignature } from 'models/mEvidence';
 import {generate_point,point_add_child,append_claim,append_point_to_part, append_sibling_point, append_point_child} from 'services/point';
 import {generate_part, part_add_child} from 'services/part';
 import { mClaim, mClaimSignature } from 'models/mClaim';
 import { generate_claim } from 'services/claim';
+import { match_slice } from 'stores/slices/match';
+import { side_slice } from 'stores/slices/side';
+import { mMatch } from 'models/mMatch';
+import { is_mPart, mPart } from 'models/mPart';
+import { mSide } from 'models/mSide';
+import { generate_match } from 'services/match';
+import { generate_side } from 'services/side';
+import { get_from_id } from 'services/id';
+import { claim_slice } from 'stores/slices/claim';
+import { is } from 'immer/dist/internal';
 
 beforeEach(()=>{
+  store.dispatch(match_slice.actions.reset());
+  store.dispatch(side_slice.actions.reset());
   store.dispatch(part_slice.actions.reset());
   store.dispatch(point_slice.actions.reset());
+  store.dispatch(claim_slice.actions.reset());
   store.dispatch(evidence_slice.actions.reset());
 });
 
+const generate_parents=():[mMatch['id'], mSide['id'], mPart['id']]=>{
+  const match=generate_match();
+  const side=generate_side(match.id);
+  const part=generate_part(side.id);
+  return [match.id, side.id, part.id];
+};
+
 test('generate_point: 引数あり',()=>{
-  const expected_result:mPoint = {
+  const part_id=generate_parents()[2];
+  const expected_result:Omit<mPoint,'id'> = {
     type_signature: mPointSignature,
-    id: 'point_0',
-    parent: 'part_0',
+    parent: part_id,
     numbering: 1,
   };
-  expect(generate_point('part_0',expected_result)).toEqual(expected_result);
-  expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
+  const result=generate_point(part_id,expected_result)
+  expect(result).toMatchObject(expected_result);
+  expect(store.getState().point.entities[result.id]).toMatchObject(expected_result);
+  const parent_in_redux=get_from_id(part_id);
+  expect(is_mPart(parent_in_redux)).toBeTruthy();
+  if(!is_mPart(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(result.id);
 });
 
 test('generate_point: 引数なし',()=>{
-  const expected_result:mPoint = {
+  const part_id=generate_parents()[2];
+  const expected_result:Omit<mPoint,'id'> = {
     type_signature: mPointSignature,
-    id: 'point_0',
-    parent: 'part_0',
+    parent: part_id,
   };
-  expect(generate_point('part_0')).toEqual(expected_result);
-  expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
+  const result=generate_point(part_id);
+  expect(result).toMatchObject(expected_result);
+  expect(store.getState().point.entities[result.id]).toMatchObject(expected_result);
+  const parent_in_redux=get_from_id(part_id);
+  expect(is_mPart(parent_in_redux)).toBeTruthy();
+  if(!is_mPart(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(result.id);
 });
 
 test('point_add_child: Evidence',()=>{
-  const expected_result:mPoint = {
-    type_signature: mPointSignature,
-    id: 'point_0',
-    parent: 'part_0',
-    contents: ['evi_0'],
-  };
+  const part_id=generate_parents()[2];
   const generated=generate_point('part_0');
   const modified=point_add_child(generated.id,mEvidenceSignature);
-  expect(modified.id).toBe('evi_0');
-  expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
-  expect(store.getState().evidence.entities['evi_0']).toBeTruthy();
+  const expected_result:Omit<mPoint,'id'> = {
+    type_signature: mPointSignature,
+    parent: part_id,
+    contents: [modified.id],
+  };
+  expect(store.getState().point.entities[generated.id]).toMatchObject(expected_result);
+  expect(store.getState().evidence.entities[modified.id]).toBeTruthy();
+  const parent_in_redux=get_from_id(generated.id);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
 });
 
 test('point_add_child: Point',()=>{
-  const expected_result:mPoint = {
-    type_signature: mPointSignature,
-    id: 'point_0',
-    parent: 'part_0',
-    contents: ['point_1'],
-  };
+  const part_id=generate_parents()[2];
   const generated=generate_point('part_0');
   const modified=point_add_child(generated.id,mPointSignature);
-  expect(modified.id).toBe('point_1');
-  expect(store.getState().point.entities[expected_result.id]).toEqual(expected_result);
-  expect(store.getState().point.entities['point_1']).toBeTruthy();
+  const expected_result:Omit<mPoint,'id'> = {
+    type_signature: mPointSignature,
+    parent: part_id,
+    contents: [modified.id],
+  };
+  expect(store.getState().point.entities[generated.id]).toMatchObject(expected_result);
+  expect(store.getState().point.entities[modified.id]).toBeTruthy();
+  const parent_in_redux=get_from_id(generated.id);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
 });
 
 test('append_claim: Point',()=>{
-  const parent=generate_point('part_0');
-  const expected_result:mClaim = {
-    type_signature: mClaimSignature,
-    id: 'claim_0',
-    parent: parent.id,
-  };
+  const part_id=generate_parents()[2];
+  const parent=generate_point(part_id);
   const modified=append_claim(parent.id);
   expect(modified).not.toBeUndefined();
   if(modified===undefined) return;
-  expect(modified.id).toBe(expected_result.id);
-  expect(store.getState().claim.entities[expected_result.id]).toEqual(expected_result);
+  const expected_result:Omit<mClaim,'id'> = {
+    type_signature: mClaimSignature,
+    parent: parent.id,
+  };
+  expect(store.getState().claim.entities[modified.id]).toMatchObject(expected_result);
+  const parent_in_redux=get_from_id(parent.id);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
 });
 
 test('append_claim: Part',()=>{
-  const parent=generate_part('side_0');
-  const modified=append_claim(parent.id);
+  const part_id=generate_parents()[2];
+  const modified=append_claim(part_id);
   expect(modified).not.toBeUndefined();
   if(modified===undefined) return;
   const result_in_redux=store.getState().claim.entities[modified.id];
   expect(result_in_redux).toBeTruthy();
   if(result_in_redux===undefined) return;
-  expect(result_in_redux.parent).toBe('point_1');
+  const part_in_redux=get_from_id(part_id);
+  expect(is_mPart(part_in_redux)).toBe(true);
+  if(!is_mPart(part_in_redux)) return;
+  expect(part_in_redux.contents).toBeTruthy();
+  if(!part_in_redux.contents) return;
+  expect(result_in_redux.parent).toBe(part_in_redux.contents[part_in_redux.contents.length-1]);
+  const parent_in_redux=get_from_id(result_in_redux.parent);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
 });
 
 test('append_claim: Claim',()=>{
-  const parent=generate_point('side_0');
+  const part_id=generate_parents()[2];
+  const parent=generate_point(part_id);
   const claim=generate_claim(parent.id);
   const modified=append_claim(claim.id);
   expect(modified).not.toBeUndefined();
@@ -99,10 +148,17 @@ test('append_claim: Claim',()=>{
   expect(result_in_redux).toBeTruthy();
   if(result_in_redux===undefined) return;
   expect(result_in_redux.parent).toBe(parent.id);
+  const parent_in_redux=get_from_id(parent.id);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
 });
 
 test('append_sibling_point: Point',()=>{
-  const parent=generate_part('side_0');
+  const part_id=generate_parents()[2];
+  const parent=get_from_id(part_id);
+  expect(parent).toBeTruthy();
+  if(!is_mPart(parent)) return;
   const sibling=generate_point(parent.id);
   const old_parent_in_redux=store.getState().part.entities[parent.id];
   expect(old_parent_in_redux?.contents).toContain(sibling.id);
@@ -119,7 +175,10 @@ test('append_sibling_point: Point',()=>{
 });
 
 test('append_sibling_point: Part',()=>{
-  const parent=generate_part('side_0');
+  const part_id=generate_parents()[2];
+  const parent=get_from_id(part_id);
+  expect(parent).toBeTruthy();
+  if(!is_mPart(parent)) return;
   const sibling=generate_point(parent.id);
   const old_parent_in_redux=store.getState().part.entities[parent.id];
   expect(old_parent_in_redux?.contents).toContain(sibling.id);
@@ -136,12 +195,15 @@ test('append_sibling_point: Part',()=>{
 });
 
 test('append_sibling_point: Claim',()=>{
-  const parent=generate_part('side_0');
+  const part_id=generate_parents()[2];
+  const parent=get_from_id(part_id);
+  expect(parent).toBeTruthy();
+  if(!is_mPart(parent)) return;
   const sibling=generate_point(parent.id);
   const old_parent_in_redux=store.getState().part.entities[parent.id];
   expect(old_parent_in_redux?.contents).toContain(sibling.id);
   const child_claim=generate_claim(sibling.id);
-  const sibling_in_redux=store.getState().part.entities[sibling.id];
+  const sibling_in_redux=store.getState().point.entities[sibling.id];
   expect(sibling_in_redux?.contents).toContain(child_claim.id);
   const modified=append_sibling_point(child_claim.id);
   expect(modified).not.toBeUndefined();
@@ -156,8 +218,8 @@ test('append_sibling_point: Claim',()=>{
 });
 
 test('append_point_to_part: Point', ()=>{
-  const part=generate_part('side_0');
-  const point1=part_add_child(part.id);
+  const part_id=generate_parents()[2];
+  const point1=part_add_child(part_id);
   const point2=point_add_child(point1.id, mPointSignature);
   const result=append_point_to_part(point2.id);
   expect(result).not.toBeUndefined();
@@ -166,28 +228,28 @@ test('append_point_to_part: Point', ()=>{
   expect(result_in_redux).not.toBeUndefined();
   if(result_in_redux===undefined) return;
   expect(result_in_redux.contents).not.toBe('');
-  const part_in_redux=store.getState().part.entities[part.id];
+  const part_in_redux=store.getState().part.entities[part_id];
   if(part_in_redux===undefined) return;
   expect(part_in_redux.contents).toContain(result.id);
 });
 
 test('append_point_to_part: Part', ()=>{
-  const part=generate_part('side_0');
-  const result=append_point_to_part(part.id);
+  const part_id=generate_parents()[2];
+  const result=append_point_to_part(part_id);
   expect(result).not.toBeUndefined();
   if(result===undefined) return;
   const result_in_redux=store.getState().point.entities[result.id];
   expect(result_in_redux).not.toBeUndefined();
   if(result_in_redux===undefined) return;
   expect(result_in_redux.contents).not.toBe('');
-  const part_in_redux=store.getState().part.entities[part.id];
+  const part_in_redux=store.getState().part.entities[part_id];
   if(part_in_redux===undefined) return;
   expect(part_in_redux.contents).toContain(result.id);
 });
 
 test('append_point_to_part: Claim', ()=>{
-  const part=generate_part('side_0');
-  const point1=part_add_child(part.id);
+  const part_id=generate_parents()[2];
+  const point1=part_add_child(part_id);
   const claim=point_add_child(point1.id, mClaimSignature);
   const result=append_point_to_part(claim.id);
   expect(result).not.toBeUndefined();
@@ -196,13 +258,14 @@ test('append_point_to_part: Claim', ()=>{
   expect(result_in_redux).not.toBeUndefined();
   if(result_in_redux===undefined) return;
   expect(result_in_redux.contents).not.toBe('');
-  const part_in_redux=store.getState().part.entities[part.id];
+  const part_in_redux=store.getState().part.entities[part_id];
   if(part_in_redux===undefined) return;
   expect(part_in_redux.contents).toContain(result.id);
 });
 
 test('append_point_child: Point', ()=>{
-  const parent=generate_point('part_0');
+  const part_id=generate_parents()[2];
+  const parent=generate_point(part_id);
   const result=append_point_child(parent.id);
   expect(result).not.toBeUndefined();
   if(result===undefined) return;
@@ -216,22 +279,23 @@ test('append_point_child: Point', ()=>{
 });
 
 test('append_point_child: Part', ()=>{
-  const parent=generate_part('side_0');
-  const sibling=generate_point(parent.id);
-  const result=append_point_child(parent.id);
+  const part_id=generate_parents()[2];
+  const sibling=generate_point(part_id);
+  const result=append_point_child(part_id);
   expect(result).not.toBeUndefined();
   if(result===undefined) return;
   const result_in_redux=store.getState().point.entities[result.id];
   expect(result_in_redux).not.toBeUndefined();
   if(result_in_redux===undefined) return;
-  expect(result_in_redux.parent).toBe(parent.id);
-  const parent_in_redux=store.getState().point.entities[parent.id];
+  expect(result_in_redux.parent).toBe(part_id);
+  const parent_in_redux=store.getState().point.entities[part_id];
   if(parent_in_redux===undefined) return;
   expect(parent_in_redux.contents).toEqual([sibling.id,result.id]);
 });
 
 test('append_point_child: Claim', ()=>{
-  const parent=generate_point('part_0');
+  const part_id=generate_parents()[2];
+  const parent=generate_point(part_id);
   const claim1=generate_claim(parent.id);
   const claim2=generate_claim(parent.id);
   const old_parent_in_redux=store.getState().point.entities[parent.id];

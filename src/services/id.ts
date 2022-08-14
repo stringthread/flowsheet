@@ -7,6 +7,12 @@ import { mPointSignature } from 'models/mPoint';
 import { mEvidenceSignature } from 'models/mEvidence';
 import { store } from 'stores';
 import { mClaimSignature } from 'models/mClaim';
+import { match_slice } from 'stores/slices/match';
+import { side_slice } from 'stores/slices/side';
+import { part_slice } from 'stores/slices/part';
+import { point_slice } from 'stores/slices/point';
+import { claim_slice } from 'stores/slices/claim';
+import { evidence_slice } from 'stores/slices/evidence';
 
 export const id_is_mMatch=(id:ID_TYPE):boolean=>{
   return id.startsWith(match_id_prefix);
@@ -46,6 +52,18 @@ export const type_to_store={
 export const id_to_store=(id:ID_TYPE)=>{
   const type=id_to_type(id);
   if(type!==undefined) return type_to_store[type];
+}
+export const type_to_slice={
+  [mMatchSignature]: match_slice,
+  [mSideSignature]: side_slice,
+  [mPartSignature]: part_slice,
+  [mPointSignature]: point_slice,
+  [mClaimSignature]: claim_slice,
+  [mEvidenceSignature]: evidence_slice,
+};
+export const id_to_slice=(id:ID_TYPE)=>{
+  const type=id_to_type(id);
+  if(type!==undefined) return type_to_slice[type];
 }
 
 export const get_from_id=(id:ID_TYPE)=>{
