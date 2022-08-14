@@ -2,7 +2,7 @@ import {baseModel, ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
 import {mEvidence, mEvidenceId} from './mEvidence';
 import {mClaim} from './mClaim';
 import {isObject} from 'util/typeGuardUtils';
-import { mSide } from './mSide';
+import { mPart } from './mPart';
 
 export const mPointSignature='mPoint';
 
@@ -18,7 +18,7 @@ export type PointChildId = mPointId|mEvidenceId|mClaim;
 export interface mPoint extends baseModel {
   type_signature: typeof mPointSignature;
   id: mPointId;
-  parent: mSide['id']|mPoint['id'];
+  parent: mPart['id']|mPoint['id'];
   numbering?: number|string;
   children_numbering?: number|string;
   contents?: Array<PointChildId>;
