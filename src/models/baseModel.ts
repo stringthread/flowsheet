@@ -1,8 +1,8 @@
 import { Slice } from "@reduxjs/toolkit";
+import { store } from "stores";
 import { EntityStateWithLastID } from "stores/slices/EntityStateWithLastID";
 
 export interface rawBaseModel{
-  type_signature: string;
   id: string;
   contents?: unknown;
 }
@@ -24,7 +24,7 @@ export type methodOptions = {
 // T: 対応するrawModelの型
 export abstract class BaseModel<T extends rawBaseModel = rawBaseModel>{
   id: baseModelId<BaseModel<T>>;
-  obj: Omit<T,'id'|'type_signature'>|undefined;
+  obj: T|undefined;
   constructor(id: baseModelId<BaseModel<T>>);
   constructor(option?: methodOptions, from?:Partial<T>);
   constructor(arg1?: methodOptions|baseModelId<BaseModel<T>>, arg2?: Partial<T>){
@@ -37,9 +37,18 @@ export abstract class BaseModel<T extends rawBaseModel = rawBaseModel>{
       this.obj=generated.obj;
     }
   }
+  toPlainObj(): T|undefined {
+    return this.obj ? { ...this.obj, id: this.id.plainId } : undefined;
+  }
   abstract generate(option?: methodOptions, from?:Partial<T>): BaseModel<T>;
   abstract getSlice(): Slice<EntityStateWithLastID<rawBaseModel>>;
-  abstract upsert(obj: typeof this.obj): boolean;
+  upsert(obj: typeof this.obj): void {
+    store.dispatch(this.getSlice().actions.upsertOne({
+      id: this.id.plainId,
+      contents: obj,
+    }));
+    this.obj = this.id.getObj()?.toPlainObj();
+  }
   getContents(): T['contents']|undefined { return this.obj?.contents; }
   addChild: (()=>baseModelId)|undefined = undefined;
   reorderChild: (()=>boolean)|undefined = undefined;
