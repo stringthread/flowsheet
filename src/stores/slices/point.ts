@@ -23,23 +23,26 @@ export const point_slice=createSlice({
       };
       if(is_rawPoint(point)) point_adapter.upsertOne(state,point);
     },
-    removeOne: (state,action:PayloadAction<mPointId>)=>{
+    removeOne: (state,action:PayloadAction<mPointId|undefined>)=>{
+      if(action.payload===undefined) return;
       point_adapter.removeOne(state,action.payload.id);
     },
     removeAll: state=>{
       point_adapter.removeAll(state);
     },
     // Payload[a,b]: ID==aの要素にあるcontentsの末尾にbを追加する
-    addChild: (state,action:PayloadAction<[mPointId,PointChildId]>)=>{
+    addChild: (state,action:PayloadAction<[mPointId|undefined,PointChildId|undefined]>)=>{
       const [id, new_part]=action.payload;
+      if(id===undefined||new_part===undefined) return;
       const entity=state.entities[id.id];
       if(entity===undefined||typeof entity.contents==='string') return;
       if(entity.contents===undefined) entity.contents=[];
       entity.contents.push(new_part);
     },
     // Payload[a,b,c]->ID===aの要素にあるcontentsに対してreorder_array(b,c)を実行する
-    reorderChild: (state,action:PayloadAction<[mPointId,PointChildId,PointChildId|null]>)=>{
+    reorderChild: (state,action:PayloadAction<[mPointId|undefined,PointChildId|undefined,PointChildId|undefined|null]>)=>{
       const [id, child_target, before]=action.payload;
+      if(id===undefined||child_target===undefined||before===undefined) return;
       const entity=state.entities[id.id];
       if(entity===undefined) return;
       const contents=entity.contents;
@@ -47,8 +50,9 @@ export const point_slice=createSlice({
       entity.contents=reorder_array(contents,child_target,before,(e,t)=>e===t);
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[mPointId,mPartId]>)=>{
+    setParent: (state,action:PayloadAction<[mPointId|undefined,mPointId|mPartId|undefined]>)=>{
       const [id,parent]=action.payload;
+      if(id===undefined||parent===undefined) return;
       const entity=state.entities[id.id];
       if(entity===undefined) return;
       entity.parent=parent;

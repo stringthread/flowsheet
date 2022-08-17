@@ -22,7 +22,8 @@ export const evidence_slice=createSlice({
       };
       if(is_rawEvidence(evi)) evidence_adapter.upsertOne(state,evi);
     },
-    removeOne: (state,action:PayloadAction<mEvidenceId>)=>{
+    removeOne: (state,action:PayloadAction<mEvidenceId|undefined>)=>{
+      if(action.payload===undefined) return;
       evidence_adapter.removeOne(state,action.payload.id);
     },
     removeAll: state=>{
@@ -32,8 +33,9 @@ export const evidence_slice=createSlice({
       state.last_id_number++;
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[mEvidenceId,mPointId]>)=>{
+    setParent: (state,action:PayloadAction<[mEvidenceId|undefined,mPointId|undefined]>)=>{
       const [id,parent]=action.payload;
+      if(id===undefined||parent===undefined) return;
       const entity=state.entities[id.id];
       if(entity===undefined) return;
       entity.parent=parent;

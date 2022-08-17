@@ -22,7 +22,8 @@ export const claim_slice=createSlice({
       };
       if(is_rawClaim(new_obj)) claim_adapter.upsertOne(state,new_obj);
     },
-    removeOne: (state,action:PayloadAction<mClaimId>)=>{
+    removeOne: (state,action:PayloadAction<mClaimId|undefined>)=>{
+      if(action.payload===undefined) return;
       claim_adapter.removeOne(state,action.payload.id);
     },
     removeAll: state=>{
@@ -32,8 +33,9 @@ export const claim_slice=createSlice({
       state.last_id_number++;
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[mClaimId,mPointId]>)=>{
+    setParent: (state,action:PayloadAction<[mClaimId|undefined,mPointId|undefined]>)=>{
       const [id,parent]=action.payload;
+      if(id===undefined||parent===undefined) return;
       const entity=state.entities[id.id];
       if(entity===undefined) return;
       entity.parent=parent;
