@@ -52,8 +52,6 @@ export class mSide extends BaseModel<rawSide, mMatch, mPart> {
     const parent_id = this.obj?.parent;
     if(parent_id===undefined) return undefined;
     if(child===undefined) return get_from_id(parent_id);
-    store.dispatch(this.getSlice().actions.addChild([parent_id, child.getObj()?.id]));
-    return child;
   };
   setParent: (parent: mMatch)=>void = (parent)=>{
     store.dispatch(this.getSlice().actions.setParent([ this.obj?.id, parent.getObj()?.id ]));

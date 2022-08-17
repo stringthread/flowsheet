@@ -5,7 +5,7 @@ import { claim_slice } from 'stores/slices/claim';
 import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import { Overwrite, PartiallyRequired } from 'util/utilityTypes';
 import { rawBaseModel, ModelId, BaseModel, isModelId } from './baseModel';
-import { mPoint, mPointId } from './mPoint';
+import { is_mPointId, mPoint, mPointId } from './mPoint';
 
 export const claim_id_prefix='claim_';
 export type mClaimId = ModelId<typeof claim_id_prefix>;
@@ -20,6 +20,7 @@ export interface rawClaim extends rawBaseModel {
   parent: mPointId;
   contents?: string;
 }
+export const is_rawClaim=(v: unknown): v is rawClaim => v instanceof Object && 'id' in v && is_mClaimId(v['id']) && 'parent' in v && is_mPointId(v['parent']);
 
 export class mClaim extends BaseModel<rawClaim, mPoint, never> {
   override generate(from:PartiallyRequired<rawClaim, 'parent'>): mClaim{

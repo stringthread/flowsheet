@@ -1,7 +1,7 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {mClaim,is_mClaim, rawClaim, mClaimId} from 'models/mClaim';
+import {rawClaim, mClaimId, is_rawClaim} from 'models/mClaim';
 import { mPointId } from 'models/mPoint';
 
 const claim_adapter=createEntityAdapter<rawClaim>();
@@ -16,14 +16,14 @@ export const claim_slice=createSlice({
       claim_adapter.addOne(state,action.payload);
     },
     upsertOne: (state,action:PayloadAction<Pick<rawClaim,'id'>&Partial<rawClaim>>)=>{
-      const evi={
-        ...state.entities[action.payload.id],
+      const new_obj={
+        ...state.entities[action.payload.id.id],
         ...action.payload
       };
-      if(is_mClaim(evi)) claim_adapter.upsertOne(state,evi);
+      if(is_rawClaim(new_obj)) claim_adapter.upsertOne(state,new_obj);
     },
     removeOne: (state,action:PayloadAction<mClaimId>)=>{
-      claim_adapter.removeOne(state,action.payload);
+      claim_adapter.removeOne(state,action.payload.id);
     },
     removeAll: state=>{
       claim_adapter.removeAll(state);
@@ -34,7 +34,7 @@ export const claim_slice=createSlice({
     // Payload[a,b]->ID===aの要素の親をbに設定する
     setParent: (state,action:PayloadAction<[mClaimId,mPointId]>)=>{
       const [id,parent]=action.payload;
-      const entity=state.entities[id];
+      const entity=state.entities[id.id];
       if(entity===undefined) return;
       entity.parent=parent;
     },

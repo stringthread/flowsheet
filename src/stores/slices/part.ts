@@ -21,7 +21,7 @@ export const part_slice=createSlice({
       part_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<mPartId>)=>{
-      part_adapter.removeOne(state,action.payload);
+      part_adapter.removeOne(state,action.payload.id);
     },
     removeAll: state=>{
       part_adapter.removeAll(state);
@@ -29,7 +29,7 @@ export const part_slice=createSlice({
     // Payload[a,b]->ID==aの要素にあるcontentsの末尾にbを追加する
     addChild: (state,action:PayloadAction<[mPartId,mPointId]>)=>{
       const [id, new_part]=action.payload;
-      const entity=state.entities[id];
+      const entity=state.entities[id.id];
       if(entity===undefined) return;
       if(entity.contents===undefined) entity.contents=[];
       entity.contents.push(new_part);
@@ -37,7 +37,7 @@ export const part_slice=createSlice({
     // Payload[a,b,c]->ID===aの要素にあるcontentsに対してreorder_array(b,c)を実行する
     reorderChild: (state,action:PayloadAction<[mPartId,mPointId,mPointId|null]>)=>{
       const [id, child_target, before]=action.payload;
-      const entity=state.entities[id];
+      const entity=state.entities[id.id];
       if(entity===undefined) return;
       const contents=entity.contents;
       if(contents!==undefined){
@@ -47,7 +47,7 @@ export const part_slice=createSlice({
     // Payload[a,b]->ID===aの要素の親をbに設定する
     setParent: (state,action:PayloadAction<[mPartId,mSideId]>)=>{
       const [id,parent]=action.payload;
-      const entity=state.entities[id];
+      const entity=state.entities[id.id];
       if(entity===undefined) return;
       entity.parent=parent;
     },

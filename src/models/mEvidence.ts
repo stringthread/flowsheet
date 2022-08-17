@@ -5,7 +5,7 @@ import { evidence_slice } from 'stores/slices/evidence';
 import {isObject, multipleTypeof} from 'util/typeGuardUtils';
 import { PartiallyRequired } from 'util/utilityTypes';
 import { rawBaseModel, BaseModel, ModelId, isModelId } from './baseModel';
-import { mPoint, mPointId } from './mPoint';
+import { is_mPointId, mPoint, mPointId } from './mPoint';
 
 export const evidence_id_prefix='evi_';
 export type mEvidenceId = ModelId<typeof evidence_id_prefix>;
@@ -23,6 +23,7 @@ export interface rawEvidence extends rawBaseModel {
   year?: number|string;
   contents?: string;
 }
+export const is_rawEvidence=(v: unknown): v is rawEvidence => v instanceof Object && 'id' in v && is_mEvidenceId(v['id']) && 'parent' in v && is_mPointId(v['parent']);
 
 export class mEvidence extends BaseModel<rawEvidence, mPoint, never> {
   override generate(from:PartiallyRequired<rawEvidence, 'parent'>): mEvidence{

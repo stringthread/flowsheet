@@ -23,6 +23,7 @@ export type PointChildId = mPointId|mEvidenceId|mClaimId;
 
 export type PointParent = mPoint|mPart;
 export type PointParentId = mPointId|mPartId;
+export const is_PointParentId = (v: unknown): v is PointParentId => is_mPointId(v)||is_mPartId(v);
 
 export interface rawPoint extends rawBaseModel {
   id: mPointId;
@@ -31,6 +32,7 @@ export interface rawPoint extends rawBaseModel {
   children_numbering?: number|string;
   contents?: Array<PointChildId>;
 }
+export const is_rawPoint = (v: unknown): v is rawPoint => v instanceof Object && 'id' in v && is_mPointId(v['id']) && 'parent' in v && is_PointParentId(v['parent']);
 
 export class mPoint extends BaseModel<rawPoint, PointParent, PointChild> {
   override generate(from:PartiallyRequired<rawPoint, 'parent'>): mPoint{

@@ -19,7 +19,7 @@ export const match_slice=createSlice({
       match_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<mMatchId>)=>{
-      match_adapter.removeOne(state,action.payload);
+      match_adapter.removeOne(state,action.payload.id);
     },
     removeAll: state=>{
       match_adapter.removeAll(state);
@@ -27,7 +27,7 @@ export const match_slice=createSlice({
     // Payload[a,b]->ID==aの要素にあるcontentsの末尾にbを追加する
     addChild: (state,action:PayloadAction<[mMatchId,mSideId]>)=>{
       const [id, new_part]=action.payload;
-      const entity=state.entities[id];
+      const entity=state.entities[id.id];
       if(entity===undefined) return;
       if(entity.contents===undefined) entity.contents=[];
       entity.contents.push(new_part);
