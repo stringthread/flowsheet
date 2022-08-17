@@ -1,22 +1,22 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {mSide, mSideId} from 'models/mSide';
+import {rawSide, mSideId} from 'models/mSide';
 import { mPartId } from 'models/mPart';
 import { mMatchId } from 'models/mMatch';
 
-const side_adapter=createEntityAdapter<mSide>();
-const side_initialState:EntityStateWithLastID<mSide>=side_adapter.getInitialState({
+const side_adapter=createEntityAdapter<rawSide>();
+const side_initialState:EntityStateWithLastID<rawSide>=side_adapter.getInitialState({
   last_id_number: 0
 });
 export const side_slice=createSlice({
   name: 'side',
   initialState: side_initialState,
   reducers: {
-    add: (state,action:PayloadAction<mSide>)=>{
+    add: (state,action:PayloadAction<rawSide>)=>{
       side_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<mSide>)=>{
+    upsertOne: (state,action:PayloadAction<rawSide>)=>{
       side_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<mSideId>)=>{

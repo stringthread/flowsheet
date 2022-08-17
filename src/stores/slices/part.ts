@@ -1,23 +1,23 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {mPart, mPartId} from 'models/mPart';
+import {rawPart, mPartId} from 'models/mPart';
 import {reorder_array} from 'util/funcs';
 import { mPointId } from 'models/mPoint';
 import { mSideId } from 'models/mSide';
 
-const part_adapter=createEntityAdapter<mPart>();
-const part_initialState:EntityStateWithLastID<mPart>=part_adapter.getInitialState({
+const part_adapter=createEntityAdapter<rawPart>();
+const part_initialState:EntityStateWithLastID<rawPart>=part_adapter.getInitialState({
   last_id_number: 0
 });
 export const part_slice=createSlice({
   name: 'part',
   initialState: part_initialState,
   reducers: {
-    add: (state,action:PayloadAction<mPart>)=>{
+    add: (state,action:PayloadAction<rawPart>)=>{
       part_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<mPart>)=>{
+    upsertOne: (state,action:PayloadAction<rawPart>)=>{
       part_adapter.upsertOne(state,action.payload);
     },
     removeOne: (state,action:PayloadAction<mPartId>)=>{

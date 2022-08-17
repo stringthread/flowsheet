@@ -1,21 +1,21 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {mEvidence,is_mEvidence, mEvidenceId} from 'models/mEvidence';
+import {rawEvidence,is_mEvidence, mEvidenceId} from 'models/mEvidence';
 import { mPointId } from 'models/mPoint';
 
-const evidence_adapter=createEntityAdapter<mEvidence>();
-const evidence_initialState:EntityStateWithLastID<mEvidence>=evidence_adapter.getInitialState({
+const evidence_adapter=createEntityAdapter<rawEvidence>();
+const evidence_initialState:EntityStateWithLastID<rawEvidence>=evidence_adapter.getInitialState({
   last_id_number: 0
 });
 export const evidence_slice=createSlice({
   name: 'evidence',
   initialState: evidence_initialState,
   reducers: {
-    add: (state,action:PayloadAction<mEvidence>)=>{
+    add: (state,action:PayloadAction<rawEvidence>)=>{
       evidence_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<mEvidence,'id'>&Partial<mEvidence>>)=>{
+    upsertOne: (state,action:PayloadAction<Pick<rawEvidence,'id'>&Partial<rawEvidence>>)=>{
       const evi={
         ...state.entities[action.payload.id],
         ...action.payload

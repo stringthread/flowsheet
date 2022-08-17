@@ -1,57 +1,72 @@
 import { Slice } from "@reduxjs/toolkit";
 import { store } from "stores";
 import { EntityStateWithLastID } from "stores/slices/EntityStateWithLastID";
+import { AdaptRequiredState, Overwrite } from "util/utilityTypes";
+
+export interface ModelId<Prefix extends string = string>  {
+  id: string;
+  prefix: Prefix;
+}
+export const isModelId = (v: unknown): v is ModelId => 
+  (v instanceof Object && 'id' in v && 'type' in v && typeof v['id']==='string' && typeof v['type']==='string');
 
 export interface rawBaseModel{
-  id: string;
+  id: ModelId;
+  parent?: ModelId;
   contents?: unknown;
 }
 
-export abstract class baseModelId<T extends BaseModel<rawBaseModel> = BaseModel<rawBaseModel>>{
-  readonly plainId: string;
-  constructor(id: string){
-    this.plainId=id;
-  };
-  abstract getStore(): EntityStateWithLastID<T>;
-  getObj(): T|undefined{
-    return this.getStore().entities[this.plainId];
-  }
-};
-
-export type methodOptions = {
-  [k: string]: any;
-};
 // T: 対応するrawModelの型
-export abstract class BaseModel<T extends rawBaseModel = rawBaseModel>{
-  id: baseModelId<BaseModel<T>>;
-  obj: T|undefined;
-  constructor(id: baseModelId<BaseModel<T>>);
-  constructor(option?: methodOptions, from?:Partial<T>);
-  constructor(arg1?: methodOptions|baseModelId<BaseModel<T>>, arg2?: Partial<T>){
-    if(arg1 instanceof baseModelId<BaseModel<T>>){
-      this.id=arg1;
-      this.obj=arg1.getObj()?.obj;
-    } else {
-      const generated=this.generate(arg1, arg2);
-      this.id=generated.id;
-      this.obj=generated.obj;
+// P: parentの型
+// C: contentsの型。contents?: Array<C>として解釈される
+export abstract class BaseModel<
+  T extends rawBaseModel = rawBaseModel,
+  P extends BaseModel<rawBaseModel,any,any>|undefined = undefined,
+  C extends any = undefined>{
+  protected obj: T|undefined;
+  // arg: baseModelIdの場合、this.updateObj(arg)
+  // arg: Partial<T>&{id: any}の場合、this.updateObj(arg.id)
+  // this.obj===undefinedのときのFallbackとして: arg: Partial<T>の場合、this.generate(arg)
+  constructor(arg: Partial<T>|T['id']){
+    if(isModelId(arg)) this.updateObj(arg);
+    else {
+      if('id' in arg) this.updateObj(arg.id);
+      if(this.obj===undefined){
+        const generated=this.generate(arg);
+        this.obj=generated.obj;
+      }
     }
   }
-  toPlainObj(): T|undefined {
-    return this.obj ? { ...this.obj, id: this.id.plainId } : undefined;
+  getObj(): T | undefined {
+    if(this.obj===undefined) return undefined;
+    return  { ...this.obj };
   }
-  abstract generate(option?: methodOptions, from?:Partial<T>): BaseModel<T>;
-  abstract getSlice(): Slice<EntityStateWithLastID<rawBaseModel>>;
-  upsert(obj: typeof this.obj): void {
+  updateObj(id?: T['id']): void {
+    if(id===undefined){
+      if(this.obj===undefined) return;
+      id=this.obj.id;
+    }
+    const obj_in_store = this.getStore().entities[id.id];
+    if(obj_in_store!==undefined) this.obj = obj_in_store;
+  }
+  toPlainObj(): T|undefined {
+    this.updateObj();
+    return this.obj;
+  }
+  abstract generate(from:Partial<T>): BaseModel<T,P,C>;
+  abstract getSlice(): Slice;
+  abstract getStore(): EntityStateWithLastID<T>;
+  upsert(obj: Partial<Omit<T, 'id'>>): void {
+    if(this.obj===undefined) return;
     store.dispatch(this.getSlice().actions.upsertOne({
-      id: this.id.plainId,
-      contents: obj,
+      ...this.obj,
+      id: this.obj.id,
     }));
-    this.obj = this.id.getObj()?.toPlainObj();
+    this.updateObj();
   }
   getContents(): T['contents']|undefined { return this.obj?.contents; }
-  addChild: (()=>baseModelId)|undefined = undefined;
-  reorderChild: (()=>boolean)|undefined = undefined;
-  getParent: (()=>BaseModel|undefined)|undefined = undefined;
-  setParent: (()=>boolean)|undefined = undefined;
+  addChild: ((...args: any)=>C|undefined)|undefined = undefined;
+  reorderChild: ((target: C, before: C|null)=>void)|undefined = undefined;
+  getParent: (()=>P|undefined)|undefined = undefined;
+  setParent: ((parent: P)=>void)|undefined = undefined;
 }

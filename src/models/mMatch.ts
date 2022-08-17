@@ -1,29 +1,53 @@
 import {isObject} from 'util/typeGuardUtils';
-import {baseModel, BASE_ID_TYPE, is_ID_TYPE, to_ID_TYPE} from './baseModel';
-import {mSide, mSideId} from './mSide';
-import {mPart} from './mPart';
-
-export const mMatchSignature='mMatch';
+import {BaseModel, isModelId, ModelId, rawBaseModel} from './baseModel';
+import {mSide, mSideId, rawSide} from './mSide';
+import {mPart, rawPart} from './mPart';
+import { PartiallyRequired } from 'util/utilityTypes';
+import { get_from_id } from 'services/id';
+import { store } from 'stores';
+import { generate_match_id } from 'stores/ids/id_generators';
+import { match_slice } from 'stores/slices/match';
+import { EntityStateWithLastID } from 'stores/slices/EntityStateWithLastID';
 
 export const match_id_prefix='match_';
-declare const mMatchIdSymbol: unique symbol;
-export type mMatchId = BASE_ID_TYPE&{[mMatchIdSymbol]: never};
-export const is_mMatchId=(id:string): id is mMatchId => is_ID_TYPE(id) && id.startsWith(match_id_prefix);
-export const to_mMatchId=(seed:string) => to_ID_TYPE(match_id_prefix + seed) as mMatchId;
+export type mMatchId = ModelId<typeof match_id_prefix>;
+export const is_mMatchId=(v:unknown): v is mMatchId => isModelId(v) && v.prefix===match_id_prefix;
+export const to_mMatchId=(seed:string): mMatchId => ({
+  id: match_id_prefix + seed,
+  prefix: match_id_prefix
+});
 
-export interface mMatch extends baseModel {
-  type_signature: typeof mMatchSignature;
+export interface rawMatch extends rawBaseModel {
   id: mMatchId;
   topic?: string;
   date?: Date|string;
-  side?: mSide['side'];
+  side?: rawSide['side'];
   winner?: string;
   opponent?: string;
-  member?: Map<mPart['name'],string>; // パート名からメンバ名への対応
+  member?: Map<rawPart['name'],string>; // パート名からメンバ名への対応
   note?: string;
   contents?: Array<mSideId>;
 }
 
-export const is_mMatch=(value: unknown): value is mMatch =>{
-  return isObject<mMatch>(value) && value.type_signature==mMatchSignature;
-};
+export class mMatch extends BaseModel<rawMatch, undefined, mSide> {
+  override generate(from:Partial<rawMatch>): mMatch{
+    const generated: rawMatch= {
+      ...from,
+      id: generate_match_id(),
+    };
+    this.obj=generated;
+    store.dispatch(this.getSlice().actions.add(generated));
+    return this;
+  }
+  override getSlice() { return match_slice; }
+  override getStore(): EntityStateWithLastID<rawMatch> {
+    return store.getState().match;
+  };
+  addChild: (child?: mSide) => mSide|undefined = (child)=>{
+    const parent_id=this.obj?.id;
+    if(parent_id===undefined) return undefined;
+    if(child===undefined) return new mSide({parent: parent_id});
+    store.dispatch(this.getSlice().actions.addChild([parent_id, child?.getObj()?.id]));
+    return child;
+  };
+}

@@ -1,21 +1,21 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {mClaim,is_mClaim, mClaimId} from 'models/mClaim';
+import {mClaim,is_mClaim, rawClaim, mClaimId} from 'models/mClaim';
 import { mPointId } from 'models/mPoint';
 
-const claim_adapter=createEntityAdapter<mClaim>();
-const claim_initialState:EntityStateWithLastID<mClaim>=claim_adapter.getInitialState({
+const claim_adapter=createEntityAdapter<rawClaim>();
+const claim_initialState:EntityStateWithLastID<rawClaim>=claim_adapter.getInitialState({
   last_id_number: 0
 });
 export const claim_slice=createSlice({
   name: 'claim',
   initialState: claim_initialState,
   reducers: {
-    add: (state,action:PayloadAction<mClaim>)=>{
+    add: (state,action:PayloadAction<rawClaim>)=>{
       claim_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<mClaim,'id'>&Partial<mClaim>>)=>{
+    upsertOne: (state,action:PayloadAction<Pick<rawClaim,'id'>&Partial<rawClaim>>)=>{
       const evi={
         ...state.entities[action.payload.id],
         ...action.payload

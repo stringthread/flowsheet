@@ -1,36 +1,36 @@
 import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {is_mPoint, mPoint,mPointId,mPointSignature, PointChildId} from 'models/mPoint';
+import {is_mPoint, rawPoint, _mPointId,mPointSignature, PointChildPlainId, mPointId} from 'models/mPoint';
 import {reorder_array} from 'util/funcs';
 import { mPartId } from 'models/mPart';
 
-const point_adapter=createEntityAdapter<mPoint>();
-const point_initialState:EntityStateWithLastID<mPoint>=point_adapter.getInitialState({
+const point_adapter=createEntityAdapter<rawPoint>();
+const point_initialState:EntityStateWithLastID<rawPoint>=point_adapter.getInitialState({
   last_id_number: 0
 });
 export const point_slice=createSlice({
   name: 'point',
   initialState: point_initialState,
   reducers: {
-    add: (state,action:PayloadAction<mPoint>)=>{
+    add: (state,action:PayloadAction<rawPoint>)=>{
       point_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<mPoint,'id'>&Partial<mPoint>>)=>{
+    upsertOne: (state,action:PayloadAction<Pick<rawPoint,'id'>&Partial<rawPoint>>)=>{
       const point={
         ...state.entities[action.payload.id],
         ...action.payload
       };
       if(is_mPoint(point)) point_adapter.upsertOne(state,point);
     },
-    removeOne: (state,action:PayloadAction<mPointId>)=>{
+    removeOne: (state,action:PayloadAction<_mPointId>)=>{
       point_adapter.removeOne(state,action.payload);
     },
     removeAll: state=>{
       point_adapter.removeAll(state);
     },
     // Payload[a,b]: ID==aの要素にあるcontentsの末尾にbを追加する
-    addChild: (state,action:PayloadAction<[mPointId,PointChildId]>)=>{
+    addChild: (state,action:PayloadAction<[mPointId,PointChildPlainId]>)=>{
       const [id, new_part]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined||typeof entity.contents==='string') return;
@@ -38,7 +38,7 @@ export const point_slice=createSlice({
       entity.contents.push(new_part);
     },
     // Payload[a,b,c]->ID===aの要素にあるcontentsに対してreorder_array(b,c)を実行する
-    reorderChild: (state,action:PayloadAction<[mPointId,PointChildId,PointChildId|null]>)=>{
+    reorderChild: (state,action:PayloadAction<[mPointId,PointChildPlainId,PointChildPlainId|null]>)=>{
       const [id, child_target, before]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;
