@@ -6,8 +6,8 @@ import { is_mPartId, mPart, mPartId } from 'models/mPart';
 import { assertNever } from 'util/utilityTypes';
 import { next_content } from 'util/funcs';
 
-type accept_switch_for_append=mPart|mEvidence|mClaim|mPoint;
-const switch_for_append=<T>(
+export type accept_switch_for_append=mPart|mEvidence|mClaim|mPoint;
+export const switch_for_append=<T>(
   model: accept_switch_for_append,
   part: (model:mPart)=>T,
   claim_evi: (model:mEvidence|mClaim)=>T,
@@ -17,17 +17,6 @@ const switch_for_append=<T>(
   if(model instanceof mClaim|| model instanceof mEvidence) return claim_evi(model);
   if(model instanceof mPoint) return point(model);
   assertNever(model);
-};
-export const append_claim=(parent_id: accept_switch_for_append): mClaim|undefined=>{
-  return switch_for_append(
-    parent_id,
-    (model)=>append_claim(model.addChild()),
-    (model)=>{
-      const parent=model.getParent();
-      if(parent!==undefined) return append_claim(parent);
-    },
-    (model)=>model.addChild[claim_id_prefix]()
-  );
 };
 export const append_sibling_point=(parent_id: accept_switch_for_append): mPoint|undefined=>{
   return switch_for_append(
