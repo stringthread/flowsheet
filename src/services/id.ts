@@ -1,10 +1,9 @@
-import { ID_TYPE, modelSignatures, MODEL_TYPE } from 'models';
-import { mMatchSignature, is_mMatchId, mMatchId, mMatch } from 'models/mMatch';
-import { mSideSignature, is_mSideId, mSideId, mSide } from 'models/mSide';
-import { mPartSignature, is_mPartId, mPartId, mPart } from 'models/mPart';
-import { mPointSignature, is_mPointId, mPointId, mPoint, PointChildId, PointParentId, PointParent } from 'models/mPoint';
-import { mClaimSignature, is_mClaimId, mClaimId, mClaim } from 'models/mClaim';
-import { mEvidenceSignature, is_mEvidenceId, mEvidenceId, mEvidence } from 'models/mEvidence';
+import { is_mMatchId, mMatchId, mMatch, match_id_prefix, rawMatch } from 'models/mMatch';
+import { is_mSideId, mSideId, mSide, side_id_prefix, rawSide } from 'models/mSide';
+import { is_mPartId, mPartId, mPart, part_id_prefix, rawPart } from 'models/mPart';
+import { is_mPointId, mPointId, mPoint, PointChildId, point_id_prefix, rawPoint } from 'models/mPoint';
+import { is_mClaimId, mClaimId, mClaim, claim_id_prefix, rawClaim } from 'models/mClaim';
+import { is_mEvidenceId, mEvidenceId, mEvidence, evidence_id_prefix, rawEvidence } from 'models/mEvidence';
 import { store } from 'stores';
 import { match_slice } from 'stores/slices/match';
 import { side_slice } from 'stores/slices/side';
@@ -12,107 +11,96 @@ import { part_slice } from 'stores/slices/part';
 import { point_slice } from 'stores/slices/point';
 import { claim_slice } from 'stores/slices/claim';
 import { evidence_slice } from 'stores/slices/evidence';
-import { assertNever } from 'util/utilityTypes';
+import { MODEL_TYPE } from 'models';
 
-export function id_to_type(id: mMatchId): typeof mMatchSignature;
-export function id_to_type(id: mSideId): typeof mSideSignature;
-export function id_to_type(id: mPartId): typeof mPartSignature;
-export function id_to_type(id: mPointId): typeof mPointSignature;
-export function id_to_type(id: mClaimId): typeof mClaimSignature;
-export function id_to_type(id: mEvidenceId): typeof mEvidenceSignature;
-export function id_to_type(id: ID_TYPE): modelSignatures;
-export function id_to_type(id:ID_TYPE){
-  if(is_mMatchId(id)) return mMatchSignature;
-  if(is_mSideId(id)) return mSideSignature;
-  if(is_mPartId(id)) return mPartSignature;
-  if(is_mPointId(id)) return mPointSignature;
-  if(is_mClaimId(id)) return mClaimSignature;
-  if(is_mEvidenceId(id)) return mEvidenceSignature;
-  assertNever(id);
-};
-export const type_to_store={
-  [mMatchSignature]: ()=>store.getState().match,
-  [mSideSignature]: ()=>store.getState().side,
-  [mPartSignature]: ()=>store.getState().part,
-  [mPointSignature]: ()=>store.getState().point,
-  [mClaimSignature]: ()=>store.getState().claim,
-  [mEvidenceSignature]: ()=>store.getState().evidence,
-};
-export function id_to_store(id: mMatchId): typeof type_to_store[typeof mMatchSignature];
-export function id_to_store(id: mSideId): typeof type_to_store[typeof mSideSignature];
-export function id_to_store(id: mPartId): typeof type_to_store[typeof mPartSignature];
-export function id_to_store(id: mPointId): typeof type_to_store[typeof mPointSignature];
-export function id_to_store(id: mClaimId): typeof type_to_store[typeof mClaimSignature];
-export function id_to_store(id: mEvidenceId): typeof type_to_store[typeof mEvidenceSignature];
-export function id_to_store(id: ID_TYPE): typeof type_to_store[modelSignatures];
-export function id_to_store(id:ID_TYPE){
-  const type=id_to_type(id);
-  return type_to_store[type];
-}
+type ID_TYPE = mMatchId|mSideId|mPartId|mPointId|mClaimId|mEvidenceId;
+type RAW_TYPE = rawMatch|rawSide|rawPart|rawPoint|rawClaim|rawEvidence;
 
-export const type_to_slice={
-  [mMatchSignature]: match_slice,
-  [mSideSignature]: side_slice,
-  [mPartSignature]: part_slice,
-  [mPointSignature]: point_slice,
-  [mClaimSignature]: claim_slice,
-  [mEvidenceSignature]: evidence_slice,
-};
-export function id_to_slice(id: mMatchId): typeof type_to_slice[typeof mMatchSignature];
-export function id_to_slice(id: mSideId): typeof type_to_slice[typeof mSideSignature];
-export function id_to_slice(id: mPartId): typeof type_to_slice[typeof mPartSignature];
-export function id_to_slice(id: mPointId): typeof type_to_slice[typeof mPointSignature];
-export function id_to_slice(id: mClaimId): typeof type_to_slice[typeof mClaimSignature];
-export function id_to_slice(id: mEvidenceId): typeof type_to_slice[typeof mEvidenceSignature];
-export function id_to_slice(id: ID_TYPE): typeof type_to_slice[modelSignatures];
-export function id_to_slice(id:ID_TYPE){
-  const type=id_to_type(id);
-  return type_to_slice[type];
-}
+type return_type_switch_by_case<T extends ID_TYPE,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>=
+T extends mMatchId ? R_MATCH :
+T extends mSideId ? R_SIDE :
+T extends mPartId ? R_PART :
+T extends mPointId ? R_POINT:
+T extends mClaimId ? R_CLAIM :
+T extends mEvidenceId ? R_EVIDENCE : R_OTHER;
+export const switch_by_type = <R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER=never>(
+  onMatch: ((id: mMatchId, ...args: any[])=>R_MATCH),
+  onSide: ((id: mSideId, ...args: any[])=>R_SIDE),
+  onPart: ((id: mPartId, ...args: any[])=>R_PART),
+  onPoint: ((id: mPointId, ...args: any[])=>R_POINT),
+  OnClaim: ((id: mClaimId, ...args: any[])=>R_CLAIM),
+  onEvidence: ((id: mEvidenceId, ...args: any[])=>R_EVIDENCE),
+  onOther: ((id: any, ...args: any[])=>R_OTHER),
+)=>(
+  <T extends ID_TYPE>(id:T, ...args:any[]):return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>=>{
+    if(is_mMatchId(id)) return onMatch(id, ...args) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+    if(is_mSideId(id)) return onSide(id, ...args) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+    if(is_mPartId(id)) return onPart(id, ...args) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+    if(is_mPointId(id)) return onPoint(id, ...args) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+    if(is_mClaimId(id)) return OnClaim(id, ...args) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+    if(is_mEvidenceId(id)) return onEvidence(id, ...args) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+    return onOther(id) as return_type_switch_by_case<T,R_MATCH,R_SIDE,R_PART,R_POINT,R_CLAIM,R_EVIDENCE,R_OTHER>;
+  }
+);
 
-export function get_from_id(id: mMatchId): mMatch;
-export function get_from_id(id: mSideId): mSide;
-export function get_from_id(id: mPartId): mPart;
-export function get_from_id(id: mPointId): mPoint;
-export function get_from_id(id: PointParentId): PointParent;
-export function get_from_id(id: mClaimId): mClaim;
-export function get_from_id(id: mEvidenceId): mEvidence;
-export function get_from_id(id: ID_TYPE): MODEL_TYPE;
-export function get_from_id(id:ID_TYPE){
-  const type_store=id_to_store(id);
-  if(type_store===undefined) return;
-  return type_store().entities[id];
-};
+export const id_to_type = switch_by_type<
+  typeof match_id_prefix,
+  typeof side_id_prefix,
+  typeof part_id_prefix,
+  typeof point_id_prefix,
+  typeof claim_id_prefix,
+  typeof evidence_id_prefix
+>(
+  _=>match_id_prefix,
+  _=>side_id_prefix,
+  _=>part_id_prefix,
+  _=>point_id_prefix,
+  _=>claim_id_prefix,
+  _=>evidence_id_prefix,
+  _=>{throw TypeError('broken formed id given to id_to_type')}
+);
+export const id_to_store = switch_by_type(
+  _=>(()=>store.getState().match),
+  _=>(()=>store.getState().side),
+  _=>(()=>store.getState().part),
+  _=>(()=>store.getState().point),
+  _=>(()=>store.getState().claim),
+  _=>(()=>store.getState().evidence),
+  _=>{throw TypeError('broken formed id given to id_to_store')}
+);
 
-// 引数idに対応する要素がなければundefined、idの要素に親がなければnull
-export function get_parent_id(id: mMatchId): null|undefined;
-export function get_parent_id(id: mSideId): mMatchId|null|undefined;
-export function get_parent_id(id: mPartId): mSideId|null|undefined;
-export function get_parent_id(id: mPointId): mPartId|mPointId|null|undefined;
-export function get_parent_id(id: mClaimId): mPointId|null|undefined;
-export function get_parent_id(id: mEvidenceId): mPointId|null|undefined;
-export function get_parent_id(id: ID_TYPE): ID_TYPE|null|undefined;
-export function get_parent_id(id:ID_TYPE):ID_TYPE|null|undefined{
-  const type_signature = id_to_type(id);
-  if(type_signature===undefined||type_signature===mMatchSignature) return null;
-  return type_to_store[type_signature]().entities[id]?.parent;
-};
+export const id_to_slice=switch_by_type(
+  _=>match_slice,
+  _=>side_slice,
+  _=>part_slice,
+  _=>point_slice,
+  _=>claim_slice,
+  _=>evidence_slice,
+  _=>{throw TypeError('broken formed id given to id_to_slice')}
+);
 
-export function next_content_id(id: mMatchId): mMatchId;
-export function next_content_id(id: mSideId): mSideId|undefined;
-export function next_content_id(id: mPartId): mPartId|undefined;
-export function next_content_id(id: mPointId): PointChildId|undefined;
-export function next_content_id(id: mClaimId): PointChildId|undefined;
-export function next_content_id(id: mEvidenceId): PointChildId|undefined;
-export function next_content_id(id: ID_TYPE): ID_TYPE|undefined;
-export function next_content_id(id:ID_TYPE):ID_TYPE|undefined{
-  const parent_id=get_parent_id(id);
-  if(parent_id===null||parent_id===undefined) return;
-  const parent_type=id_to_type(parent_id);
-  if(parent_type===undefined) return;
-  const sibling_list=type_to_store[parent_type]().entities[parent_id]?.contents;
-  if(!Array.isArray(sibling_list)) return;
-  const item_index=sibling_list.findIndex(v=>v===id);
-  if(item_index===-1||item_index>=sibling_list.length-1) return;
-  return sibling_list[item_index+1];
-}
+const raw_from_id = switch_by_type(
+  id=>store.getState().match.entities[id.id],
+  id=>store.getState().side.entities[id.id],
+  id=>store.getState().part.entities[id.id],
+  id=>store.getState().point.entities[id.id],
+  id=>store.getState().claim.entities[id.id],
+  id=>store.getState().evidence.entities[id.id],
+  _=>{throw TypeError('broken formed id given to raw_from_id')}
+);
+
+const id_and_raw_to_model = switch_by_type(
+  (_, raw: rawMatch)=>{return new mMatch(raw)},
+  (_, raw: rawSide)=>{return new mSide(raw)},
+  (_, raw: rawPart)=>{return new mPart(raw)},
+  (_, raw: rawPoint)=>{return new mPoint(raw)},
+  (_, raw: rawClaim)=>{return new mClaim(raw)},
+  (_, raw: rawEvidence)=>{return new mEvidence(raw)},
+  _=>{throw TypeError('broken formed id given to id_and_raw_to_model')}
+);
+
+export function get_from_id<T extends ID_TYPE>(id:T){
+  const raw_obj = raw_from_id(id);
+  if(raw_obj===undefined) return;
+  return id_and_raw_to_model(id, raw_obj);
+};

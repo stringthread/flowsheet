@@ -12,3 +12,10 @@ export function reorder_array<T,U>(array:Array<T>,target:U,before:U|null,func?:(
   result.splice(index,0,target_elem);
   return result;
 }
+
+export function next_content<T>(array:Array<T>, target:T): T|undefined|null {
+  const i=array.findIndex(v=>v===target);
+  if(i===-1) return undefined;
+  if(i===array.length-1) return null;
+  return array[i+1];
+}
