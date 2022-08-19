@@ -33,7 +33,7 @@ export class mSide extends BaseModel<rawSide, mMatch, mPart> {
       id: generate_side_id(),
       parent: from.parent,
     };
-    this.obj=generated;
+    this.id = generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     parent_obj.addChild(this);
     return this;
@@ -41,21 +41,17 @@ export class mSide extends BaseModel<rawSide, mMatch, mPart> {
   override getSlice() { return side_slice; }
   override getStore() { return store.getState().side; }
   addChild: (child?: mPart) => mPart|undefined = (child)=>{
-    const parent_id=this.obj?.id;
-    if(parent_id===undefined) return undefined;
-    if(child===undefined) return new mPart({parent: parent_id});
-    store.dispatch(this.getSlice().actions.addChild([parent_id, child.getObj()?.id]));
+    if(child===undefined) return new mPart({parent: this.id});
+    store.dispatch(this.getSlice().actions.addChild([this.id, child.id]));
     return child;
   };
-  getParent: (child?: mMatch) => mMatch|undefined = (child) => {
-    this.updateObj();
+  getParent: (child?: mMatch) => (mMatch|undefined) = (child) => {
     const parent_id = this.obj?.parent;
     if(parent_id===undefined) return undefined;
     if(child===undefined) return get_from_id(parent_id);
   };
   setParent: (parent: mMatch)=>void = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.obj?.id, parent.getObj()?.id ]));
+    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
     parent.addChild(this);
-    this.updateObj();
   };
 }

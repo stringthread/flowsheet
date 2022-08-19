@@ -34,21 +34,19 @@ export class mEvidence extends BaseModel<rawEvidence, mPoint, never> {
       id: generate_evidence_id(),
       parent: {...from.parent},
     };
-    this.obj=generated;
+    this.id = generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
-    parent_obj.addChild(this);
+    parent_obj.setChild(this);
     return this;
   }
   override getStore() { return store.getState().evidence; }
   override getSlice() { return evidence_slice; }
-  getParent: (()=>mPoint|undefined)|undefined = () => {
-    this.updateObj();
+  getParent: ()=>(mPoint|undefined) = () => {
     if(this.obj?.parent===undefined) return undefined;
     return get_from_id(this.obj?.parent);
   }
-  setParent: ((parent: mPoint)=>void)|undefined = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.obj?.id, parent.getObj()?.id ]));
-    parent.addChild(this);
-    this.updateObj();
+  setParent: (parent: mPoint)=>void = (parent)=>{
+    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
+    store.dispatch(parent.getSlice().actions.addChild([ parent.id, this.id ]));
   };
 }

@@ -23,36 +23,19 @@ export abstract class BaseModel<
   T extends rawBaseModel = rawBaseModel,
   P extends BaseModel<rawBaseModel,any,any>|undefined = undefined,
   C extends any = undefined>{
-  protected obj: T|undefined;
+  id: T['id'];
   // arg: baseModelIdの場合、this.updateObj(arg)
   // arg: Partial<T>&{id: any}の場合、this.updateObj(arg.id)
   // this.obj===undefinedのときのFallbackとして: arg: Partial<T>の場合、this.generate(arg)
   constructor(arg: Partial<T>|T['id']){
-    if(isModelId(arg)) this.updateObj(arg);
-    else {
-      if('id' in arg) this.updateObj(arg.id);
-      if(this.obj===undefined){
-        const generated=this.generate(arg);
-        this.obj=generated.obj;
-      }
-    }
+    let id: T['id']|undefined = undefined;
+    if(isModelId(arg)) id=arg;
+    else if('id' in arg && arg.id!==undefined) id=arg.id;
+    if(id===undefined || this.objFromStore(id)===undefined) id = this.generate(isModelId(arg)?{}:arg).id;
+    this.id = id;
   }
-  getObj(): T | undefined {
-    if(this.obj===undefined) return undefined;
-    return  { ...this.obj };
-  }
-  updateObj(id?: T['id']): void {
-    if(id===undefined){
-      if(this.obj===undefined) return;
-      id=this.obj.id;
-    }
-    const obj_in_store = this.getStore().entities[id.id];
-    if(obj_in_store!==undefined) this.obj = obj_in_store;
-  }
-  toPlainObj(): T|undefined {
-    this.updateObj();
-    return this.obj;
-  }
+  get obj(): T|undefined { return this.objFromStore(this.id); }
+  objFromStore(id: T['id']): T|undefined { return this.getStore().entities[id.id]; }
   abstract generate(from:Partial<T>): BaseModel<T,P,C>;
   abstract getSlice(): Slice;
   abstract getStore(): EntityStateWithLastID<T>;
@@ -62,11 +45,6 @@ export abstract class BaseModel<
       ...this.obj,
       id: this.obj.id,
     }));
-    this.updateObj();
   }
   getContents(): T['contents']|undefined { return this.obj?.contents; }
-  addChild: ((...args: any)=>C|undefined)|undefined = undefined;
-  reorderChild: ((target: C, before: C|null)=>void)|undefined = undefined;
-  getParent: (()=>P|undefined)|undefined = undefined;
-  setParent: ((parent: P)=>void)|undefined = undefined;
 }

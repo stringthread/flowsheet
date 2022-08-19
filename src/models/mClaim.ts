@@ -26,25 +26,24 @@ export class mClaim extends BaseModel<rawClaim, mPoint, never> {
   override generate(from:PartiallyRequired<rawClaim, 'parent'>): mClaim{
     const parent_obj=get_from_id(from.parent);
     if(!(parent_obj instanceof mPoint)) throw TypeError('argument `parent` does not match mPointId');
-    this.obj = {
+    const generated: rawClaim = {
       ...from,
       id: generate_claim_id(),
       parent: {...from.parent},
     };
-    store.dispatch(this.getSlice().actions.add(this.obj));
-    parent_obj.addChild(this);
+    this.id = generated.id;
+    store.dispatch(this.getSlice().actions.add(generated));
+    parent_obj.setChild(this);
     return this;
   }
   override getSlice() { return claim_slice; }
   override getStore() { return store.getState().claim; };
-  getParent: ()=>mPoint|undefined = () => {
-    this.updateObj();
+  getParent: ()=>(mPoint|undefined) = () => {
     if(this.obj?.parent===undefined) return undefined;
     return get_from_id(this.obj?.parent);
   }
   setParent: (parent: mPoint)=>void = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.obj?.id, parent.getObj()?.id ]));
-    parent.addChild(this);
-    this.updateObj();
+    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
+    store.dispatch(parent.getSlice().actions.addChild([ parent.id, this.id ]));
   }
 }

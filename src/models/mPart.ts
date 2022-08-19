@@ -33,7 +33,7 @@ export class mPart extends BaseModel<rawPart, mSide, mPoint> {
       id: generate_part_id(),
       parent: from.parent,
     };
-    this.obj=generated;
+    this.id = generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     parent_obj.addChild(this);
     return this;
@@ -42,21 +42,22 @@ export class mPart extends BaseModel<rawPart, mSide, mPoint> {
   override getStore(): EntityStateWithLastID<rawPart> {
     return store.getState().part;
   };
-  addChild: (child?: mPoint) => mPoint|undefined = (child)=>{
-    const parent_id=this.obj?.id;
-    if(parent_id===undefined) return undefined;
-    if(child===undefined) return new mPoint({parent: parent_id});
-    store.dispatch(this.getSlice().actions.addChild([parent_id, child.getObj()?.id]));
-    return child;
+  addChild: () => mPoint = ()=>{
+    return new mPoint({parent: this.id});
   };
-  getParent: () => mSide|undefined = () => {
-    this.updateObj();
+  setChild: (child: mPoint) => void = (child)=>{
+    store.dispatch(this.getSlice().actions.addChild([this.id, child.id]));
+    store.dispatch(child.getSlice().actions.setParent([child.id, this.id]));
+  }
+  reorder_child: (target:mPointId, before:mPointId|null) => void = (target, before) =>{
+    store.dispatch(part_slice.actions.reorderChild([this.id,target,before]));
+  };
+  getParent: () => (mSide|undefined) = () => {
     if(this.obj?.parent===undefined) return undefined;
     return get_from_id(this.obj?.parent);
   }
   setParent: (parent: mSide)=>void = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.obj?.id, parent.getObj()?.id ]));
+    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
     parent.addChild(this);
-    this.updateObj();
   }
 }

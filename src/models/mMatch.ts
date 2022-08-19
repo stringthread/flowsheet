@@ -35,7 +35,7 @@ export class mMatch extends BaseModel<rawMatch, undefined, mSide> {
       ...from,
       id: generate_match_id(),
     };
-    this.obj=generated;
+    this.id=generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     return this;
   }
@@ -43,11 +43,9 @@ export class mMatch extends BaseModel<rawMatch, undefined, mSide> {
   override getStore(): EntityStateWithLastID<rawMatch> {
     return store.getState().match;
   };
-  addChild: (child?: mSide) => mSide|undefined = (child)=>{
-    const parent_id=this.obj?.id;
-    if(parent_id===undefined) return undefined;
-    if(child===undefined) return new mSide({parent: parent_id});
-    store.dispatch(this.getSlice().actions.addChild([parent_id, child?.getObj()?.id]));
+  addChild: (child?: mSide) => (mSide|undefined) = (child)=>{
+    if(child===undefined) return new mSide({parent: this.id});
+    store.dispatch(this.getSlice().actions.addChild([this.id, child?.id]));
     return child;
   };
 }
