@@ -8,10 +8,10 @@ import {mClaim, mClaimSignature} from 'models/mClaim';
 jest.mock('react-redux');
 const useSelectorMock=useSelector as jest.Mock<mClaim|undefined>;
 
-test('Claim: eviIDに該当がなければ生成されない',()=>{
+test('Claim: claimIDに該当がなければ生成されない',()=>{
   useSelectorMock.mockReturnValueOnce(undefined);
   render(<Claim claimID="claim_dummy" setSelected={(_)=>{}} />);
-  expect(screen.queryByTestId('evidence')).toBeNull();
+  expect(screen.queryByTestId('claim')).toBeNull();
 });
 
 test('Evidence: useSelectorでオブジェクトが帰ってきたら描画',()=>{
@@ -22,6 +22,6 @@ test('Evidence: useSelectorでオブジェクトが帰ってきたら描画',()=
     contents: 'テスト用のクレーム',
   }
   useSelectorMock.mockReturnValueOnce(returned);
-  render(<Claim claimID="evi_dummy" setSelected={(_)=>{}} />);
+  render(<Claim claimID="claim_dummy" setSelected={(_)=>{}} />);
   expect(screen.getByDisplayValue(returned.contents as string)).toBeInTheDocument();
 });
