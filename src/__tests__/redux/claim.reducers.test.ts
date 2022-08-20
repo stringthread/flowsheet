@@ -16,7 +16,7 @@ test('claim/add reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_claim_state);
   const test_claim: mClaim={
     type_signature: mClaimSignature,
-    id: 'claim_0',
+    id_obj: 'claim_0',
     parent: 'point_0',
     contents: 'test_contents'
   };
@@ -37,13 +37,13 @@ test('claim/upsertOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_claim_state);
   const test_claim_before: mClaim={
     type_signature: mClaimSignature,
-    id: 'claim_0',
+    id_obj: 'claim_0',
     parent: 'point_0',
     contents: 'before'
   };
   const test_claim_after: mClaim={
     type_signature: mClaimSignature,
-    id: 'claim_0',
+    id_obj: 'claim_0',
     parent: 'point_0',
     contents: 'before'
   };
@@ -58,7 +58,7 @@ test('claim/removeOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_claim_state);
   const test_claim: mClaim={
     type_signature: mClaimSignature,
-    id: 'claim_0',
+    id_obj: 'claim_0',
     parent: 'point_0',
     contents: 'test_contents'
   };
@@ -78,7 +78,7 @@ test('claim/removeAll reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_claim_state);
   const test_claim: mClaim={
     type_signature: mClaimSignature,
-    id: 'claim_0',
+    id_obj: 'claim_0',
     parent: 'point_0',
     contents: 'test_contents'
   };
@@ -98,7 +98,7 @@ test('claim/setParent reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_claim_state);
   const test_claim: mClaim={
     type_signature: mClaimSignature,
-    id: 'claim_0',
+    id_obj: 'claim_0',
     parent: 'point_0',
     contents: 'test_contents'
   };

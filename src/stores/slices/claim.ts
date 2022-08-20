@@ -15,9 +15,10 @@ export const claim_slice=createSlice({
     add: (state,action:PayloadAction<rawClaim>)=>{
       claim_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<rawClaim,'id'>&Partial<rawClaim>>)=>{
+    upsertOne: (state,action:PayloadAction<Pick<rawClaim,'id_obj'>&Partial<rawClaim>>)=>{
       const new_obj={
-        ...state.entities[action.payload.id.id],
+        ...state.entities[action.payload.id_obj.id],
+        id: action.payload.id_obj.id,
         ...action.payload
       };
       if(is_rawClaim(new_obj)) claim_adapter.upsertOne(state,new_obj);

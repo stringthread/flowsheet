@@ -2,14 +2,15 @@ import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mEvidence, mEvidenceId} from 'models/mEvidence';
+import {mEvidence, mEvidenceId, rawEvidence} from 'models/mEvidence';
 import {evidence_selectors,evidence_slice} from 'stores/slices/evidence';
 import {StretchTextInput,StretchTextArea} from './TextInput';
 import {typeSelected} from './App';
+import { get_from_id } from 'services/id';
 
 type HeaderProps = {
   parentID: mEvidenceId;
-  metadata: Omit<mEvidence, 'content'>;
+  metadata: Omit<rawEvidence, 'content'>;
 }
 
 const styleEvidenceHeadContent=css`
@@ -44,7 +45,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
           value={props.metadata.about_author??''}
           onBlur={(e)=>{
             dispatch(evidence_slice.actions.upsertOne({
-              id: props.parentID,
+              id_obj: props.parentID,
               about_author: e.currentTarget.value,
             }));
           }}
@@ -57,7 +58,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
           value={props.metadata.author??''}
           onBlur={(e)=>{
             dispatch(evidence_slice.actions.upsertOne({
-              id: props.parentID,
+              id_obj: props.parentID,
               author: e.currentTarget.value,
             }));
           }}
@@ -70,7 +71,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
           value={props.metadata.year?.toString()??''}
           onBlur={(e)=>{
             dispatch(evidence_slice.actions.upsertOne({
-              id: props.parentID,
+              id_obj: props.parentID,
               year: e.currentTarget.value,
             }));
           }}
@@ -104,7 +105,7 @@ const styleEvidenceContent=css`
 
 export const Evidence: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
-  const evidence=useSelector((state:RootState)=>evidence_selectors.selectById(state,props.eviID));
+  const evidence=get_from_id(props.eviID)?.obj;
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -119,7 +120,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
         value={evidence.contents}
         onBlur={(e)=>{
           dispatch(evidence_slice.actions.upsertOne({
-            id: props.eviID,
+            id_obj: props.eviID,
             contents: e.currentTarget.value,
           }));
         }}

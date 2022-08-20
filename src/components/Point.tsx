@@ -2,7 +2,7 @@ import React,{useCallback} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {is_mPointId, mPoint, mPointId} from 'models/mPoint';
+import {is_mPointId, mPoint, mPointId, rawPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
 import {Claim} from './Claim';
 import {typeSelected} from './App';
@@ -10,6 +10,7 @@ import {point_selectors,point_slice} from 'stores/slices/point';
 import {StretchTextInput,StretchTextArea} from './TextInput';
 import { is_mClaimId } from 'models/mClaim';
 import { is_mEvidenceId } from 'models/mEvidence';
+import { get_from_id } from 'services/id';
 
 type Props = {
   pointID: mPointId;
@@ -18,7 +19,7 @@ type Props = {
 
 type ChildProps = {
   parentID:mPointId;
-  contents:mPoint['contents'];
+  contents:rawPoint['contents'];
   setSelected: (_:typeSelected)=>void;
 };
 
@@ -70,7 +71,7 @@ const stylePoint=css`
 
 export const Point: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
-  const point=useSelector((state:RootState)=>point_selectors.selectById(state,props.pointID));
+  const point=get_from_id(props.pointID)?.obj;
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -85,7 +86,7 @@ export const Point: React.VFC<Props> = (props)=>{
           value={point.numbering?.toString()}
           onBlur={(e)=>{
             dispatch(point_slice.actions.upsertOne({
-              id: props.pointID,
+              id_obj: props.pointID,
               numbering: e.currentTarget.value,
             }));
           }}

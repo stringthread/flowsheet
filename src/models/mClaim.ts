@@ -16,7 +16,7 @@ export const to_mClaimId=(seed:string): mClaimId => ({
 });
 
 export interface rawClaim extends rawBaseModel {
-  id: mClaimId;
+  id_obj: mClaimId;
   parent: mPointId;
   contents?: string;
 }
@@ -26,12 +26,13 @@ export class mClaim extends BaseModel<rawClaim, mPoint, never> {
   override generate(from:PartiallyRequired<rawClaim, 'parent'>): mClaim{
     const parent_obj=get_from_id(from.parent);
     if(!(parent_obj instanceof mPoint)) throw TypeError('argument `parent` does not match mPointId');
+    this.id_obj = generate_claim_id();
     const generated: rawClaim = {
       ...from,
-      id: generate_claim_id(),
+      id_obj: this.id_obj,
+      id: this.id_obj.id,
       parent: {...from.parent},
     };
-    this.id = generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     parent_obj.setChild(this);
     return this;
@@ -43,7 +44,7 @@ export class mClaim extends BaseModel<rawClaim, mPoint, never> {
     return get_from_id(this.obj?.parent);
   }
   setParent: (parent: mPoint)=>void = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
-    store.dispatch(parent.getSlice().actions.addChild([ parent.id, this.id ]));
+    store.dispatch(this.getSlice().actions.setParent([ this.id_obj, parent.id_obj ]));
+    store.dispatch(parent.getSlice().actions.addChild([ parent.id_obj, this.id_obj ]));
   }
 }

@@ -15,9 +15,10 @@ export const evidence_slice=createSlice({
     add: (state,action:PayloadAction<rawEvidence>)=>{
       evidence_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<rawEvidence,'id'>&Partial<rawEvidence>>)=>{
+    upsertOne: (state,action:PayloadAction<Pick<rawEvidence,'id_obj'>&Partial<rawEvidence>>)=>{
       const evi={
-        ...state.entities[action.payload.id.id],
+        ...state.entities[action.payload.id_obj.id],
+        id: action.payload.id_obj.id,
         ...action.payload
       };
       if(is_rawEvidence(evi)) evidence_adapter.upsertOne(state,evi);

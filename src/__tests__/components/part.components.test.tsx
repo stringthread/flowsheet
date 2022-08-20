@@ -21,7 +21,7 @@ test('Part: contentsがないときパート名だけ描画',()=>{
   const returned: mPart = {
     type_signature: mPartSignature,
     parent: 'side_dummy',
-    id: 'part_0',
+    id_obj: 'part_0',
     name: '1AC',
   };
   useSelectorMock.mockReturnValueOnce(returned);
@@ -36,7 +36,7 @@ test('Part: contentsがあるとき',()=>{
   const returned: mPart = {
     type_signature: mPartSignature,
     parent: 'side_dummy',
-    id: 'part_0',
+    id_obj: 'part_0',
     name: '1AC',
     contents: ['point_0']
   };

@@ -18,7 +18,7 @@ test('Evidence: useSelectorでオブジェクトが帰ってきたら描画',()=
   const returned: mEvidence = {
     type_signature: mEvidenceSignature,
     parent: 'point_dummy',
-    id: 'evi_0',
+    id_obj: 'evi_0',
     author: 'Test Author',
     year: 2021,
     contents: 'また、記事の回避国は、ルールの提供する発表独自た企業で著作する、その対象に有しば方針を補足あることを著作しれます。',

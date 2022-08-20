@@ -6,6 +6,7 @@ import {Part} from './Part';
 import {typeSelected} from './App';
 import {side_selectors} from 'stores/slices/side';
 import { mSideId } from 'models/mSide';
+import { get_from_id } from 'services/id';
 
 type Props = {
   sideID: mSideId;
@@ -26,7 +27,7 @@ const styleSideChildrenWrap=css`
 `;
 
 export const Side: React.VFC<Props> = (props)=>{
-  const side=useSelector((state:RootState)=>side_selectors.selectById(state,props.sideID));
+  const side=get_from_id(props.sideID)?.obj;
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();

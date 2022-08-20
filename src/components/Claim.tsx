@@ -6,6 +6,7 @@ import {typeSelected} from './App';
 import {claim_selectors, claim_slice} from 'stores/slices/claim';
 import {StretchTextArea} from './TextInput';
 import { mClaimId } from 'models/mClaim';
+import { get_from_id } from 'services/id';
 
 type Props = {
   claimID: mClaimId;
@@ -21,7 +22,7 @@ const stylePointClaim=css`
 
 export const Claim: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
-  const claim=useSelector((state:RootState)=>claim_selectors.selectById(state,props.claimID));
+  const claim=get_from_id(props.claimID)?.obj;
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -35,7 +36,7 @@ export const Claim: React.VFC<Props> = (props)=>{
       value={claim.contents}
       onBlur={(e)=>{
         dispatch(claim_slice.actions.upsertOne({
-          id: props.claimID,
+          id_obj: props.claimID,
           contents: e.currentTarget.value,
         }));
       }}

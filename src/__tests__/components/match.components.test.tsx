@@ -20,7 +20,7 @@ test('Match: matchIDに該当がなければ生成されない',()=>{
 test('Match: contentsがないときパート名だけ描画',()=>{
   const returned: mMatch = {
     type_signature: mMatchSignature,
-    id: 'match_0',
+    id_obj: 'match_0',
     topic: '一院制',
   };
   useSelectorMock.mockReturnValueOnce(returned);
@@ -35,7 +35,7 @@ test('Match: contentsがないときパート名だけ描画',()=>{
 test('Match: contentsがあるとき',()=>{
   const returned: mMatch = {
     type_signature: mMatchSignature,
-    id: 'match_0',
+    id_obj: 'match_0',
     topic: '一院制',
     contents: ['side_0']
   };

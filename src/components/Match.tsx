@@ -2,13 +2,14 @@ import React,{useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mMatch, mMatchId} from 'models/mMatch';
+import {mMatch, mMatchId, rawMatch} from 'models/mMatch';
 import {typeSelected} from './App';
 import {Side} from './Side';
 import { match_selectors } from 'stores/slices/match';
+import { get_from_id } from 'services/id';
 
 type HeaderProps = {
-  metadata: Omit<mMatch,'content'>
+  metadata: Omit<rawMatch,'content'>
 };
 
 const styleMatchHeader=css`
@@ -50,12 +51,10 @@ export const Match: React.VFC<Props> = (props)=>{
     e.stopPropagation();
     props.setSelected(props.matchID);
   },[props.matchID,props.setSelected]);
-  const match=useSelector((state:RootState)=>match_selectors.selectById(state,props.matchID));
-  if(match===undefined) return null;
   return (
     <div className='match' data-testid="match" onClick={onClick} css={styleMatch}>
-      <MatchHeader metadata={match} />
-      {match.contents?.map(side=>(<Side sideID={side} setSelected={props.setSelected} />))??null}
+      <MatchHeader metadata={get_from_id(props.matchID)?.obj??{ id_obj: props.matchID, id: props.matchID.id }} />
+      {get_from_id(props.matchID)?.obj?.contents?.map(side=>(<Side sideID={side} setSelected={props.setSelected} />))??null}
     </div>
   );
 }

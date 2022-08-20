@@ -6,6 +6,7 @@ import {Point} from './Point';
 import {typeSelected} from './App';
 import {part_selectors} from 'stores/slices/part';
 import { mPartId } from 'models/mPart';
+import { get_from_id } from 'services/id';
 
 type Props = {
   partID: mPartId;
@@ -26,7 +27,7 @@ const stylePart=css`
 `;
 
 export const Part: React.VFC<Props> = (props)=>{
-  const part=useSelector((state:RootState)=>part_selectors.selectById(state,props.partID));
+  const part=get_from_id(props.partID)?.obj;
   const onClick=useCallback((e: React.MouseEvent)=>{
     e.preventDefault();
     e.stopPropagation();

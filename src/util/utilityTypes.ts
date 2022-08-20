@@ -20,5 +20,5 @@ export type AdaptRequiredState<T,U> = Partial<{
   [K in keyofRequired<T>&keyof U]: U[K];
 }>;
 export function assertNever(x: never): never {
-  throw new Error('Unexpected object: ' + x);
+  throw new Error('Unexpected object: ' + JSON.stringify(x));
 }

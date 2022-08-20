@@ -16,9 +16,10 @@ export const point_slice=createSlice({
     add: (state,action:PayloadAction<rawPoint>)=>{
       point_adapter.addOne(state,action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<rawPoint,'id'>&Partial<rawPoint>>)=>{
+    upsertOne: (state,action:PayloadAction<Pick<rawPoint,'id_obj'>&Partial<rawPoint>>)=>{
       const point={
-        ...state.entities[action.payload.id.id],
+        ...state.entities[action.payload.id_obj.id],
+        id: action.payload.id_obj.id,
         ...action.payload
       };
       if(is_rawPoint(point)) point_adapter.upsertOne(state,point);

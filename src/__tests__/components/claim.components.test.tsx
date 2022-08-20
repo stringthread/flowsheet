@@ -18,7 +18,7 @@ test('Evidence: useSelectorでオブジェクトが帰ってきたら描画',()=
   const returned: mClaim = {
     type_signature: mClaimSignature,
     parent: 'point_dummy',
-    id: 'claim_dummy',
+    id_obj: 'claim_dummy',
     contents: 'テスト用のクレーム',
   }
   useSelectorMock.mockReturnValueOnce(returned);

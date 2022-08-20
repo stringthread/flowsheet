@@ -18,7 +18,7 @@ export const to_mMatchId=(seed:string): mMatchId => ({
 });
 
 export interface rawMatch extends rawBaseModel {
-  id: mMatchId;
+  id_obj: mMatchId;
   topic?: string;
   date?: Date|string;
   side?: rawSide['side'];
@@ -31,11 +31,12 @@ export interface rawMatch extends rawBaseModel {
 
 export class mMatch extends BaseModel<rawMatch, undefined, mSide> {
   override generate(from:Partial<rawMatch>): mMatch{
+    this.id_obj=generate_match_id();
     const generated: rawMatch= {
       ...from,
-      id: generate_match_id(),
+      id_obj: this.id_obj,
+      id: this.id_obj.id
     };
-    this.id=generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     return this;
   }
@@ -44,8 +45,8 @@ export class mMatch extends BaseModel<rawMatch, undefined, mSide> {
     return store.getState().match;
   };
   addChild: (child?: mSide) => (mSide|undefined) = (child)=>{
-    if(child===undefined) return new mSide({parent: this.id});
-    store.dispatch(this.getSlice().actions.addChild([this.id, child?.id]));
+    if(child===undefined) return new mSide({parent: this.id_obj});
+    store.dispatch(this.getSlice().actions.addChild([this.id_obj, child?.id_obj]));
     return child;
   };
 }

@@ -21,7 +21,7 @@ test('Side: contentsがないときパート名だけ描画',()=>{
   const returned: mSide = {
     type_signature: mSideSignature,
     parent: 'match_dummy',
-    id: 'side_0',
+    id_obj: 'side_0',
     side: 'aff',
   };
   useSelectorMock.mockReturnValueOnce(returned);
@@ -36,7 +36,7 @@ test('Side: contentsがあるとき',()=>{
   const returned: mSide = {
     type_signature: mSideSignature,
     parent: 'match_dummy',
-    id: 'side_0',
+    id_obj: 'side_0',
     side: 'aff',
     contents: ['part_0']
   };

@@ -13,7 +13,7 @@ const initial_match_state: EntityStateWithLastID<mMatch>={
 test('match/removeAll reducerの確認',()=>{
   const test_match: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_2',
+    id_obj: 'match_2',
     winner: 'Aff'
   };
   store.dispatch(match_slice.actions.add(test_match));
@@ -27,7 +27,7 @@ test('match/add reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_0',
+    id_obj: 'match_0',
     winner: 'Aff'
   };
   const expected_match_state: EntityStateWithLastID<mMatch>={
@@ -47,12 +47,12 @@ test('match/upsertOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match_before: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_0',
+    id_obj: 'match_0',
     topic: 'before'
   };
   const test_match_after: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_0',
+    id_obj: 'match_0',
     topic: 'after'
   };
   store.dispatch(match_slice.actions.add(test_match_before));
@@ -66,12 +66,12 @@ test('match/removeOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_1',
+    id_obj: 'match_1',
     winner: 'Aff'
   };
   const test_match_2: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_2',
+    id_obj: 'match_2',
     winner: 'Aff'
   };
   const expected_match_state: EntityStateWithLastID<mMatch>={
@@ -93,7 +93,7 @@ test('match/addChild reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_3',
+    id_obj: 'match_3',
     winner: 'Aff',
     contents: ['part_0']
   };
@@ -109,7 +109,7 @@ test('match/addChild reducer: contentsが空のとき',()=>{
   expect(store.getState().match).toEqual(initial_match_state);
   const test_match: mMatch={
     type_signature: mMatchSignature,
-    id: 'match_4',
+    id_obj: 'match_4',
     winner: 'Aff'
   };
   const expected_match_content: mMatch['contents']=['part_0']

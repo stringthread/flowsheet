@@ -16,7 +16,7 @@ test('evidence/add reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: 'point_0',
     author: 'test author',
     contents: 'test_contents'
@@ -38,13 +38,13 @@ test('evidence/upsertOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence_before: mEvidence={
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: 'point_0',
     contents: 'before'
   };
   const test_evidence_after: mEvidence={
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: 'point_0',
     contents: 'before'
   };
@@ -59,7 +59,7 @@ test('evidence/removeOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: 'point_0',
     author: 'test author',
     contents: 'test_contents'
@@ -80,7 +80,7 @@ test('evidence/removeAll reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: 'point_0',
     author: 'test author',
     contents: 'test_contents'
@@ -101,7 +101,7 @@ test('evidence/setParent reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_evidence_state);
   const test_evidence: mEvidence={
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: 'point_0',
     author: 'test author',
     contents: 'test_contents'

@@ -24,7 +24,7 @@ beforeEach(()=>{
   store.dispatch(evidence_slice.actions.reset());
 });
 
-const generate_parents=():[mMatch['id'], mSide['id'], mPart['id'], mPoint['id']]=>{
+const generate_parents=():[mMatch['id_obj'], mSide['id_obj'], mPart['id_obj'], mPoint['id_obj']]=>{
   const match=generate_match();
   const side=generate_side(match.id);
   const part=generate_part(side.id);
@@ -36,13 +36,13 @@ test('generate_evidence: 引数あり',()=>{
   const point_id=generate_parents()[3];
   const expected_result:mEvidence = {
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: point_id,
     author: 'test_author'
   };
   const result=generate_evidence(point_id,expected_result);
   expect(result).toEqual(expected_result);
-  expect(store.getState().evidence.entities[expected_result.id]).toEqual(expected_result);
+  expect(store.getState().evidence.entities[expected_result.id_obj]).toEqual(expected_result);
   const parent_in_redux=get_from_id(point_id);
   expect(is_mPoint(parent_in_redux)).toBeTruthy();
   if(!is_mPoint(parent_in_redux)) return;
@@ -53,12 +53,12 @@ test('generate_evidence: 引数なし',()=>{
   const point_id=generate_parents()[3];
   const expected_result:mEvidence = {
     type_signature: mEvidenceSignature,
-    id: 'evi_0',
+    id_obj: 'evi_0',
     parent: point_id
   };
   const result=generate_evidence(point_id)
   expect(result).toEqual(expected_result);
-  expect(store.getState().evidence.entities[expected_result.id]).toEqual(expected_result);
+  expect(store.getState().evidence.entities[expected_result.id_obj]).toEqual(expected_result);
   const parent_in_redux=get_from_id(point_id);
   expect(is_mPoint(parent_in_redux)).toBeTruthy();
   if(!is_mPoint(parent_in_redux)) return;

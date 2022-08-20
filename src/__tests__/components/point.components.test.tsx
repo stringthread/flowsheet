@@ -21,7 +21,7 @@ test('Point: contentsがないときナンバリングだけ描画',()=>{
   const returned_1: mPoint = {
     type_signature: mPointSignature,
     parent: 'part_dummy',
-    id: 'point_0',
+    id_obj: 'point_0',
     numbering: 'a'
   };
   useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValue(undefined);
@@ -35,7 +35,7 @@ test('Point: contentsがevidenceのみのとき',()=>{
   const returned: mPoint = {
     type_signature: mPointSignature,
     parent: 'part_dummy',
-    id: 'point_0',
+    id_obj: 'point_0',
     numbering: 'a',
     contents: ['evi_0']
   };
@@ -49,14 +49,14 @@ test('Point: contentsがpointのとき',()=>{
   const returned_1: mPoint = {
     type_signature: mPointSignature,
     parent: 'part_dummy',
-    id: 'point_0',
+    id_obj: 'point_0',
     numbering: 'a',
     contents: ['point_0']
   };
   const returned_2: mPoint = {
     type_signature: mPointSignature,
     parent: 'point_0',
-    id: 'point_1',
+    id_obj: 'point_1',
     contents: ['evi_0']
   };
   useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValueOnce(returned_2);
@@ -69,14 +69,14 @@ test('Point: contentsが複数のとき',()=>{
   const returned_1: mPoint = {
     type_signature: mPointSignature,
     parent: 'part_dummy',
-    id: 'point_0',
+    id_obj: 'point_0',
     numbering: 'a',
     contents: ['point_1','evi_1']
   };
   const returned_2: mPoint = {
     type_signature: mPointSignature,
     parent: 'point_0',
-    id: 'point_1',
+    id_obj: 'point_1',
     contents: ['claim_0']
   };
   useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValueOnce(returned_2);

@@ -18,7 +18,7 @@ export const to_mPartId=(seed:string): mPartId => ({
 });
 
 export interface rawPart extends rawBaseModel {
-  id: mPartId;
+  id_obj: mPartId;
   parent: mSideId;
   name?: string|number;
   contents?: Array<mPointId>;
@@ -27,13 +27,14 @@ export interface rawPart extends rawBaseModel {
 export class mPart extends BaseModel<rawPart, mSide, mPoint> {
   override generate(from:PartiallyRequired<rawPart, 'parent'>): mPart{
     const parent_obj=get_from_id(from.parent);
-    if(!(parent_obj instanceof mPart)) throw TypeError('argument `parent` does not match mSideId');
+    if(!(parent_obj instanceof mSide)) throw TypeError('argument `parent` does not match mSideId');
+    this.id_obj = generate_part_id();
     const generated: rawPart= {
       ...from,
-      id: generate_part_id(),
+      id_obj: this.id_obj,
+      id: this.id_obj.id,
       parent: from.parent,
     };
-    this.id = generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     parent_obj.addChild(this);
     return this;
@@ -43,21 +44,21 @@ export class mPart extends BaseModel<rawPart, mSide, mPoint> {
     return store.getState().part;
   };
   addChild: () => mPoint = ()=>{
-    return new mPoint({parent: this.id});
+    return new mPoint({parent: this.id_obj});
   };
   setChild: (child: mPoint) => void = (child)=>{
-    store.dispatch(this.getSlice().actions.addChild([this.id, child.id]));
-    store.dispatch(child.getSlice().actions.setParent([child.id, this.id]));
+    store.dispatch(this.getSlice().actions.addChild([this.id_obj, child.id_obj]));
+    store.dispatch(child.getSlice().actions.setParent([child.id_obj, this.id_obj]));
   }
   reorder_child: (target:mPointId, before:mPointId|null) => void = (target, before) =>{
-    store.dispatch(part_slice.actions.reorderChild([this.id,target,before]));
+    store.dispatch(part_slice.actions.reorderChild([this.id_obj,target,before]));
   };
   getParent: () => (mSide|undefined) = () => {
     if(this.obj?.parent===undefined) return undefined;
     return get_from_id(this.obj?.parent);
   }
   setParent: (parent: mSide)=>void = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
+    store.dispatch(this.getSlice().actions.setParent([ this.id_obj, parent.id_obj ]));
     parent.addChild(this);
   }
 }

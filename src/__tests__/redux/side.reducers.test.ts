@@ -13,7 +13,7 @@ const initial_side_state: EntityStateWithLastID<mSide>={
 test('side/removeAll reducerの確認',()=>{
   const test_side: mSide={
     type_signature: mSideSignature,
-    id: 'side_2',
+    id_obj: 'side_2',
     parent: 'match_0',
     side: 'Aff'
   };
@@ -28,7 +28,7 @@ test('side/add reducerの確認',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     type_signature: mSideSignature,
-    id: 'side_0',
+    id_obj: 'side_0',
     parent: 'match_0',
     side: 'Aff'
   };
@@ -49,13 +49,13 @@ test('side/upsertOne reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_side_state);
   const test_side_before: mSide={
     type_signature: mSideSignature,
-    id: 'side_0',
+    id_obj: 'side_0',
     parent: 'match_0',
     side: 'aff'
   };
   const test_side_after: mSide={
     type_signature: mSideSignature,
-    id: 'side_0',
+    id_obj: 'side_0',
     parent: 'match_0',
     side: 'neg'
   };
@@ -70,13 +70,13 @@ test('side/removeOne reducerの確認',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     type_signature: mSideSignature,
-    id: 'side_1',
+    id_obj: 'side_1',
     parent: 'match_0',
     side: 'Aff'
   };
   const test_side_2: mSide={
     type_signature: mSideSignature,
-    id: 'side_2',
+    id_obj: 'side_2',
     parent: 'match_0',
     side: 'Aff'
   };
@@ -99,7 +99,7 @@ test('side/addChild reducerの確認',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     type_signature: mSideSignature,
-    id: 'side_3',
+    id_obj: 'side_3',
     parent: 'match_0',
     side: 'Aff',
     contents: ['point_0']
@@ -116,7 +116,7 @@ test('side/addChild reducer: contentsが空のとき',()=>{
   expect(store.getState().side).toEqual(initial_side_state);
   const test_side: mSide={
     type_signature: mSideSignature,
-    id: 'side_4',
+    id_obj: 'side_4',
     parent: 'match_0',
     side: 'Aff'
   };
@@ -132,7 +132,7 @@ test('side/setParent reducerの確認',()=>{
   expect(store.getState().match).toEqual(initial_side_state);
   const test_side_before: mSide={
     type_signature: mSideSignature,
-    id: 'side_0',
+    id_obj: 'side_0',
     parent: 'match_0',
     side: 'aff'
   };

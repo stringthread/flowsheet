@@ -27,7 +27,7 @@ export type PointParentId = mPointId|mPartId;
 export const is_PointParentId = (v: unknown): v is PointParentId => is_mPointId(v)||is_mPartId(v);
 
 export interface rawPoint extends rawBaseModel {
-  id: mPointId;
+  id_obj: mPointId;
   parent: PointParentId;
   numbering?: number|string;
   children_numbering?: number|string;
@@ -39,12 +39,13 @@ export class mPoint extends BaseModel<rawPoint, PointParent, PointChild> {
   override generate(from:PartiallyRequired<rawPoint, 'parent'>): mPoint{
     const parent_obj=get_from_id(from.parent);
     if(!(parent_obj instanceof mPoint) && !(parent_obj instanceof mPart)) throw TypeError('argument `parent` does not match PointParentId');
+    this.id_obj = generate_point_id();
     const generated: rawPoint= {
       ...from,
-      id: generate_point_id(),
+      id_obj: this.id_obj,
+      id: this.id_obj.id,
       parent: from.parent,
     };
-    this.id = generated.id;
     store.dispatch(this.getSlice().actions.add(generated));
     parent_obj.setChild(this);
     return this;
@@ -54,24 +55,24 @@ export class mPoint extends BaseModel<rawPoint, PointParent, PointChild> {
     return store.getState().point;
   };
   addChild = {
-    [point_id_prefix]: ()=>new mPoint({parent: this.id}),
-    [evidence_id_prefix]: ()=>new mEvidence({parent: this.id}),
-    [claim_id_prefix]: ()=>new mClaim({parent: this.id}),
+    [point_id_prefix]: ()=>new mPoint({parent: this.id_obj}),
+    [evidence_id_prefix]: ()=>new mEvidence({parent: this.id_obj}),
+    [claim_id_prefix]: ()=>new mClaim({parent: this.id_obj}),
   };
   setChild: (child:PointChild)=>void = (child)=>{
-    store.dispatch(point_slice.actions.addChild([this.id, child.id]));
+    store.dispatch(point_slice.actions.addChild([this.id_obj, child.id_obj]));
     child.setParent(this);
   }
   reorder_child: (target:PointChildId, before:PointChildId|null) => void = (target, before) =>{
-    store.dispatch(point_slice.actions.reorderChild([this.id,target,before]));
+    store.dispatch(point_slice.actions.reorderChild([this.id_obj,target,before]));
   };
   getParent: ()=>(PointParent|undefined) = () => {
     if(this.obj?.parent===undefined) return undefined;
     return get_from_id(this.obj?.parent);
   }
   setParent: (parent: PointParent)=>void = (parent)=>{
-    store.dispatch(this.getSlice().actions.setParent([ this.id, parent.id ]));
-    if(parent instanceof mPoint) store.dispatch(point_slice.actions.addChild([ parent.id, this.id ]));
-    else store.dispatch(part_slice.actions.addChild([ parent.id, this.id ]));
+    store.dispatch(this.getSlice().actions.setParent([ this.id_obj, parent.id_obj ]));
+    if(parent instanceof mPoint) store.dispatch(point_slice.actions.addChild([ parent.id_obj, this.id_obj ]));
+    else store.dispatch(part_slice.actions.addChild([ parent.id_obj, this.id_obj ]));
   }
 }

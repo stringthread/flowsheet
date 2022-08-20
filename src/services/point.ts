@@ -18,9 +18,9 @@ export const switch_for_append=<T>(
   if(model instanceof mPoint) return point(model);
   assertNever(model);
 };
-export const append_sibling_point=(parent_id: accept_switch_for_append): mPoint|undefined=>{
+export const append_sibling_point=(model: accept_switch_for_append): mPoint|undefined=>{
   return switch_for_append(
-    parent_id,
+    model,
     (model)=>model?.addChild(),
     (model)=>{
       const parent=model?.getParent();
@@ -36,9 +36,9 @@ export const append_sibling_point=(parent_id: accept_switch_for_append): mPoint|
           const child = model.addChild();
           const siblings=model?.obj?.contents;
           if(siblings===undefined) return;
-          const reorder_before=next_content(siblings, child?.id);
+          const reorder_before=next_content(siblings, child?.id_obj);
           if(reorder_before===undefined) return;
-          model.reorder_child(child.id, reorder_before);
+          model.reorder_child(child.id_obj, reorder_before);
           return child;
         },
         ()=>{ throw TypeError('Invalid parent.id given in append_sibling_point') },
@@ -46,9 +46,9 @@ export const append_sibling_point=(parent_id: accept_switch_for_append): mPoint|
           const child = model.addChild[point_id_prefix]();
           const siblings=model?.obj?.contents;
           if(siblings===undefined) return;
-          const reorder_before=next_content(siblings, child?.id);
+          const reorder_before=next_content(siblings, child?.id_obj);
           if(reorder_before===undefined) return;
-          model.reorder_child(child.id, reorder_before);
+          model.reorder_child(child.id_obj, reorder_before);
           return child;
         },
       );
@@ -64,9 +64,9 @@ export const append_point_to_part=(model: accept_switch_for_append): mPoint|unde
   if(_parent instanceof mPart) child=_parent.addChild();
   return child;
 };
-export const append_point_child=(parent_id: accept_switch_for_append): mPoint|undefined=>{
+export const append_point_child=(model: accept_switch_for_append): mPoint|undefined=>{
   return switch_for_append(
-    parent_id,
+    model,
     (model)=>model.addChild(),
     (model)=>{
       const parent=model.getParent();
@@ -75,9 +75,9 @@ export const append_point_child=(parent_id: accept_switch_for_append): mPoint|un
       if(child===undefined) return;
       const contents = parent.obj?.contents;
       if(contents===undefined) return;
-      const reorder_before=next_content(contents,model.id);
+      const reorder_before=next_content(contents,model.id_obj);
       if(reorder_before===undefined) return;
-      parent.reorder_child(child.id, reorder_before);
+      parent.reorder_child(child.id_obj, reorder_before);
       return child;
     },
     (model)=>model.addChild[point_id_prefix]()
