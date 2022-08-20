@@ -105,14 +105,14 @@ const styleEvidenceContent=css`
 export const Evidence: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const evidence=useSelector((state:RootState)=>evidence_selectors.selectById(state,props.eviID));
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.eviID);
   },[props.eviID,props.setSelected]);
   if(evidence===undefined) return null;
   return (
-    <div className='evidence' data-testid='evidence' onClick={onClick} css={styleEvidence}>
+    <div className='evidence' data-testid='evidence' onFocus={onFocus} css={styleEvidence}>
       <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
       <StretchTextArea
         className="evidenceContent"

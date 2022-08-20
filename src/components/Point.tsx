@@ -70,14 +70,14 @@ const stylePoint=css`
 export const Point: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const point=useSelector((state:RootState)=>point_selectors.selectById(state,props.pointID));
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.pointID);
   },[props.pointID,props.setSelected]);
   if(point===undefined) return null;
   return (
-    <div className="point" data-testid="point" onClick={onClick} css={stylePoint}>
+    <div className="point" data-testid="point" onFocus={onFocus} css={stylePoint}>
       {<StretchTextInput
           className="pointNumbering"
           data-testid="pointNumbering"

@@ -21,7 +21,7 @@ const stylePointClaim=css`
 export const Claim: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const claim=useSelector((state:RootState)=>claim_selectors.selectById(state,props.claimID));
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.claimID);
@@ -38,7 +38,7 @@ export const Claim: React.VFC<Props> = (props)=>{
           contents: e.currentTarget.value,
         }));
       }}
-      onClick={onClick}
+      onFocus={onFocus}
       css={stylePointClaim}
     />
   );

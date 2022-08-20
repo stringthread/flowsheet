@@ -26,14 +26,14 @@ const stylePart=css`
 
 export const Part: React.VFC<Props> = (props)=>{
   const part=useSelector((state:RootState)=>part_selectors.selectById(state,props.partID));
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.partID);
   },[props.partID,props.setSelected]);
   if(part===undefined) return null;
   return (
-    <div className="part" data-testid="part" onClick={onClick} css={stylePart}>
+    <div className="part" data-testid="part" onFocus={onFocus} css={stylePart}>
       <div className="partName" css={stylePartName}>{part.name??''}</div>
       <div className="partChildrenWrap" css={stylePartChildrenWrap}>
         {part.contents?.map(
