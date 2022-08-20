@@ -1,9 +1,9 @@
 import {store} from 'stores';
 import {evidence_slice} from 'stores/slices/evidence';
 import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
-import {generate_evidence} from 'services/evidence';
+import {append_evidence, generate_evidence} from 'services/evidence';
 import { mMatch } from 'models/mMatch';
-import { mPart } from 'models/mPart';
+import { is_mPart, mPart } from 'models/mPart';
 import { is_mPoint, mPoint } from 'models/mPoint';
 import { mSide } from 'models/mSide';
 import { generate_match } from 'services/match';
@@ -63,4 +63,58 @@ test('generate_evidence: 引数なし',()=>{
   expect(is_mPoint(parent_in_redux)).toBeTruthy();
   if(!is_mPoint(parent_in_redux)) return;
   expect(parent_in_redux.contents).toContain(result.id);
+});
+
+test('append_evidence: Point',()=>{
+  const part_id=generate_parents()[2];
+  const parent=generate_point(part_id);
+  const modified=append_evidence(parent.id);
+  expect(modified).not.toBeUndefined();
+  if(modified===undefined) return;
+  const expected_result:Omit<mEvidence,'id'> = {
+    type_signature: mEvidenceSignature,
+    parent: parent.id,
+  };
+  expect(store.getState().evidence.entities[modified.id]).toMatchObject(expected_result);
+  const parent_in_redux=get_from_id(parent.id);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
+});
+
+test('append_evidence: Part',()=>{
+  const part_id=generate_parents()[2];
+  const modified=append_evidence(part_id);
+  expect(modified).not.toBeUndefined();
+  if(modified===undefined) return;
+  const result_in_redux=store.getState().evidence.entities[modified.id];
+  expect(result_in_redux).toBeTruthy();
+  if(result_in_redux===undefined) return;
+  const part_in_redux=get_from_id(part_id);
+  expect(is_mPart(part_in_redux)).toBe(true);
+  if(!is_mPart(part_in_redux)) return;
+  expect(part_in_redux.contents).toBeTruthy();
+  if(!part_in_redux.contents) return;
+  expect(result_in_redux.parent).toBe(part_in_redux.contents[part_in_redux.contents.length-1]);
+  const parent_in_redux=get_from_id(result_in_redux.parent);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
+});
+
+test('append_evidence: Claim',()=>{
+  const part_id=generate_parents()[2];
+  const parent=generate_point(part_id);
+  const claim=generate_evidence(parent.id);
+  const modified=append_evidence(claim.id);
+  expect(modified).not.toBeUndefined();
+  if(modified===undefined) return;
+  const result_in_redux=store.getState().evidence.entities[modified.id];
+  expect(result_in_redux).toBeTruthy();
+  if(result_in_redux===undefined) return;
+  expect(result_in_redux.parent).toBe(parent.id);
+  const parent_in_redux=get_from_id(parent.id);
+  expect(is_mPoint(parent_in_redux)).toBeTruthy();
+  if(!is_mPoint(parent_in_redux)) return;
+  expect(parent_in_redux.contents).toContain(modified.id);
 });
