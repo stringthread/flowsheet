@@ -112,7 +112,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
   },[props.eviID,props.setSelected]);
   if(evidence===undefined) return null;
   return (
-    <div className='evidence' data-testid='evidence' onFocus={onFocus} css={styleEvidence}>
+    <div className='evidence' data-testid='evidence' data-modelid={props.eviID} onFocus={onFocus} css={styleEvidence}>
       <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
       <StretchTextArea
         className="evidenceContent"

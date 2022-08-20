@@ -30,6 +30,7 @@ export const Claim: React.VFC<Props> = (props)=>{
   return (
     <StretchTextArea
       className="pointClaim"
+      data-modelid={props.claimID}
       placeholder=" "
       value={claim.contents}
       onBlur={(e)=>{

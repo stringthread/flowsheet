@@ -91,7 +91,7 @@ export const Point: React.VFC<Props> = (props)=>{
           css={stylePointNumbering}
         />
       }
-      <div className="pointChildrenWrap" data-testid="pointChildrenWrap" css={stylePointChildrenWrap}>
+      <div className="pointChildrenWrap" data-testid="pointChildrenWrap" data-modelid={props.pointID} css={stylePointChildrenWrap}>
         {point.contents!==undefined?<PointChild parentID={props.pointID} contents={point.contents} setSelected={props.setSelected} />:null}
       </div>
     </div>
