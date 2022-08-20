@@ -7,9 +7,11 @@ import {Match} from './Match';
 import {mPoint} from 'models/mPoint';
 import { mEvidenceSignature } from 'models/mEvidence';
 import {generate_match} from 'services/match';
-import {point_add_child, append_claim, append_sibling_point, append_point_to_part, append_point_child} from 'services/point';
+import {point_add_child, append_sibling_point, append_point_to_part, append_point_child} from 'services/point';
 
 import {useHotkeys} from 'react-hotkeys-hook';
+import { append_claim } from 'services/claim';
+import { append_evidence } from 'services/evidence';
 
 export type typeSelected=string|undefined;
 
@@ -51,7 +53,7 @@ function App() {
   const add_evidence=(e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
     if(selected==undefined) return;
-    if(id_is_mPoint(selected)) point_add_child(selected,mEvidenceSignature);
+    append_evidence(selected);
   };
   useHotkeys('alt+c', add_claim, { enableOnTags: ['INPUT','TEXTAREA'] });
   useHotkeys('alt+e', add_evidence, { enableOnTags: ['INPUT','TEXTAREA'] });

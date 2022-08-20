@@ -54,7 +54,7 @@ export const reorder_child = (parent: baseModel['id'], target: baseModel['id'], 
   store.dispatch(point_slice.actions.reorderChild([parent,target,before]));
 };
 
-const switch_for_append=<T>(
+export const switch_for_append=<T>(
   id: baseModel['id'],
   part: (id:baseModel['id'])=>T,
   claim_evi: (id:baseModel['id'])=>T,
@@ -63,17 +63,6 @@ const switch_for_append=<T>(
   if(id_is_mPart(id)) return part(id);
   if(id_is_mEvidence(id) || id_is_mClaim(id)) return claim_evi(id);
   if(id_is_mPoint(id)) return point(id);
-};
-export const append_claim=(parent_id: baseModel['id']): mClaim|undefined=>{
-  return switch_for_append(
-    parent_id,
-    (id)=>append_claim(part_add_child(id).id),
-    (id)=>{
-      const parent_id=get_parent_id(id);
-      if(parent_id!==undefined&&parent_id!==null) return append_claim(parent_id);
-    },
-    (id)=>point_add_child(id,mClaimSignature)
-  );
 };
 export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined=>{
   return switch_for_append(
