@@ -133,6 +133,10 @@ export const set_rebut=(end1:mPoint['id'], end2:mPoint['id'])=>{
     }
   ));
 };
+export const set_rebut_to=(from: mPart['id'])=>(
+  (rebut_to: mPoint['id'])=>set_rebut(rebut_to, from)
+);
+
 export const add_rebut=(rebut_to: mPoint['id'], part: mPart['id'])=>{
   const part_rebut_to = get_ancestor_part(rebut_to);
   if(part_rebut_to===undefined) throw TypeError('argument `rebut_to` is not descendent of mPart');
@@ -141,3 +145,6 @@ export const add_rebut=(rebut_to: mPoint['id'], part: mPart['id'])=>{
   set_rebut(rebut_to, rebut_obj.id);
   return rebut_obj;
 }
+export const add_rebut_to=(part: mPart['id'])=>(
+  (rebut_to: mPoint['id'])=>add_rebut(rebut_to, part)
+);
