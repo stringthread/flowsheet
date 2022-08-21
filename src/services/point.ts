@@ -6,7 +6,7 @@ import {generate_evidence} from './evidence'
 import { generate_claim } from './claim';
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice} from './id';
+import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice, compare_id} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
@@ -14,6 +14,7 @@ import {generate_point_id, part_id_prefix} from 'stores/ids/id_generators';
 import { mMatchSignature } from 'models/mMatch';
 import { is_mPart, mPart } from 'models/mPart';
 import { part_slice } from 'stores/slices/part';
+import { ValidationError } from 'errors';
 
 export const generate_point=(
   parent: baseModel['id'],
@@ -115,13 +116,13 @@ export const append_point_child=(parent_id: baseModel['id']): mPoint|undefined=>
   )
 }
 
-export const set_rebut=(end1: PointChild['id'], end2: PointChild['id'])=>{
+export const set_rebut=(end1:mPoint['id'], end2:mPoint['id'])=>{
   const [to,from] = [end1, end2].sort((end1, end2)=>{
     const part1 = get_ancestor_part(end1);
     if(part1===undefined) throw TypeError('argument `end1` is not descendent of mPart');
     const part2 = get_ancestor_part(end2);
     if(part2===undefined) throw TypeError('argument `end2` is not descendent of mPart');
-    return parseInt(part1.replace(part_id_prefix,'')) - parseInt(part2.replace(part_id_prefix,''));
+    return compare_id(part1, part2);
   })
   const obj=get_from_id(from);
   if(!is_mPoint(obj)) throw TypeError('param `from` does not match mPoint');
@@ -132,7 +133,10 @@ export const set_rebut=(end1: PointChild['id'], end2: PointChild['id'])=>{
     }
   ));
 };
-export const add_rebut=(rebut_to: PointChild['id'], part: mPart['id'])=>{
+export const add_rebut=(rebut_to: mPoint['id'], part: mPart['id'])=>{
+  const part_rebut_to = get_ancestor_part(rebut_to);
+  if(part_rebut_to===undefined) throw TypeError('argument `rebut_to` is not descendent of mPart');
+  if(compare_id(part_rebut_to, part)>=0) throw new ValidationError('cannot rebut to point in later parts');
   const rebut_obj = part_add_child(part);
   set_rebut(rebut_to, rebut_obj.id);
   return rebut_obj;

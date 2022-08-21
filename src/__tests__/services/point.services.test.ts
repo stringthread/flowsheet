@@ -18,6 +18,7 @@ import { generate_side } from 'services/side';
 import { get_from_id } from 'services/id';
 import { claim_slice } from 'stores/slices/claim';
 import { is } from 'immer/dist/internal';
+import { ValidationError } from 'errors';
 
 beforeEach(()=>{
   store.dispatch(match_slice.actions.reset());
@@ -302,30 +303,6 @@ test('set_rebut: mClaim<-mPoint', ()=>{
   if(point2_in_redux===undefined) return;
   expect(point2_in_redux.rebut_to).toBe(claim.id);
 });
-test('set_rebut: mPoint->mClaim', ()=>{
-  const [_,side_id,part1_id]=generate_parents();
-  const point1=generate_point(part1_id);
-  const claim=generate_claim(point1.id);
-  const part2=generate_part(side_id);
-  const point2=generate_point(part2.id);
-  set_rebut(point2.id,claim.id);
-  const point2_in_redux=store.getState().point.entities[point2.id];
-  expect(point2_in_redux).toBeDefined();
-  if(point2_in_redux===undefined) return;
-  expect(point2_in_redux.rebut_to).toBe(claim.id);
-});
-test('set_rebut - invalid: mClaim->mPoint', ()=>{
-  const [_,side_id,part1_id]=generate_parents();
-  const point1=generate_point(part1_id);
-  const part2=generate_part(side_id);
-  const point2=generate_point(part2.id);
-  const claim=generate_claim(point1.id);
-  expect(()=>set_rebut(point1.id,claim.id)).toThrow(TypeError);
-  const point2_in_redux=store.getState().point.entities[point2.id];
-  expect(point2_in_redux).toBeDefined();
-  if(point2_in_redux===undefined) return;
-  expect(point2_in_redux.rebut_to).toBeUndefined();
-});
 
 test('add_rebut', ()=>{
   const [_,side_id,part1_id]=generate_parents();
@@ -340,4 +317,15 @@ test('add_rebut', ()=>{
   expect(result_in_redux).toBeDefined();
   if(result_in_redux===undefined) return;
   expect(result_in_redux.rebut_to).toBe(point1.id);
+});
+
+test('add_rebut - invalid: to later part', ()=>{
+  const [_,side_id,part1_id]=generate_parents();
+  const part2=generate_part(side_id);
+  const point1=generate_point(part2.id);
+  expect(()=>add_rebut(point1.id, part1_id)).toThrow(ValidationError);
+  const point1_in_redux=store.getState().point.entities[point1.id];
+  expect(point1_in_redux).toBeDefined();
+  if(point1_in_redux===undefined) return;
+  expect(point1_in_redux.rebut_to).toBeUndefined();
 });

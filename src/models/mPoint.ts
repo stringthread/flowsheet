@@ -13,7 +13,7 @@ export interface mPoint extends baseModel {
   numbering?: number|string;
   children_numbering?: number|string;
   contents?: Array<baseModel['id']>;
-  rebut_to?: PointChild['id'];
+  rebut_to?: mPoint['id'];
 }
 
 export const is_mPoint = (value: unknown): value is mPoint => {
