@@ -15,10 +15,19 @@ import { Point } from './Point';
 
 export type typeSelected=string|undefined;
 
-export type CallbackContext = {
-  Point?: { onClick: ((e: React.SyntheticEvent<HTMLElement>)=>void)|undefined; };
+type idToPointRef = {[id: mPoint['id']]: React.RefObject<HTMLElement>};
+
+export type AppContext = {
+  Callbacks: {
+    Point?: {
+      onClick: ((e: React.SyntheticEvent<HTMLElement>)=>void)|undefined;
+    };
+  };
+  Refs: {
+    idToPointRef: { get: idToPointRef; add: (_:idToPointRef)=>void; };
+  }
 };
-export const CallbackContext = createContext<CallbackContext>({});
+export const AppContext = createContext<AppContext|undefined>(undefined);
 
 type rebutToFn = ReturnType<typeof set_rebut_to>|undefined;
 const useOnClickToRebut = (rebutToFn: rebutToFn, setRebutToFn: (_:rebutToFn)=>void)=>{
@@ -93,12 +102,26 @@ function App() {
   },[]);
   const [selected, setSelected]=useState<typeSelected>(undefined);
   const [rebutToFn, setRebutToFn] = useState<rebutToFn>(undefined);
+  const [idToPointRef, setIdToPointRef] = useState<idToPointRef>({});
   const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(rebutToFn, setRebutToFn);
   const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn);
   useAppHotkeys(selected, setRebutToFn, stopToRebut);
+  const AppContextValue = {
+    Callbacks: {
+      Point: {
+        onClick: onClickToRebut,
+      },
+    },
+    Refs: {
+      idToPointRef: {
+        get: idToPointRef,
+        add: (_new: idToPointRef) => setIdToPointRef(state=>({ ...state, ..._new })),
+      },
+    },
+  };
   return (
     <Provider store={store}>
-      <CallbackContext.Provider value={{Point: {onClick: onClickToRebut}}}>
+      <AppContext.Provider value={AppContextValue}>
         <div className="App">
           <Match matchID={matchID} setSelected={setSelected} />
           <button onClick={add_claim}>Add Claim</button>
@@ -106,7 +129,7 @@ function App() {
           <button onClick={add_point_to_part}>Add Point to Part</button>
           <button onClick={add_evidence}>Add Evidence</button>
         </div>
-      </CallbackContext.Provider>
+      </AppContext.Provider>
     </Provider>
   );
 }
