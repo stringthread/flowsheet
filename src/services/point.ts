@@ -133,7 +133,7 @@ export const set_rebut=(end1:mPoint['id'], end2:mPoint['id'])=>{
     }
   ));
 };
-export const set_rebut_to=(from: mPart['id'])=>(
+export const set_rebut_to=(from: mPoint['id'])=>(
   (rebut_to: mPoint['id'])=>set_rebut(rebut_to, from)
 );
 

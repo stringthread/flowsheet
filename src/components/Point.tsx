@@ -1,11 +1,11 @@
-import React,{useCallback} from 'react';
+import React,{useCallback, useContext} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
 import {mPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
 import {Claim} from './Claim';
-import {typeSelected} from './App';
+import {CallbackContext, typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
 import {id_is_mEvidence, id_is_mClaim, id_is_mPoint} from 'services/id';
 import {StretchTextInput,StretchTextArea} from './TextInput';
@@ -75,23 +75,24 @@ export const Point: React.VFC<Props> = (props)=>{
     e.stopPropagation();
     props.setSelected(props.pointID);
   },[props.pointID,props.setSelected]);
+  const onClick = useContext(CallbackContext).Point?.onClick;
   if(point===undefined) return null;
   return (
-    <div className="point" data-testid="point" onFocus={onFocus} css={stylePoint}>
-      {<StretchTextInput
-          className="pointNumbering"
-          data-testid="pointNumbering"
-          value={point.numbering?.toString()}
-          onBlur={(e)=>{
-            dispatch(point_slice.actions.upsertOne({
-              id: props.pointID,
-              numbering: e.currentTarget.value,
-            }));
-          }}
-          css={stylePointNumbering}
-        />
-      }
-      <div className="pointChildrenWrap" data-testid="pointChildrenWrap" data-modelid={props.pointID} css={stylePointChildrenWrap}>
+    <div className="point" data-testid="point" data-modelid={props.pointID} onFocus={onFocus} onClick={onClick} css={stylePoint}>
+      <StretchTextInput
+        className="pointNumbering"
+        data-testid="pointNumbering"
+        value={point.numbering?.toString()}
+        onBlur={(e)=>{
+          dispatch(point_slice.actions.upsertOne({
+            id: props.pointID,
+            numbering: e.currentTarget.value,
+          }));
+        }}
+        css={stylePointNumbering}
+      />
+      <span>{point.rebut_to??'-'}</span>
+      <div className="pointChildrenWrap" data-testid="pointChildrenWrap" css={stylePointChildrenWrap}>
         {point.contents!==undefined?<PointChild parentID={props.pointID} contents={point.contents} setSelected={props.setSelected} />:null}
       </div>
     </div>
