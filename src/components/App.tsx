@@ -21,19 +21,19 @@ export type CallbackContext = {
 export const CallbackContext = createContext<CallbackContext>({});
 
 type rebutToFn = ReturnType<typeof set_rebut_to>|undefined;
-const useOnClickToRebut = (rebutTo: rebutToFn, setRebutTo: (_:rebutToFn)=>void)=>{
-  const stop = useCallback(()=>setRebutTo(undefined), [setRebutTo]);
+const useOnClickToRebut = (rebutToFn: rebutToFn, setRebutToFn: (_:rebutToFn)=>void)=>{
+  const stop = useCallback(()=>setRebutToFn(undefined), [setRebutToFn]);
   const onClick = useCallback((e: React.SyntheticEvent<HTMLElement>)=>{
     const data_modelid = e.currentTarget.getAttribute('data-modelid');
     if(typeof data_modelid!=='string' || !id_is_mPoint(data_modelid)) return;
     e.stopPropagation();
-    if(rebutTo!==undefined) rebutTo(data_modelid);
+    if(rebutToFn!==undefined) rebutToFn(data_modelid);
     stop();
-  }, [rebutTo]);
+  }, [rebutToFn]);
   return {onClick, stop};
 };
 
-const useAppEventListeners = (selected: typeSelected, setRebutTo: (_:rebutToFn)=>void)=>{
+const useAppEventListeners = (selected: typeSelected, setRebutToFn: (_:rebutToFn)=>void)=>{
   const add_claim=useCallback((e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
     if(selected==undefined) return;
@@ -57,7 +57,7 @@ const useAppEventListeners = (selected: typeSelected, setRebutTo: (_:rebutToFn)=
   const draw_line=useCallback((e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
     if(selected==undefined) return;
-    setRebutTo(_=>set_rebut_to(selected));
+    setRebutToFn(_=>set_rebut_to(selected));
   }, [selected]);
   const add_evidence=useCallback((e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
@@ -69,8 +69,8 @@ const useAppEventListeners = (selected: typeSelected, setRebutTo: (_:rebutToFn)=
 
 type typeHotkeys = { [keys: string]: ReturnType<typeof useHotkeys>; };
 
-const useAppHotkeys = (selected: typeSelected, setRebutTo: (_:rebutToFn)=>void, escapeFn: (e?: Event | React.SyntheticEvent)=>void): typeHotkeys=>{
-  const {add_claim, add_point, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutTo);
+const useAppHotkeys = (selected: typeSelected, setRebutToFn: (_:rebutToFn)=>void, escapeFn: (e?: Event | React.SyntheticEvent)=>void): typeHotkeys=>{
+  const {add_claim, add_point, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn);
   return {
     'alt+c': useHotkeys('alt+c', add_claim, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+e': useHotkeys('alt+e', add_evidence, { enableOnTags: ['INPUT','TEXTAREA'] }),
@@ -92,10 +92,10 @@ function App() {
     }).id); // TODO: sideの構成をハードコーディングしているため、設定用Repositoryなどに切り出す
   },[]);
   const [selected, setSelected]=useState<typeSelected>(undefined);
-  const [rebutTo, setRebutTo] = useState<rebutToFn>(undefined);
-  const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(rebutTo, setRebutTo);
-  const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutTo);
-  useAppHotkeys(selected, setRebutTo, stopToRebut);
+  const [rebutToFn, setRebutToFn] = useState<rebutToFn>(undefined);
+  const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(rebutToFn, setRebutToFn);
+  const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn);
+  useAppHotkeys(selected, setRebutToFn, stopToRebut);
   return (
     <Provider store={store}>
       <CallbackContext.Provider value={{Point: {onClick: onClickToRebut}}}>
