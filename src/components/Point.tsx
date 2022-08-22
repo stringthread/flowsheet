@@ -10,6 +10,7 @@ import {point_selectors,point_slice} from 'stores/slices/point';
 import {id_is_mEvidence, id_is_mClaim, id_is_mPoint} from 'services/id';
 import {StretchTextInput,StretchTextArea} from './TextInput';
 import LeaderLine from 'leader-line-new';
+import { useCheckDepsUpdate, useDependentObj } from 'util/hooks';
 
 type Props = {
   pointID: string;
@@ -79,6 +80,7 @@ export const Point: React.VFC<Props> = (props)=>{
   const onClick = useContext(AppContext)?.Callbacks.Point?.onClick;
   const idToPointRef = useContext(AppContext)?.Refs.idToPointRef;
   const thisRef = useRef<HTMLDivElement>(null);
+  if(useCheckDepsUpdate([props.pointID, thisRef])) idToPointRef?.add({ [props.pointID]: thisRef, });
   const [rebuttalLine, setRebuttalLine] = useState<LeaderLine|undefined>(undefined);
   useEffect(()=>{
     if(idToPointRef){
@@ -86,13 +88,12 @@ export const Point: React.VFC<Props> = (props)=>{
         rebuttalLine.remove();
         setRebuttalLine(undefined);
       }
-      idToPointRef.add({ [props.pointID]: thisRef, });
       if(point?.rebut_to!==undefined){
         const ref_to_rebut = idToPointRef.get[point.rebut_to];
         if(ref_to_rebut!==undefined && ref_to_rebut.current!==null && thisRef.current) setRebuttalLine(new LeaderLine(ref_to_rebut.current, thisRef.current));
       }
     }
-  },[point?.rebut_to, rebuttalLine, setRebuttalLine, idToPointRef]);
+  },[point?.rebut_to, setRebuttalLine, idToPointRef, idToPointRef?.get]);
   if(point===undefined) return null;
   return (
     <div ref={thisRef} className="point" data-testid="point" data-modelid={props.pointID} onFocus={onFocus} onClick={onClick} css={stylePoint}>

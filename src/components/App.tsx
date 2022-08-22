@@ -12,6 +12,7 @@ import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
 import { append_sibling_point, append_point_child, append_point_to_part, set_rebut_to } from 'services/point';
 import { Point } from './Point';
+import { useDependentObj } from 'util/hooks';
 
 export type typeSelected=string|undefined;
 
@@ -106,7 +107,7 @@ function App() {
   const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(rebutToFn, setRebutToFn);
   const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn);
   useAppHotkeys(selected, setRebutToFn, stopToRebut);
-  const AppContextValue = {
+  const AppContextValue = useDependentObj({
     Callbacks: {
       Point: {
         onClick: onClickToRebut,
@@ -118,7 +119,7 @@ function App() {
         add: (_new: idToPointRef) => setIdToPointRef(state=>({ ...state, ..._new })),
       },
     },
-  };
+  }, [onClickToRebut, idToPointRef, setIdToPointRef]);
   return (
     <Provider store={store}>
       <AppContext.Provider value={AppContextValue}>
