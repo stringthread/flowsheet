@@ -1,4 +1,4 @@
-import React,{useState, useLayoutEffect, useCallback, useContext, createContext } from 'react';
+import React,{useState, useLayoutEffect, useCallback, useContext, createContext, useRef, useEffect } from 'react';
 import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
@@ -12,7 +12,9 @@ import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
 import { append_sibling_point, append_point_child, append_point_to_part, set_rebut_to } from 'services/point';
 import { Point } from './Point';
-import { useDependentObj } from 'util/hooks';
+import { useCheckDepsUpdate, useDependentObj, usePreviousValue } from 'util/hooks';
+import { css } from '@emotion/react';
+import LeaderLine from 'leader-line-new';
 
 export type typeSelected=string|undefined;
 
@@ -31,8 +33,11 @@ export type AppContext = {
 export const AppContext = createContext<AppContext|undefined>(undefined);
 
 type rebutToFnInfo = [ReturnType<typeof set_rebut_to>, HTMLElement|null]|undefined;
-const useOnClickToRebut = (idToPointRef: idToPointRef, rebutToFnInfo: rebutToFnInfo, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>)=>{
-  const stop = useCallback(()=>setRebutToFn(undefined), [setRebutToFn]);
+const useOnClickToRebut = (idToPointRef: idToPointRef, rebutToFnInfo: rebutToFnInfo, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>)=>{
+  const stop = useCallback(()=>{
+    setLineStartId(undefined);
+    setRebutToFn(undefined);
+  }, [setRebutToFn]);
   const onClick = useCallback((e: React.SyntheticEvent<HTMLElement>)=>{
     if(rebutToFnInfo===undefined) return;
     const [rebutToFn, previousActive] = rebutToFnInfo;
@@ -48,7 +53,7 @@ const useOnClickToRebut = (idToPointRef: idToPointRef, rebutToFnInfo: rebutToFnI
   return {onClick, stop};
 };
 
-const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>)=>{
+const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>)=>{
   const add_claim=useCallback((e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
     if(selected==undefined) return;
@@ -73,6 +78,7 @@ const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispat
     e?.preventDefault();
     if(selected==undefined) return;
     setRebutToFn(_=>[set_rebut_to(selected), document.activeElement as HTMLElement|null]);
+    setLineStartId(selected);
   }, [selected]);
   const add_evidence=useCallback((e?:Event|React.SyntheticEvent)=>{
     e?.preventDefault();
@@ -84,8 +90,8 @@ const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispat
 
 type typeHotkeys = { [keys: string]: ReturnType<typeof useHotkeys>; };
 
-const useAppHotkeys = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, escapeFn: (e?: Event | React.SyntheticEvent)=>void): typeHotkeys=>{
-  const {add_claim, add_point, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn);
+const useAppHotkeys = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, escapeFn: (e?: Event | React.SyntheticEvent)=>void, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>): typeHotkeys=>{
+  const {add_claim, add_point, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn, setLineStartId);
   return {
     'alt+c': useHotkeys('alt+c', add_claim, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+e': useHotkeys('alt+e', add_evidence, { enableOnTags: ['INPUT','TEXTAREA'] }),
@@ -95,6 +101,57 @@ const useAppHotkeys = (selected: typeSelected, setRebutToFn: React.Dispatch<Reac
     'alt+ctrl+p': useHotkeys('alt+ctrl+p', add_point_child, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'esc': useHotkeys('esc', escapeFn, { enableOnTags: ['INPUT','TEXTAREA'] }),
   };
+};
+
+type MovingDivLineProps = {
+  idToPointRef: idToPointRef;
+  lineStartId: typeSelected;
+  onMouseMoveFnRef: React.MutableRefObject<(e: React.MouseEvent)=>void>
+};
+const MovingDivLine: React.FC<MovingDivLineProps> = (props)=>{
+  const [pointerCoord, setPointerCoord] = useState<[number, number]>([0,0]);
+  const [line, setLine] = useState<LeaderLine|undefined>(undefined);
+  const updateLine = useCallback(()=>{
+    try {
+      line?.position();
+      line?.show();
+    } catch(e) {
+      if(!(e instanceof TypeError)) throw e; // lineがremove済みのときLeaderLineはTypeErrorを返すため、それだけ無視
+    }
+  }, [line]);
+  props.onMouseMoveFnRef.current = useCallback((e: React.MouseEvent)=>setPointerCoord([e.clientX, e.clientY]), []);
+  return (<MovingDivLineInner coord={pointerCoord} lineStartId={props.lineStartId} idToPointRef={props.idToPointRef} setLine={setLine} updateLine={updateLine} />);
+};
+const MovingDivLineInner: React.FC<{
+  coord: [number, number];
+  lineStartId: typeSelected;
+  idToPointRef: idToPointRef;
+  setLine: React.Dispatch<React.SetStateAction<LeaderLine|undefined>>;
+  updateLine: ()=>void;
+}> = props=>{
+  const thisRef = useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    console.log(props.lineStartId);
+    let newLine: LeaderLine|undefined =undefined;
+    if(props.lineStartId!==undefined){
+      if(props.idToPointRef[props.lineStartId]!==undefined){
+        const [start, end] = [props.idToPointRef[props.lineStartId].current, thisRef.current];
+        if(start!==null && end!==null) newLine=new LeaderLine(start, end);
+      }
+    }
+    props.setLine(newLine);
+    return ()=>newLine?.remove();
+  }, [props.lineStartId]);
+  useEffect(()=>props.updateLine(), [props.coord, props.lineStartId, props.updateLine]);
+  return (<div ref={thisRef} css={css`
+    & {
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+      visibility: none;
+      position: fixed;
+    }
+  `} style={{left: `${props.coord[0]}px`, top: `${props.coord[1]}px`}}></div>);
 };
 
 function App() {
@@ -109,9 +166,11 @@ function App() {
   const [selected, setSelected]=useState<typeSelected>(undefined);
   const [rebutToFn, setRebutToFn] = useState<rebutToFnInfo>(undefined);
   const [idToPointRef, setIdToPointRef] = useState<idToPointRef>({});
-  const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(idToPointRef, rebutToFn, setRebutToFn);
-  const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn);
-  useAppHotkeys(selected, setRebutToFn, stopToRebut);
+  const [lineStartId, setLineStartId] = useState<typeSelected>(undefined);
+  const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(idToPointRef, rebutToFn, setRebutToFn, setLineStartId);
+  const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn, setLineStartId);
+  useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId);
+  const onMouseMoveFnRef = useRef((e: React.MouseEvent)=>{});
   const AppContextValue = useDependentObj({
     Callbacks: {
       Point: {
@@ -128,7 +187,8 @@ function App() {
   return (
     <Provider store={store}>
       <AppContext.Provider value={AppContextValue}>
-        <div className="App">
+        <div onMouseMove={onMouseMoveFnRef.current} className="App">
+          <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
           <Match matchID={matchID} setSelected={setSelected} />
           <button onClick={add_claim}>Add Claim</button>
           <button onClick={add_point}>Add Point</button>
