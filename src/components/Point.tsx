@@ -1,12 +1,16 @@
-import React,{useCallback} from 'react';
+import React,{useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mPoint, is_Claim} from 'models/mPoint';
+import {mPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
-import {typeSelected} from './App';
+import {Claim} from './Claim';
+import {AppContext, typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
+import {id_is_mEvidence, id_is_mClaim, id_is_mPoint} from 'services/id';
 import {StretchTextInput,StretchTextArea} from './TextInput';
+import LeaderLine from 'leader-line-new';
+import { useCheckDepsUpdate, useDependentObj } from 'util/hooks';
 
 type Props = {
   pointID: string;
@@ -27,27 +31,15 @@ const stylePointClaim=css`
 `;
 
 const PointChild: React.VFC<ChildProps> = (props)=>{
-  const dispatch=useDispatch();
-  if(is_Claim(props.contents)){
-    return (
-      <StretchTextArea
-        className="pointClaim"
-        placeholder=" "
-        value={props.contents}
-        onBlur={(e)=>{
-          dispatch(point_slice.actions.upsertOne({
-            id: props.parentID,
-            contents: e.currentTarget.value,
-          }));
-        }}
-        css={stylePointClaim}
-      />
-    );
-  }
   return (
     <>
     {props.contents?.map(
-      contents=>contents[1]?<Point pointID={contents[0]} setSelected={props.setSelected} />:<Evidence eviID={contents[0]} setSelected={props.setSelected} />
+      id=>{
+        if(id_is_mEvidence(id)) return <Evidence eviID={id} setSelected={props.setSelected} />;
+        if(id_is_mClaim(id)) return <Claim claimID={id} setSelected={props.setSelected} />;
+        if(id_is_mPoint(id)) return <Point pointID={id} setSelected={props.setSelected} />;
+        return null;
+      }
     )}
     </>
   );
@@ -80,28 +72,51 @@ const stylePoint=css`
 export const Point: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const point=useSelector((state:RootState)=>point_selectors.selectById(state,props.pointID));
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.pointID);
   },[props.pointID,props.setSelected]);
+  const context = useContext(AppContext);
+  const onClick = context?.Callbacks.Point?.onClick;
+  const idToPointRef = context?.Refs.idToPointRef;
+  const thisRef = useRef<HTMLDivElement>(null);
+  const focusRef = useRef<HTMLInputElement>(null);
+  useEffect(()=>{
+    if(context?.Refs.nextFocus.get!==props.pointID) return;
+    focusRef.current?.focus();
+    context?.Refs.nextFocus.set(undefined);
+  });
+  if(useCheckDepsUpdate([props.pointID, thisRef])) idToPointRef?.add({ [props.pointID]: thisRef, });
+  const [rebuttalLine, setRebuttalLine] = useState<LeaderLine|undefined>(undefined);
+  useEffect(()=>{
+    if(idToPointRef){
+      if(rebuttalLine!==undefined){
+        rebuttalLine.remove();
+        setRebuttalLine(undefined);
+      }
+      if(point?.rebut_to!==undefined){
+        const ref_to_rebut = idToPointRef.get[point.rebut_to];
+        if(ref_to_rebut!==undefined && ref_to_rebut.current!==null && thisRef.current) setRebuttalLine(new LeaderLine(ref_to_rebut.current, thisRef.current));
+      }
+    }
+  },[point?.rebut_to, setRebuttalLine, idToPointRef, idToPointRef?.get]);
   if(point===undefined) return null;
   return (
-    <div className="point" data-testid="point" onClick={onClick} css={stylePoint}>
-      {is_Claim(point.contents)?null:
-        <StretchTextInput
-          className="pointNumbering"
-          data-testid="pointNumbering"
-          value={point.numbering?.toString()}
-          onBlur={(e)=>{
-            dispatch(point_slice.actions.upsertOne({
-              id: props.pointID,
-              numbering: e.currentTarget.value,
-            }));
-          }}
-          css={stylePointNumbering}
-        />
-      }
+    <div ref={thisRef} className="point" data-testid="point" data-modelid={props.pointID} onFocus={onFocus} onClick={onClick} css={stylePoint}>
+      <StretchTextInput
+        ref={focusRef}
+        className="pointNumbering"
+        data-testid="pointNumbering"
+        value={point.numbering?.toString()}
+        onBlur={(e)=>{
+          dispatch(point_slice.actions.upsertOne({
+            id: props.pointID,
+            numbering: e.currentTarget.value,
+          }));
+        }}
+        css={stylePointNumbering}
+      />
       <div className="pointChildrenWrap" data-testid="pointChildrenWrap" css={stylePointChildrenWrap}>
         {point.contents!==undefined?<PointChild parentID={props.pointID} contents={point.contents} setSelected={props.setSelected} />:null}
       </div>

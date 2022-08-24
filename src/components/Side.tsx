@@ -26,14 +26,14 @@ const styleSideChildrenWrap=css`
 
 export const Side: React.VFC<Props> = (props)=>{
   const side=useSelector((state:RootState)=>side_selectors.selectById(state,props.sideID));
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.sideID);
   },[props.sideID,props.setSelected]);
   if(side===undefined) return null;
   return (
-    <div className="side" data-testid='side' onClick={onClick} css={styleSide}>
+    <div className="side" data-testid='side' data-modelid={props.sideID} onFocus={onFocus} css={styleSide}>
       <div className="sideName" css={styleSideName}>{side.side}</div>
       <div className="sideChildrenWrap" css={styleSideChildrenWrap}>
         {side.contents?.map(content=><Part partID={content} setSelected={props.setSelected} />)??null}

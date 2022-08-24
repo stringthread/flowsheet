@@ -1,4 +1,4 @@
-import React,{useState,useCallback} from 'react';
+import React,{useState,useCallback, forwardRef} from 'react';
 import {css} from '@emotion/react';
 
 export interface TextInputProps<T extends HTMLElement> {
@@ -30,9 +30,10 @@ const styleTextInput=css`
   }
 `;
 
-export const TextInput: React.VFC<TextInputProps<HTMLInputElement>> = (props)=>{
+export const TextInput = forwardRef((props: TextInputProps<HTMLInputElement>, ref: React.ForwardedRef<HTMLInputElement>)=>{
   return (
     <input type="text"
+    ref={ref}
     id={props.id}
     className={props.className}
     onClick={props.onClick??empty_event_handler}
@@ -44,16 +45,17 @@ export const TextInput: React.VFC<TextInputProps<HTMLInputElement>> = (props)=>{
     placeholder={props.placeholder??' '}
     css={css(props.css,styleTextInput)} />
   );
-};
+});
 
 const styleStretchTextInput=css`
   width: 0;
 `;
 
-export const StretchTextInput: React.VFC<TextInputProps<HTMLInputElement>> = (props)=>{
+export const StretchTextInput = forwardRef((props: TextInputProps<HTMLInputElement>, ref: React.ForwardedRef<HTMLInputElement>)=>{
   return (
     <TextInput
     {...props}
+    ref={ref}
     onChange={
       useCallback((e: React.ChangeEvent<HTMLInputElement>)=>{
         if(props.onChange!==undefined) props.onChange(e);
@@ -66,7 +68,7 @@ export const StretchTextInput: React.VFC<TextInputProps<HTMLInputElement>> = (pr
     }
     css={css(props.css,styleStretchTextInput)} />
   )
-};
+});
 
 const styleTextArea=css(
   styleTextInput,
@@ -75,9 +77,10 @@ const styleTextArea=css(
   `
 );
 
-export const TextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (props)=>{
+export const TextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, ref: React.ForwardedRef<HTMLTextAreaElement>)=>{
   return (
     <textarea
+    ref={ref}
     id={props.id}
     className={props.className}
     onClick={props.onClick??empty_event_handler}
@@ -90,7 +93,7 @@ export const TextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (props)=
       {props.value??''}
     </textarea>
   );
-};
+});
 
 const styleStretchTextArea=css(
   styleTextArea,
@@ -100,9 +103,10 @@ const styleStretchTextArea=css(
   `
 );
 
-export const StretchTextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (props)=>{
+export const StretchTextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, ref: React.ForwardedRef<HTMLTextAreaElement>)=>{
   return (
     <TextArea {...props}
+    ref={ref}
     onChange={useCallback(
       (e)=>{
         if(props.onChange!==undefined) props.onChange(e);
@@ -116,4 +120,4 @@ export const StretchTextArea: React.VFC<TextInputProps<HTMLTextAreaElement>> = (
     css={styleStretchTextArea}
      />
   );
-}
+});

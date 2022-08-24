@@ -101,11 +101,11 @@ test('point/addChild reducerの確認',()=>{
     type_signature: mPointSignature,
     id: 'point_3',
     parent: 'part_0',
-    contents: [['evi_0',false]]
+    contents: ['evi_0']
   };
-  const expected_point_content: mPoint['contents']=[['evi_0',false],['point_1',true]]
+  const expected_point_content: mPoint['contents']=['evi_0','point_1']
   store.dispatch(point_slice.actions.add(test_point));
-  store.dispatch(point_slice.actions.addChild(['point_3',...expected_point_content[1]]));
+  store.dispatch(point_slice.actions.addChild(['point_3',expected_point_content[1]]));
   expect(store.getState().point.entities.point_3?.contents).toEqual(expected_point_content);
 });
 
@@ -118,26 +118,10 @@ test('point/addChild reducer: contentsが空のとき',()=>{
     id: 'point_4',
     parent: 'part_0',
   };
-  const expected_point_content: mPoint['contents']=[['evi_0',false]]
+  const expected_point_content: mPoint['contents']=['evi_0']
   store.dispatch(point_slice.actions.add(test_point));
-  store.dispatch(point_slice.actions.addChild(['point_4',...expected_point_content[0]]));
+  store.dispatch(point_slice.actions.addChild(['point_4',expected_point_content[0]]));
   expect(store.getState().point.entities.point_4?.contents).toEqual(expected_point_content);
-});
-
-test('point/addChild reducer: contentsがstringのとき',()=>{
-  // storeの状態をリセット
-  store.dispatch(point_slice.actions.reset());
-  expect(store.getState().point).toEqual(initial_point_state);
-  const test_point: mPoint={
-    type_signature: mPointSignature,
-    id: 'point_5',
-    parent: 'part_0',
-    contents: 'a string content'
-  };
-  const expected_point_content: mPoint['contents']=test_point.contents;
-  store.dispatch(point_slice.actions.add(test_point));
-  store.dispatch(point_slice.actions.addChild(['point_5','point_dummy',true]));
-  expect(store.getState().point.entities.point_5?.contents).toEqual(expected_point_content);
 });
 
 test('point/reorderChild reducerの確認',()=>{
@@ -148,13 +132,13 @@ test('point/reorderChild reducerの確認',()=>{
     type_signature: mPointSignature,
     id: 'point_6',
     parent: 'part_0',
-    contents: [['evi_0',false],['point_1',true],['evi_1',false]]
+    contents: ['evi_0','point_1','evi_1']
   };
-  const expected_point_content_1: mPoint['contents']=[['evi_0',false],['evi_1',false],['point_1',true]];
+  const expected_point_content_1: mPoint['contents']=['evi_0','evi_1','point_1'];
   store.dispatch(point_slice.actions.add(test_point));
   store.dispatch(point_slice.actions.reorderChild(['point_6','evi_1','point_1']));
   expect(store.getState().point.entities.point_6?.contents).toEqual(expected_point_content_1);
-  const expected_point_content_2: mPoint['contents']=[['evi_0',false],['evi_1',false],['point_1',true]];
+  const expected_point_content_2: mPoint['contents']=['evi_0','evi_1','point_1'];
   store.dispatch(point_slice.actions.reorderChild(['point_6','point_1',null]));
   expect(store.getState().point.entities.point_6?.contents).toEqual(expected_point_content_2);
 });

@@ -45,7 +45,7 @@ const styleMatch=css`
 `;
 
 export const Match: React.VFC<Props> = (props)=>{
-  const onClick=useCallback((e: React.MouseEvent)=>{
+  const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
     props.setSelected(props.matchID);
@@ -53,7 +53,7 @@ export const Match: React.VFC<Props> = (props)=>{
   const match=useSelector((state:RootState)=>match_selectors.selectById(state,props.matchID));
   if(match===undefined) return null;
   return (
-    <div className='match' data-testid="match" onClick={onClick} css={styleMatch}>
+    <div className='match' data-testid="match" data-modelid={props.matchID} onFocus={onFocus} css={styleMatch}>
       <MatchHeader metadata={match} />
       {match.contents?.map(side=>(<Side sideID={side} setSelected={props.setSelected} />))??null}
     </div>

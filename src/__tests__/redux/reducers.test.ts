@@ -7,6 +7,11 @@ test('Redux storeの初期状態確認',()=>{
       entities: {},
       last_id_number: 0
     },
+    claim: {
+      ids: [],
+      entities: {},
+      last_id_number: 0
+    },
     point: {
       ids: [],
       entities: {},

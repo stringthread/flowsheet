@@ -1,5 +1,6 @@
 import {store} from '../index';
 import {evidence_slice} from '../slices/evidence';
+import {claim_slice} from '../slices/claim';
 import {point_slice} from '../slices/point';
 import {part_slice} from '../slices/part';
 import {side_slice} from '../slices/side';
@@ -8,6 +9,7 @@ import {match_slice} from '../slices/match';
 export type ID_TYPE=string;
 
 export const evidence_id_prefix='evi_';
+export const claim_id_prefix='claim_';
 export const point_id_prefix='point_';
 export const part_id_prefix='part_';
 export const side_id_prefix='side_';
@@ -17,6 +19,12 @@ export const generate_evidence_id=():ID_TYPE=>{
   const id_number=store.getState().evidence.last_id_number;
   store.dispatch(evidence_slice.actions.incrementID());
   return evidence_id_prefix+id_number.toString();
+}
+
+export const generate_claim_id=():ID_TYPE=>{
+  const id_number=store.getState().claim.last_id_number;
+  store.dispatch(claim_slice.actions.incrementID());
+  return claim_id_prefix+id_number.toString();
 }
 
 export const generate_point_id=():ID_TYPE=>{

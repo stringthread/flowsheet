@@ -37,7 +37,7 @@ test('Point: contentsがevidenceのみのとき',()=>{
     parent: 'part_dummy',
     id: 'point_0',
     numbering: 'a',
-    contents: [['evi_0',false]]
+    contents: ['evi_0']
   };
   useSelectorMock.mockReturnValueOnce(returned);
   render(<Point pointID="point_0" setSelected={(_)=>{}} />);
@@ -51,31 +51,18 @@ test('Point: contentsがpointのとき',()=>{
     parent: 'part_dummy',
     id: 'point_0',
     numbering: 'a',
-    contents: [['point_0',true]]
+    contents: ['point_0']
   };
   const returned_2: mPoint = {
     type_signature: mPointSignature,
     parent: 'point_0',
     id: 'point_1',
-    contents: [['evi_0',false]]
+    contents: ['evi_0']
   };
   useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValueOnce(returned_2);
   render(<Point pointID="point_0" setSelected={(_)=>{}} />);
   expect(screen.getAllByTestId('point')).toHaveLength(2);
   expect(screen.getByTestId('evidence')).toBeInTheDocument();
-});
-
-test('Point: contentsがClaimのとき',()=>{
-  const returned: mPoint = {
-    type_signature: mPointSignature,
-    parent: 'part_dummy',
-    id: 'point_0',
-    numbering: 'a',
-    contents: 'A test claim'
-  };
-  useSelectorMock.mockReturnValueOnce(returned);
-  render(<Point pointID="point_0" setSelected={(_)=>{}} />);
-  expect(screen.getByText(returned.contents as string)).toBeInTheDocument();
 });
 
 test('Point: contentsが複数のとき',()=>{
@@ -84,13 +71,13 @@ test('Point: contentsが複数のとき',()=>{
     parent: 'part_dummy',
     id: 'point_0',
     numbering: 'a',
-    contents: [['point_1',true],['evi_1',false]]
+    contents: ['point_1','evi_1']
   };
   const returned_2: mPoint = {
     type_signature: mPointSignature,
     parent: 'point_0',
     id: 'point_1',
-    contents: 'test claim 1'
+    contents: ['claim_0']
   };
   useSelectorMock.mockReturnValueOnce(returned_1).mockReturnValueOnce(returned_2);
   render(<Point pointID="point_0" setSelected={(_)=>{}} />);

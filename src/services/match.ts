@@ -15,13 +15,14 @@ export const generate_match=(
     type_signature: mMatchSignature,
     id: generate_match_id(),
   };
+  store.dispatch(match_slice.actions.add(generated));
   const contents: Array<string>=[];
   if(sides!==undefined){
     for(const i in sides){
       contents.push(generate_side(generated.id,sides[i],{side:i}).id); // TODO: reduxに保存する処理を追加
     }
   }
-  generated.contents=contents;
-  store.dispatch(match_slice.actions.add(generated));
-  return generated;
+  const returned={...generated, contents}
+  store.dispatch(match_slice.actions.upsertOne(returned));
+  return returned;
 }
