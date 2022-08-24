@@ -52,7 +52,9 @@ export function point_add_child(parent_id:mPoint['id'], type: baseModel['type_si
 }
 
 export const reorder_child = (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void =>{
-  store.dispatch(point_slice.actions.reorderChild([parent,target,before]));
+  if(!id_is_mPoint(parent) && !id_is_mPart(parent)) throw TypeError('argument `parent` does not match mPoint|mPart');
+  if(id_is_mPoint(parent)) store.dispatch(point_slice.actions.reorderChild([parent,target,before]));
+  else if(id_is_mPart(parent)) store.dispatch(part_slice.actions.reorderChild([parent,target,before]));
 };
 
 export const get_ancestor_part=(point_id: baseModel['id']): mPart['id']|undefined=>{
@@ -89,6 +91,23 @@ export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined
       if(reorder_before===undefined) return;
       reorder_child(parent_id, child.id, reorder_before);
       return child;
+    }
+  );
+};
+export const append_point_to_parent=(parent_id: baseModel['id']): mPoint|undefined=>{
+  return switch_for_append(
+    parent_id,
+    (id)=>part_add_child(id),
+    (id)=>{
+      const parent_id=get_parent_id(id);
+      if(parent_id===undefined||parent_id===null) return;
+      return append_point_to_parent(parent_id);
+    },
+    (id)=>{
+      const parent_id=get_parent_id(id);
+      if(parent_id===undefined||parent_id===null) return;
+      if(id_is_mPart(parent_id)) return append_sibling_point(id);
+      return append_sibling_point(parent_id);
     }
   );
 };

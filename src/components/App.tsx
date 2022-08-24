@@ -2,7 +2,7 @@ import React,{useState, useLayoutEffect, useCallback, useContext, createContext,
 import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
-import {id_is_mPart, id_is_mPoint} from 'services/id';
+import {get_from_id, id_is_mPart, id_is_mPoint} from 'services/id';
 import {Match} from './Match';
 import {mPoint} from 'models/mPoint';
 import { mEvidenceSignature } from 'models/mEvidence';
@@ -10,7 +10,7 @@ import {generate_match} from 'services/match';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
-import { append_sibling_point, append_point_child, append_point_to_part, set_rebut_to } from 'services/point';
+import { append_sibling_point, append_point_child, append_point_to_part, set_rebut_to, append_point_to_parent } from 'services/point';
 import { Point } from './Point';
 import { useCheckDepsUpdate, useDependentObj, usePreviousValue } from 'util/hooks';
 import { css } from '@emotion/react';
@@ -54,49 +54,56 @@ const useOnClickToRebut = (idToPointRef: idToPointRef, rebutToFnInfo: rebutToFnI
 };
 
 const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>)=>{
-  const add_claim=useCallback((e?:Event|React.SyntheticEvent)=>{
-    e?.preventDefault();
-    if(selected==undefined) return;
-    append_claim(selected);
-  }, [selected]);
-  const add_point=useCallback((e?:Event|React.SyntheticEvent)=>{
-    e?.preventDefault();
-    if(selected==undefined) return;
-    append_sibling_point(selected);
-  }, [selected]);
-  const add_point_child=useCallback((e?:Event|React.SyntheticEvent)=>{
-    e?.preventDefault();
-    if(selected==undefined) return;
-    append_point_child(selected);
-  }, [selected]);
-  const add_point_to_part=useCallback((e?:Event|React.SyntheticEvent)=>{
-    e?.preventDefault();
-    if(selected==undefined) return;
-    append_point_to_part(selected);
-  }, [selected]);
-  const draw_line=useCallback((e?:Event|React.SyntheticEvent)=>{
-    e?.preventDefault();
-    if(selected==undefined) return;
-    setRebutToFn(_=>[set_rebut_to(selected), document.activeElement as HTMLElement|null]);
-    setLineStartId(selected);
-  }, [selected]);
-  const add_evidence=useCallback((e?:Event|React.SyntheticEvent)=>{
-    e?.preventDefault();
-    if(selected==undefined) return;
-    append_evidence(selected);
-  }, [selected]);
-  return {add_claim, add_point, add_point_child, add_point_to_part, draw_line, add_evidence};
+  return {
+    add_claim: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      append_claim(selected);
+    }, [selected]),
+    add_point: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      append_sibling_point(selected);
+    }, [selected]),
+    add_point_to_parent: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      append_point_to_parent(selected);
+    }, [selected]),
+    add_point_child: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      append_point_child(selected);
+    }, [selected]),
+    add_point_to_part: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      append_point_to_part(selected);
+    }, [selected]),
+    draw_line: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      setRebutToFn(_=>[set_rebut_to(selected), document.activeElement as HTMLElement|null]);
+      setLineStartId(selected);
+    }, [selected]),
+    add_evidence: useCallback((e?:Event|React.SyntheticEvent)=>{
+      e?.preventDefault();
+      if(selected==undefined) return;
+      append_evidence(selected);
+    }, [selected]),
+  };
 };
 
 type typeHotkeys = { [keys: string]: ReturnType<typeof useHotkeys>; };
 
 const useAppHotkeys = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, escapeFn: (e?: Event | React.SyntheticEvent)=>void, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>): typeHotkeys=>{
-  const {add_claim, add_point, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn, setLineStartId);
+  const {add_claim, add_point, add_point_to_parent, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn, setLineStartId);
   return {
     'alt+c': useHotkeys('alt+c', add_claim, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+e': useHotkeys('alt+e', add_evidence, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+p': useHotkeys('alt+p', add_point, { enableOnTags: ['INPUT','TEXTAREA'] }),
-    'alt+shift+p': useHotkeys('alt+shift+p', add_point_to_part, { enableOnTags: ['INPUT','TEXTAREA'] }),
+    'alt+shift+p': useHotkeys('alt+shift+p', add_point_to_parent, { enableOnTags: ['INPUT','TEXTAREA'] }),
+    'alt+ctrl+shift+p': useHotkeys('alt+ctrl+shift+p', add_point_to_part, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+l': useHotkeys('alt+l', draw_line, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+ctrl+p': useHotkeys('alt+ctrl+p', add_point_child, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'esc': useHotkeys('esc', escapeFn, { enableOnTags: ['INPUT','TEXTAREA'] }),
