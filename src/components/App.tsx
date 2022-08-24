@@ -138,7 +138,6 @@ const MovingDivLineInner: React.FC<{
 }> = props=>{
   const thisRef = useRef<HTMLDivElement>(null);
   useEffect(()=>{
-    console.log(props.lineStartId);
     let newLine: LeaderLine|undefined =undefined;
     if(props.lineStartId!==undefined){
       if(props.idToPointRef[props.lineStartId]!==undefined){
