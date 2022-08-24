@@ -33,7 +33,7 @@ export const Part: React.VFC<Props> = (props)=>{
   },[props.partID,props.setSelected]);
   if(part===undefined) return null;
   return (
-    <div className="part" data-testid="part" onFocus={onFocus} css={stylePart} tabIndex={0}>
+    <div className="part" data-testid="part" data-modelid={props.partID} onFocus={onFocus} css={stylePart} tabIndex={0}>
       <div className="partName" css={stylePartName}>{part.name??''}</div>
       <div className="partChildrenWrap" css={stylePartChildrenWrap}>
         {part.contents?.map(

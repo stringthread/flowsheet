@@ -89,3 +89,24 @@ export const next_content_id=(id:ID_TYPE):ID_TYPE|undefined=>{
   if(item_index===-1||item_index>=sibling_list.length-1) return;
   return sibling_list[item_index+1];
 }
+
+const id_to_prefix=(id:ID_TYPE)=>{
+  if(id_is_mMatch(id)) return match_id_prefix;
+  if(id_is_mSide(id)) return side_id_prefix;
+  if(id_is_mPart(id)) return part_id_prefix;
+  if(id_is_mPoint(id)) return point_id_prefix;
+  if(id_is_mClaim(id)) return claim_id_prefix;
+  if(id_is_mEvidence(id)) return evidence_id_prefix;
+};
+// return: a<=>b
+export const compare_id = (a:ID_TYPE, b:ID_TYPE): number => {
+  const a_prefix = id_to_prefix(a);
+  if(a_prefix===undefined) throw TypeError('argument `a` is invalid ID');
+  const b_prefix = id_to_prefix(b);
+  if(b_prefix===undefined) throw TypeError('argument `b` is invalid ID');
+  if(a_prefix!==b_prefix) throw TypeError(`argument \`a\` and \`b\` are of different type: a: ${id_to_type(a)}, b: a: ${id_to_type(b)}`);
+  const a_number = parseInt(a.replace(a_prefix,''));
+  const b_number = parseInt(b.replace(a_prefix,''));
+  if(Number.isNaN(a_number)||Number.isNaN(b_number)) throw TypeError('arguments could not parsed into number');
+  return a_number - b_number;
+}

@@ -1,19 +1,20 @@
 import {baseModel} from 'models/baseModel';
 import {mEvidence, mEvidenceSignature} from 'models/mEvidence';
 import { mClaim, mClaimSignature } from 'models/mClaim';
-import {is_mPoint, mPoint,mPointSignature} from 'models/mPoint';
+import {is_mPoint, mPoint,mPointSignature, PointChild} from 'models/mPoint';
 import {generate_evidence} from './evidence'
 import { generate_claim } from './claim';
 import { part_add_child } from './part';
 import {store} from 'stores';
-import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice} from './id';
+import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, next_content_id, id_to_store, id_to_type, type_to_store, get_from_id, id_to_slice, compare_id} from './id';
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
-import {generate_point_id} from 'stores/ids/id_generators';
+import {generate_point_id, part_id_prefix} from 'stores/ids/id_generators';
 import { mMatchSignature } from 'models/mMatch';
-import { is_mPart } from 'models/mPart';
+import { is_mPart, mPart } from 'models/mPart';
 import { part_slice } from 'stores/slices/part';
+import { ValidationError } from 'errors';
 
 export const generate_point=(
   parent: baseModel['id'],
@@ -54,6 +55,13 @@ export const reorder_child = (parent: baseModel['id'], target: baseModel['id'], 
   store.dispatch(point_slice.actions.reorderChild([parent,target,before]));
 };
 
+export const get_ancestor_part=(point_id: baseModel['id']): mPart['id']|undefined=>{
+  let _parent_id: baseModel['id']|null|undefined=point_id;
+  while(_parent_id && !id_is_mPart(_parent_id)){
+    _parent_id=get_parent_id(_parent_id);
+  }
+  return _parent_id??undefined;
+}
 export const switch_for_append=<T>(
   id: baseModel['id'],
   part: (id:baseModel['id'])=>T,
@@ -85,10 +93,7 @@ export const append_sibling_point=(parent_id: baseModel['id']): mPoint|undefined
   );
 };
 export const append_point_to_part=(parent_id: baseModel['id']): mPoint|undefined=>{
-  let _parent_id: baseModel['id']|null|undefined=parent_id;
-  while(_parent_id && !id_is_mPart(_parent_id)){
-    _parent_id=get_parent_id(_parent_id);
-  }
+  const _parent_id = get_ancestor_part(parent_id);
   let child:mPoint|undefined=undefined;
   if(_parent_id && id_is_mPart(_parent_id)) child=part_add_child(_parent_id);
   return child;
@@ -110,3 +115,36 @@ export const append_point_child=(parent_id: baseModel['id']): mPoint|undefined=>
     (id)=>point_add_child(id,mPointSignature)
   )
 }
+
+export const set_rebut=(end1:mPoint['id'], end2:mPoint['id'])=>{
+  const [to,from] = [end1, end2].sort((end1, end2)=>{
+    const part1 = get_ancestor_part(end1);
+    if(part1===undefined) throw TypeError('argument `end1` is not descendent of mPart');
+    const part2 = get_ancestor_part(end2);
+    if(part2===undefined) throw TypeError('argument `end2` is not descendent of mPart');
+    return compare_id(part1, part2);
+  })
+  const obj=get_from_id(from);
+  if(!is_mPoint(obj)) throw TypeError('param `from` does not match mPoint');
+  store.dispatch(point_slice.actions.upsertOne(
+    {
+      ...obj,
+      rebut_to: to,
+    }
+  ));
+};
+export const set_rebut_to=(from: mPoint['id'])=>(
+  (rebut_to: mPoint['id'])=>set_rebut(rebut_to, from)
+);
+
+export const add_rebut=(rebut_to: mPoint['id'], part: mPart['id'])=>{
+  const part_rebut_to = get_ancestor_part(rebut_to);
+  if(part_rebut_to===undefined) throw TypeError('argument `rebut_to` is not descendent of mPart');
+  if(compare_id(part_rebut_to, part)>=0) throw new ValidationError('cannot rebut to point in later parts');
+  const rebut_obj = part_add_child(part);
+  set_rebut(rebut_to, rebut_obj.id);
+  return rebut_obj;
+}
+export const add_rebut_to=(part: mPart['id'])=>(
+  (rebut_to: mPoint['id'])=>add_rebut(rebut_to, part)
+);

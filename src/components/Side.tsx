@@ -33,7 +33,7 @@ export const Side: React.VFC<Props> = (props)=>{
   },[props.sideID,props.setSelected]);
   if(side===undefined) return null;
   return (
-    <div className="side" data-testid='side' onFocus={onFocus} css={styleSide}>
+    <div className="side" data-testid='side' data-modelid={props.sideID} onFocus={onFocus} css={styleSide}>
       <div className="sideName" css={styleSideName}>{side.side}</div>
       <div className="sideChildrenWrap" css={styleSideChildrenWrap}>
         {side.contents?.map(content=><Part partID={content} setSelected={props.setSelected} />)??null}
