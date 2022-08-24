@@ -34,14 +34,13 @@ const generate_parents=():[mMatch['id'], mSide['id'], mPart['id'], mPoint['id']]
 
 test('generate_claim: 引数あり',()=>{
   const point_id=generate_parents()[3];
-  const expected_result:mClaim = {
+  const expected_result: Omit<mClaim, 'id'> = {
     type_signature: mClaimSignature,
-    id: 'claim_0',
     parent: point_id,
   };
   const result=generate_claim(point_id,expected_result);
-  expect(result).toEqual(expected_result);
-  expect(store.getState().claim.entities[expected_result.id]).toEqual(expected_result);
+  expect(result).toMatchObject(expected_result);
+  expect(store.getState().claim.entities[result.id]).toMatchObject(expected_result);
   const parent_in_redux=get_from_id(point_id);
   expect(is_mPoint(parent_in_redux)).toBeTruthy();
   if(!is_mPoint(parent_in_redux)) return;
@@ -50,14 +49,13 @@ test('generate_claim: 引数あり',()=>{
 
 test('generate_claim: 引数なし',()=>{
   const point_id=generate_parents()[3];
-  const expected_result:mClaim = {
+  const expected_result: Omit<mClaim, 'id'> = {
     type_signature: mClaimSignature,
-    id: 'claim_0',
     parent: point_id
   };
   const result=generate_claim(point_id);
-  expect(result).toEqual(expected_result);
-  expect(store.getState().claim.entities[expected_result.id]).toEqual(expected_result);
+  expect(result).toMatchObject(expected_result);
+  expect(store.getState().claim.entities[result.id]).toMatchObject(expected_result);
   const parent_in_redux=get_from_id(point_id);
   expect(is_mPoint(parent_in_redux)).toBeTruthy();
   if(!is_mPoint(parent_in_redux)) return;

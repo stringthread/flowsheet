@@ -30,7 +30,8 @@ export const generate_point=(
   };
   store.dispatch(point_slice.actions.add(generated));
   store.dispatch((id_to_slice(parent) as typeof part_slice|typeof point_slice)?.actions.addChild([parent, generated.id])); // TODO: asで誤魔化している。#31で早急に修正
-  return generated;
+  generate_claim(generated.id);
+  return get_from_id(generated.id) as mPoint|undefined||generated; // FIXME: asで誤魔化している。#31で修正
 }
 
 export function point_add_child(parent_id:mPoint['id'], type: mPoint['type_signature']): mPoint;

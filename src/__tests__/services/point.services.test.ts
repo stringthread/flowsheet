@@ -74,7 +74,7 @@ test('point_add_child: Evidence',()=>{
   const expected_result:Omit<mPoint,'id'> = {
     type_signature: mPointSignature,
     parent: part_id,
-    contents: [modified.id],
+    contents: [...(generated.contents??[]), modified.id],
   };
   expect(store.getState().point.entities[generated.id]).toMatchObject(expected_result);
   expect(store.getState().evidence.entities[modified.id]).toBeTruthy();
@@ -91,7 +91,7 @@ test('point_add_child: Point',()=>{
   const expected_result:Omit<mPoint,'id'> = {
     type_signature: mPointSignature,
     parent: part_id,
-    contents: [modified.id],
+    contents: [...(generated.contents??[]), modified.id],
   };
   expect(store.getState().point.entities[generated.id]).toMatchObject(expected_result);
   expect(store.getState().point.entities[modified.id]).toBeTruthy();
@@ -394,7 +394,7 @@ test('append_point_child: Claim', ()=>{
   expect(result_in_redux.parent).toBe(parent.id);
   const parent_in_redux=store.getState().point.entities[parent.id];
   if(parent_in_redux===undefined) return;
-  expect(parent_in_redux.contents).toEqual([claim1.id,result.id,claim2.id]);
+  expect(parent_in_redux.contents).toEqual([...(parent.contents??[]), claim1.id,result.id,claim2.id]);
 });
 
 test('set_rebut: mPoint1<-mPoint2', ()=>{
