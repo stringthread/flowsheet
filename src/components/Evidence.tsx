@@ -1,13 +1,14 @@
-import React,{useCallback} from 'react';
+import React,{useCallback, useContext, useEffect, useRef} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
 import {mEvidence} from 'models/mEvidence';
 import {evidence_selectors,evidence_slice} from 'stores/slices/evidence';
 import {StretchTextInput,StretchTextArea} from './TextInput';
-import {typeSelected} from './App';
+import {AppContext, typeSelected} from './App';
 
 type HeaderProps = {
+  focusRef: React.RefObject<HTMLInputElement>;
   parentID: string;
   metadata: Omit<mEvidence, 'content'>;
 }
@@ -41,6 +42,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
     <div className="evidenceHeader" css={styleEvidenceHeader}>
       <span className="evidenceAbout">
         <StretchTextInput
+          ref={props.focusRef}
           value={props.metadata.about_author??''}
           onBlur={(e)=>{
             dispatch(evidence_slice.actions.upsertOne({
@@ -105,6 +107,13 @@ const styleEvidenceContent=css`
 export const Evidence: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const evidence=useSelector((state:RootState)=>evidence_selectors.selectById(state,props.eviID));
+  const context = useContext(AppContext);
+  const focusRef = useRef<HTMLInputElement>(null);
+  useEffect(()=>{
+    if(context?.Refs.nextFocus.get!==props.eviID) return;
+    focusRef.current?.focus();
+    context?.Refs.nextFocus.set(undefined);
+  });
   const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -113,7 +122,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
   if(evidence===undefined) return null;
   return (
     <div className='evidence' data-testid='evidence' data-modelid={props.eviID} onFocus={onFocus} css={styleEvidence}>
-      <EvidenceHeader parentID={props.eviID} metadata={evidence}/>
+      <EvidenceHeader focusRef={focusRef} parentID={props.eviID} metadata={evidence}/>
       <StretchTextArea
         className="evidenceContent"
         value={evidence.contents}

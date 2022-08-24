@@ -1,8 +1,8 @@
-import React,{useCallback} from 'react';
+import React,{useCallback, useContext, useEffect, useRef} from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {typeSelected} from './App';
+import {AppContext, typeSelected} from './App';
 import {claim_selectors, claim_slice} from 'stores/slices/claim';
 import {StretchTextArea} from './TextInput';
 
@@ -21,6 +21,13 @@ const stylePointClaim=css`
 export const Claim: React.VFC<Props> = (props)=>{
   const dispatch=useDispatch();
   const claim=useSelector((state:RootState)=>claim_selectors.selectById(state,props.claimID));
+  const context = useContext(AppContext);
+  const focusRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(()=>{
+    if(context?.Refs.nextFocus.get!==props.claimID) return;
+    focusRef.current?.focus();
+    context?.Refs.nextFocus.set(undefined);
+  });
   const onFocus=useCallback((e: React.FocusEvent)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -29,6 +36,7 @@ export const Claim: React.VFC<Props> = (props)=>{
   if(claim===undefined) return null;
   return (
     <StretchTextArea
+      ref={focusRef}
       className="pointClaim"
       data-testid="claim"
       data-modelid={props.claimID}

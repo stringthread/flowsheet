@@ -15,6 +15,7 @@ import { Point } from './Point';
 import { useCheckDepsUpdate, useDependentObj, usePreviousValue } from 'util/hooks';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
+import { baseModel } from 'models/baseModel';
 
 export type typeSelected=string|undefined;
 
@@ -28,6 +29,7 @@ export type AppContext = {
   };
   Refs: {
     idToPointRef: { get: idToPointRef; add: (_:idToPointRef)=>void; };
+    nextFocus: { get: baseModel['id']|undefined; set: (v:baseModel['id']|undefined)=>void;}
   }
 };
 export const AppContext = createContext<AppContext|undefined>(undefined);
@@ -53,32 +55,32 @@ const useOnClickToRebut = (idToPointRef: idToPointRef, rebutToFnInfo: rebutToFnI
   return {onClick, stop};
 };
 
-const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>)=>{
+const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>, setNextFocus: (v: baseModel['id']|undefined)=>void)=>{
   return {
     add_claim: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
       if(selected==undefined) return;
-      append_claim(selected);
+      setNextFocus(append_claim(selected)?.id);
     }, [selected]),
     add_point: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
       if(selected==undefined) return;
-      append_sibling_point(selected);
+      setNextFocus(append_sibling_point(selected)?.id);
     }, [selected]),
     add_point_to_parent: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
       if(selected==undefined) return;
-      append_point_to_parent(selected);
+      setNextFocus(append_point_to_parent(selected)?.id);
     }, [selected]),
     add_point_child: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
       if(selected==undefined) return;
-      append_point_child(selected);
+      setNextFocus(append_point_child(selected)?.id);
     }, [selected]),
     add_point_to_part: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
       if(selected==undefined) return;
-      append_point_to_part(selected);
+      setNextFocus(append_point_to_part(selected)?.id);
     }, [selected]),
     draw_line: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
@@ -89,15 +91,15 @@ const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispat
     add_evidence: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
       if(selected==undefined) return;
-      append_evidence(selected);
+      setNextFocus(append_evidence(selected)?.id);
     }, [selected]),
   };
 };
 
 type typeHotkeys = { [keys: string]: ReturnType<typeof useHotkeys>; };
 
-const useAppHotkeys = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, escapeFn: (e?: Event | React.SyntheticEvent)=>void, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>): typeHotkeys=>{
-  const {add_claim, add_point, add_point_to_parent, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn, setLineStartId);
+const useAppHotkeys = (selected: typeSelected, setRebutToFn: React.Dispatch<React.SetStateAction<rebutToFnInfo>>, escapeFn: (e?: Event | React.SyntheticEvent)=>void, setLineStartId: React.Dispatch<React.SetStateAction<typeSelected>>, setNextFocus: (v: baseModel['id']|undefined)=>void): typeHotkeys=>{
+  const {add_claim, add_point, add_point_to_parent, add_point_child, add_point_to_part, draw_line, add_evidence} = useAppEventListeners(selected, setRebutToFn, setLineStartId, setNextFocus);
   return {
     'alt+c': useHotkeys('alt+c', add_claim, { enableOnTags: ['INPUT','TEXTAREA'] }),
     'alt+e': useHotkeys('alt+e', add_evidence, { enableOnTags: ['INPUT','TEXTAREA'] }),
@@ -172,10 +174,11 @@ function App() {
   const [selected, setSelected]=useState<typeSelected>(undefined);
   const [rebutToFn, setRebutToFn] = useState<rebutToFnInfo>(undefined);
   const [idToPointRef, setIdToPointRef] = useState<idToPointRef>({});
+  const [nextFocus, setNextFocus] = useState<baseModel['id']|undefined>(undefined);
   const [lineStartId, setLineStartId] = useState<typeSelected>(undefined);
   const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(idToPointRef, rebutToFn, setRebutToFn, setLineStartId);
-  const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn, setLineStartId);
-  useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId);
+  const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn, setLineStartId, setNextFocus);
+  useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
   const onMouseMoveFnRef = useRef((e: React.MouseEvent)=>{});
   const AppContextValue = useDependentObj({
     Callbacks: {
@@ -188,8 +191,11 @@ function App() {
         get: idToPointRef,
         add: (_new: idToPointRef) => setIdToPointRef(state=>({ ...state, ..._new })),
       },
+      nextFocus: {
+        get: nextFocus, set: setNextFocus
+      }
     },
-  }, [onClickToRebut, idToPointRef, setIdToPointRef]);
+  }, [onClickToRebut, idToPointRef, setIdToPointRef, nextFocus, setNextFocus]);
   return (
     <Provider store={store}>
       <AppContext.Provider value={AppContextValue}>

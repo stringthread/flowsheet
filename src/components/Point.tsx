@@ -77,9 +77,16 @@ export const Point: React.VFC<Props> = (props)=>{
     e.stopPropagation();
     props.setSelected(props.pointID);
   },[props.pointID,props.setSelected]);
-  const onClick = useContext(AppContext)?.Callbacks.Point?.onClick;
-  const idToPointRef = useContext(AppContext)?.Refs.idToPointRef;
+  const context = useContext(AppContext);
+  const onClick = context?.Callbacks.Point?.onClick;
+  const idToPointRef = context?.Refs.idToPointRef;
   const thisRef = useRef<HTMLDivElement>(null);
+  const focusRef = useRef<HTMLInputElement>(null);
+  useEffect(()=>{
+    if(context?.Refs.nextFocus.get!==props.pointID) return;
+    focusRef.current?.focus();
+    context?.Refs.nextFocus.set(undefined);
+  });
   if(useCheckDepsUpdate([props.pointID, thisRef])) idToPointRef?.add({ [props.pointID]: thisRef, });
   const [rebuttalLine, setRebuttalLine] = useState<LeaderLine|undefined>(undefined);
   useEffect(()=>{
@@ -98,6 +105,7 @@ export const Point: React.VFC<Props> = (props)=>{
   return (
     <div ref={thisRef} className="point" data-testid="point" data-modelid={props.pointID} onFocus={onFocus} onClick={onClick} css={stylePoint}>
       <StretchTextInput
+        ref={focusRef}
         className="pointNumbering"
         data-testid="pointNumbering"
         value={point.numbering?.toString()}
