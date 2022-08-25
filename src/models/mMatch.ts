@@ -12,7 +12,7 @@ export interface mMatch extends baseModel {
   side?: mSide['side'];
   winner?: string;
   opponent?: string;
-  member?: Map<mPart['name'],string>; // パート名からメンバ名への対応
+  member?: Record<Required<mPart>['name'],string>; // パート名からメンバ名への対応
   note?: string;
   contents?: Array<baseModel['id']>; // mSideのID
 }

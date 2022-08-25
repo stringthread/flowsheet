@@ -12,3 +12,7 @@ export function reorder_array<T,U>(array:Array<T>,target:U,before:U|null,func?:(
   result.splice(index,0,target_elem);
   return result;
 }
+// objectに対してmapを適用（戻り値は順序不定の配列）
+export const map_object = <K extends string|number|symbol, V, R>(obj: Record<K,V>, callbackfn: (value: V, key: K, object: Record<K,V>) => R): R[]=>{
+  return (Object.keys(obj) as K[]).map(k=>callbackfn(obj[k], k, obj));
+}
