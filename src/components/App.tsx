@@ -16,6 +16,7 @@ import { useCheckDepsUpdate, useDependentObj, usePreviousValue } from 'util/hook
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { baseModel } from 'models/baseModel';
+import { saveMatch } from 'repositories/encoder';
 
 export type typeSelected=string|undefined;
 
@@ -206,6 +207,7 @@ function App() {
           <button onClick={add_point}>Add Point</button>
           <button onClick={add_point_to_part}>Add Point to Part</button>
           <button onClick={add_evidence}>Add Evidence</button>
+          <button onClick={()=>saveMatch(matchID)}>save</button>
         </div>
       </AppContext.Provider>
     </Provider>
