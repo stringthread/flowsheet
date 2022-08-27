@@ -3,6 +3,7 @@ import { get_from_id } from "services/id";
 
 export interface EvidenceOutputObj {
   evidence: {
+    '@id': mEvidence['id'],
     '@about_author'?: mEvidence['about_author'];
     '@author'?: mEvidence['author'];
     '@year'?: mEvidence['year'];
@@ -15,6 +16,7 @@ export const encodeEvidence = (id: mEvidence['id']) : EvidenceOutputObj|undefine
   if(!is_mEvidence(model)) return undefined;
   return {
     evidence: {
+      '@id': id,
       '@about_author': model['about_author'],
       '@author': model['author'],
       '@year': model['year'],

@@ -4,6 +4,7 @@ import { encodePart, PartOutputObj } from "./part";
 
 export interface SideOutputObj {
   side: {
+    '@id': mSide['id'];
     '@side'?: mSide['side'];
     '#'?: PartOutputObj[];
   }
@@ -15,6 +16,7 @@ export const encodeSide = (id: mSide['id']): SideOutputObj|undefined => {
   if(!is_mSide(model)) return undefined;
   return {
     side: {
+      '@id': id,
       '@side': model['side'],
       '#': model.contents?.map(encodePart).filter(isChildObj),
     }

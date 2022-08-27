@@ -7,6 +7,7 @@ import { encodeEvidence, EvidenceOutputObj } from "./evidence";
 
 export interface PointOutputObj {
   point: {
+    '@id': mPoint['id'];
     '@numbering'?: mPoint['numbering'];
     '@rebut_to'?: mPoint['rebut_to'];
     '#'?: (PointOutputObj|EvidenceOutputObj|ClaimOutputObj)[];
@@ -27,6 +28,7 @@ export const encodePoint = (id: mPoint['id']): PointOutputObj|undefined => {
   if(!is_mPoint(model)) return undefined;
   return {
     point: {
+      '@id': id,
       '@numbering': model['numbering'],
       '@rebut_to': model['rebut_to'],
       '#': model.contents?.map(encodeChild).filter(isChildObj)??[],

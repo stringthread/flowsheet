@@ -16,7 +16,10 @@ export interface MatchOutputObj {
     }[];
     note?: mMatch['note'];
   };
-  match?: SideOutputObj[];
+  match?: {
+    '@id': mMatch['id'];
+    '#'?: SideOutputObj[];
+  };
 };
 
 const isChildObj = (v: SideOutputObj|undefined) : v is SideOutputObj => v!==undefined;
@@ -33,6 +36,9 @@ export const encodeMatch = (id: mMatch['id']): MatchOutputObj|undefined => {
       members: model['member']?map_object(model['member'], (v, k)=>({ '@part': k , _: v })):[],
       note: model['note'],
     },
-    match: model.contents?.map(encodeSide).filter(isChildObj),
+    match: {
+      '@id': id,
+      '#': model.contents?.map(encodeSide).filter(isChildObj),
+    },
   };
 }

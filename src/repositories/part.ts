@@ -4,6 +4,7 @@ import { encodePoint, PointOutputObj } from "./point";
 
 export interface PartOutputObj {
   part: {
+    '@id': mPart['id'];
     '@name'?: mPart['name'];
     '#'?: PointOutputObj[];
   }
@@ -15,6 +16,7 @@ export const encodePart = (id: mPart['id']): PartOutputObj|undefined => {
   if(!is_mPart(model)) return undefined;
   return {
     part: {
+      '@id': id,
       '@name': model['name'],
       '#': model.contents?.map(encodePoint).filter(isChildObj),
     }
