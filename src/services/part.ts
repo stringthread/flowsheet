@@ -12,11 +12,12 @@ import { mPoint } from 'models/mPoint';
 
 export const generate_part=(
   parent: baseModel['id'],
-  from?:Omit<mPart,'type_signature'|'id'|'parent'|'contents'>,
+  from?: Partial<Omit<mPart,'type_signature'|'id'|'parent'>>,
   empty: boolean = false,
 ):mPart=>{
   const parent_obj=get_from_id(parent);
   if(!is_mSide(parent_obj)) throw TypeError('argument `parent` does not match mSide');
+  if(from!==undefined && 'contents' in from) empty = true;
   const generated: mPart= {
     ...from,
     type_signature: mPartSignature,
@@ -25,11 +26,8 @@ export const generate_part=(
   };
   store.dispatch(part_slice.actions.add(generated));
   const child_point=empty?undefined:generate_point(generated.id); // NOTE: 仮実装
-  const contents=child_point?[child_point.id]:undefined; // NOTE: 仮実装
-  const returned={...generated, contents};
-  store.dispatch(part_slice.actions.upsertOne(returned));
   store.dispatch(side_slice.actions.addChild([parent, generated.id]));
-  return returned;
+  return (get_from_id(generated.id) as mPart|undefined)??generated;
 }
 
 export const part_add_child=(parent_id:mPart['id'])=>{
