@@ -8,7 +8,7 @@ import {generate_side} from  './side';
 
 export const generate_match=(
   sides?:Record<NonNullable<mSide['side']>,Array<mPart['name']>>,
-  from?: Omit<mMatch,'id'|'contents'>
+  from?: Partial<Omit<mMatch,'id'|'contents'>>
 ):mMatch=>{
   const generated: mMatch= {
     ...from,

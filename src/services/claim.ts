@@ -11,7 +11,7 @@ import { switch_for_append, point_add_child } from './point';
 
 export const generate_claim=(
   parent: baseModel['id'],
-  from?: Omit<mClaim,'id'>
+  from?: Partial<Omit<mClaim,'id'>>
 ):mClaim=>{
   const parent_obj=get_from_id(parent);
   if(!is_mPoint(parent_obj)) throw TypeError('argument `parent` does not match mPoint');

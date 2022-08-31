@@ -1,6 +1,10 @@
 import { is_mPart, mPart } from "models/mPart";
+import { mSide } from "models/mSide";
 import { get_from_id } from "services/id";
-import { encodePoint, PointOutputObj } from "./point";
+import { generate_part, part_set_child } from "services/part";
+import { isObject } from "util/typeGuardUtils";
+import { decodeResult, idMap } from "./loader";
+import { decodePoint, encodePoint, PointInputObj, PointOutputObj } from "./point";
 
 export interface PartOutputObj {
   part: {
@@ -22,3 +26,26 @@ export const encodePart = (id: mPart['id']): PartOutputObj|undefined => {
     }
   };
 }
+
+export interface PartInputObj {
+  '#name': 'part';
+  '$': {
+    'id': string;
+    'name'?: string;
+  };
+  '$$'?: (PointInputObj)[];
+}
+export const isPartInputObj = (v: unknown): v is PartInputObj =>{
+  return isObject<PartInputObj>(v) && v['#name']==='part' && (Array.isArray(v['$$']) || v['$$']===undefined)
+    && isObject<PartInputObj['$']>(v['$']) && typeof v['$'].id==='string';
+};
+
+export const decodePart = (obj: object, parent: mSide['id'], idMap: idMap): decodeResult<mPart> => {
+  if(!isPartInputObj(obj)) return { id: undefined, idMap };
+  const generated = generate_part(parent, {
+    name: obj['$'].name,
+  }, true);
+  idMap.set(obj['$'].id, generated.id);
+  if(Array.isArray(obj['$$'])) idMap = obj['$$'].reduce((idMap, v) => decodePoint(v, generated.id, idMap).idMap, idMap);
+  return { id: generated.id, idMap };
+};

@@ -14,7 +14,7 @@ import { match_slice } from 'stores/slices/match';
 export const generate_side=(
   parent: mMatch['id'],
   parts?:Array<mPart['name']>,
-  from?:Omit<mSide,'type_signature'|'id'|'parent'|'contents'>
+  from?:Partial<Omit<mSide,'type_signature'|'id'|'parent'|'contents'>>
 ):mSide=>{
   const parent_obj=get_from_id(parent);
   if(!is_mMatch(parent_obj)) throw TypeError('argument `parent` does not match mMatch');

@@ -1,6 +1,9 @@
 import { is_mSide, mSide } from "models/mSide";
 import { get_from_id } from "services/id";
-import { encodePart, PartOutputObj } from "./part";
+import { generate_side } from "services/side";
+import { isObject } from "util/typeGuardUtils";
+import { decodeResult, idMap } from "./loader";
+import { decodePart, encodePart, PartInputObj, PartOutputObj } from "./part";
 
 export interface SideOutputObj {
   side: {
@@ -22,3 +25,26 @@ export const encodeSide = (id: mSide['id']): SideOutputObj|undefined => {
     }
   };
 }
+
+export interface SideInputObj {
+  '#name': 'side';
+  '$': {
+    'id': string;
+    'side'?: string;
+  };
+  '$$'?: (PartInputObj)[];
+}
+export const isSideInputObj = (v: unknown): v is SideInputObj =>{
+  return isObject<SideInputObj>(v) && v['#name']==='side' && (Array.isArray(v['$$']) || v['$$']===undefined)
+    && isObject<SideInputObj['$']>(v['$']) && typeof v['$'].id==='string';
+};
+
+export const decodeSide = (obj: object, parent: mSide['id'], idMap: idMap): decodeResult<mSide> => {
+  if(!isSideInputObj(obj)) return { id: undefined, idMap };
+  const generated = generate_side(parent, undefined, {
+    side: obj['$'].side,
+  });
+  idMap.set(obj['$'].id, generated.id);
+  if(Array.isArray(obj['$$'])) idMap = obj['$$'].reduce((idMap, v) => decodePart(v, generated.id, idMap).idMap, idMap);
+  return { id: generated.id, idMap };
+};
