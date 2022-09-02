@@ -17,6 +17,7 @@ import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { baseModel } from 'models/baseModel';
 import { saveMatch } from 'repositories/encoder';
+import { useLoadFileModal } from './LoadFileModal';
 
 export type typeSelected=string|undefined;
 
@@ -179,6 +180,7 @@ function App() {
   const [lineStartId, setLineStartId] = useState<typeSelected>(undefined);
   const {onClick: onClickToRebut, stop: stopToRebut} = useOnClickToRebut(idToPointRef, rebutToFn, setRebutToFn, setLineStartId);
   const {add_claim, add_point, add_point_to_part, add_evidence}=useAppEventListeners(selected, setRebutToFn, setLineStartId, setNextFocus);
+  const [LoadFileModal, openLoadFileModal, closeLoadFileModal, isOpenLoadFileModal]=useLoadFileModal(setMatchID);
   useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
   const onMouseMoveFnRef = useRef((e: React.MouseEvent)=>{});
   const AppContextValue = useDependentObj({
@@ -208,6 +210,8 @@ function App() {
           <button onClick={add_point_to_part}>Add Point to Part</button>
           <button onClick={add_evidence}>Add Evidence</button>
           <button onClick={()=>saveMatch(matchID)}>save</button>
+          <button onClick={openLoadFileModal}>load</button>
+          <LoadFileModal/>
         </div>
       </AppContext.Provider>
     </Provider>
