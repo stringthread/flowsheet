@@ -112,26 +112,27 @@ export const TextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, 
 const styleStretchTextArea=css(
   styleTextArea,
   css`
-    height: auto !important;
+    min-height: 1em;
   `
 );
 
-const updateHeight = (element: HTMLTextAreaElement, value: string)=>{
-  element.rows=value.split('\n').length;
+const updateHeight = (element: HTMLTextAreaElement)=>{
+  element.style.height='0px';
+  element.style.height=element.scrollHeight+'px';
 };
 
 export const StretchTextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, ref: React.ForwardedRef<HTMLTextAreaElement>)=>{
   const changeHandler = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
       if(props.onChange!==undefined) props.onChange(e);
-      updateHeight(e.currentTarget, e.currentTarget.value);
+      updateHeight(e.currentTarget);
     }
   ,[props]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   if(typeof ref==='function') ref(inputRef.current);
   else if(ref!==null) ref.current=inputRef.current;
   useEffect(()=>{
-    if(inputRef.current!==null) updateHeight(inputRef.current, inputRef.current.value);
+    if(inputRef.current!==null) updateHeight(inputRef.current);
   }, [inputRef.current?.value]);
   return (
     <TextArea {...props}
