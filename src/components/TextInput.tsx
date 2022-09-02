@@ -10,6 +10,7 @@ export interface TextInputProps<T extends HTMLElement> {
   onKeyPress?: React.KeyboardEventHandler<T>,
   value?: string,
   placeholder?: string,
+  key?: React.Key,
   id?: string,
   className?: string,
   css?: ReturnType<typeof css>,
@@ -36,6 +37,7 @@ export const TextInput = forwardRef((props: TextInputProps<HTMLInputElement>, re
     <input type="text"
     ref={ref}
     id={props.id}
+    key={props.key}
     className={props.className}
     onClick={props.onClick??empty_event_handler}
     onChange={props.onChange??empty_event_handler}
@@ -93,6 +95,7 @@ export const TextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, 
     <textarea
     ref={ref}
     id={props.id}
+    key={props.key}
     className={props.className}
     onClick={props.onClick??empty_event_handler}
     onChange={props.onChange??empty_event_handler}

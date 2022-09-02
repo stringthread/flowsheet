@@ -106,6 +106,7 @@ export const Point: React.VFC<Props> = (props)=>{
     <div ref={thisRef} className="point" data-testid="point" data-modelid={props.pointID} onFocus={onFocus} onClick={onClick} css={stylePoint}>
       <StretchTextInput
         ref={focusRef}
+        key={props.pointID}
         className="pointNumbering"
         data-testid="pointNumbering"
         value={point.numbering?.toString()}

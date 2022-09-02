@@ -42,6 +42,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
     <div className="evidenceHeader" css={styleEvidenceHeader}>
       <span className="evidenceAbout">
         <StretchTextInput
+          key={`${props.parentID}_about`}
           ref={props.focusRef}
           value={props.metadata.about_author??''}
           onBlur={(e)=>{
@@ -55,6 +56,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
       </span>
       <span className="evidenceAuthor">
         <StretchTextInput
+          key={`${props.parentID}_author`}
           className="evidenceAuthor"
           value={props.metadata.author??''}
           onBlur={(e)=>{
@@ -68,6 +70,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
       </span>
       <span className="evidenceYear">
         <StretchTextInput
+          key={`${props.parentID}_year`}
           className="evidenceYear"
           value={props.metadata.year?.toString()??''}
           onBlur={(e)=>{
@@ -124,6 +127,7 @@ export const Evidence: React.VFC<Props> = (props)=>{
     <div className='evidence' data-testid='evidence' data-modelid={props.eviID} onFocus={onFocus} css={styleEvidence}>
       <EvidenceHeader focusRef={focusRef} parentID={props.eviID} metadata={evidence}/>
       <StretchTextArea
+        key={props.eviID}
         className="evidenceContent"
         value={evidence.contents}
         onBlur={(e)=>{
