@@ -2,23 +2,24 @@ import React,{useCallback, useContext, useEffect, useRef, useState} from 'react'
 import {useSelector,useDispatch} from 'react-redux';
 import {css} from '@emotion/react';
 import {RootState} from 'stores/index';
-import {mPoint} from 'models/mPoint';
+import {id_is_mPoint, mPoint} from 'models/mPoint';
 import {Evidence} from './Evidence'
 import {Claim} from './Claim';
 import {AppContext, typeSelected} from './App';
 import {point_selectors,point_slice} from 'stores/slices/point';
-import {id_is_mEvidence, id_is_mClaim, id_is_mPoint} from 'services/id';
 import {StretchTextInput,StretchTextArea} from './TextInput';
 import LeaderLine from 'leader-line-new';
 import { useCheckDepsUpdate, useDependentObj } from 'util/hooks';
+import { id_is_mClaim } from 'models/mClaim';
+import { id_is_mEvidence } from 'models/mEvidence';
 
 type Props = {
-  pointID: string;
+  pointID: mPoint['id'];
   setSelected: (_:typeSelected)=>void;
 }
 
 type ChildProps = {
-  parentID:string;
+  parentID:mPoint['id'];
   contents:mPoint['contents'];
   setSelected: (_:typeSelected)=>void;
 };

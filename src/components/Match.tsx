@@ -34,7 +34,7 @@ const MatchHeader: React.VFC<HeaderProps> = (props)=>(
 );
 
 type Props = {
-  matchID: string;
+  matchID: mMatch['id'];
   setSelected: (_:typeSelected)=>void;
 }
 

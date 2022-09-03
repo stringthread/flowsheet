@@ -7,10 +7,10 @@ import { get_from_id, get_parent_id } from './id';
 import { is_mPoint } from 'models/mPoint';
 import { point_slice } from 'stores/slices/point';
 import { part_add_child } from './part';
-import { switch_for_append, point_add_child } from './point';
+import { switch_for_append, point_add_child, switch_for_append_id } from './point';
 
 export const generate_evidence=(
-  parent: baseModel['id'],
+  parent: mEvidence['parent'],
   from?: Partial<Omit<mEvidence,'id'|'content'>>
 ):mEvidence=>{
   const parent_obj=get_from_id(parent);
@@ -26,7 +26,7 @@ export const generate_evidence=(
   return generated;
 };
 
-export const append_evidence=(parent_id: baseModel['id']): mEvidence|undefined=>{
+export const append_evidence=(parent_id: switch_for_append_id): mEvidence|undefined=>{
   return switch_for_append(
     parent_id,
     (id)=>append_evidence(part_add_child(id).id),

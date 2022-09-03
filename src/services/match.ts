@@ -16,10 +16,10 @@ export const generate_match=(
     id: generate_match_id(),
   };
   store.dispatch(match_slice.actions.add(generated));
-  const contents: Array<string>=[];
+  const contents: mMatch['contents']=[];
   if(sides!==undefined){
     for(const i in sides){
-      contents.push(generate_side(generated.id,sides[i],{side:i}).id); // TODO: reduxに保存する処理を追加
+      contents.push(generate_side(generated.id,sides[i],{side:i}).id);
     }
   }
   const returned={...generated, contents}

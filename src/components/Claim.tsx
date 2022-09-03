@@ -5,9 +5,10 @@ import {RootState} from 'stores/index';
 import {AppContext, typeSelected} from './App';
 import {claim_selectors, claim_slice} from 'stores/slices/claim';
 import {StretchTextArea} from './TextInput';
+import { mClaim } from 'models/mClaim';
 
 type Props = {
-  claimID: string;
+  claimID: mClaim['id'];
   setSelected: (_:typeSelected)=>void;
 };
 

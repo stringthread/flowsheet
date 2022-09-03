@@ -7,7 +7,7 @@ import {mPart} from 'models/mPart';
 import {mSide, mSideSignature} from 'models/mSide';
 import {generate_part} from './part';
 import { is_mMatch, mMatch } from 'models/mMatch';
-import { get_from_id, id_is_mMatch } from './id';
+import { get_from_id } from './id';
 import { match_slice } from 'stores/slices/match';
 
 

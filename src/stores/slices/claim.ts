@@ -2,6 +2,7 @@ import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mClaim,is_mClaim} from 'models/mClaim';
+import { mPoint } from 'models/mPoint';
 
 const claim_adapter=createEntityAdapter<mClaim>();
 const claim_initialState:EntityStateWithLastID<mClaim>=claim_adapter.getInitialState({
@@ -21,7 +22,7 @@ export const claim_slice=createSlice({
       };
       if(is_mClaim(evi)) claim_adapter.upsertOne(state,evi);
     },
-    removeOne: (state,action:PayloadAction<string>)=>{
+    removeOne: (state,action:PayloadAction<mClaim['id']>)=>{
       claim_adapter.removeOne(state,action.payload);
     },
     removeAll: state=>{
@@ -31,7 +32,7 @@ export const claim_slice=createSlice({
       state.last_id_number++;
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[string,string]>)=>{
+    setParent: (state,action:PayloadAction<[mClaim['id'], mPoint['id']]>)=>{
       const [id,parent]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;

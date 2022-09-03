@@ -2,15 +2,15 @@ import React,{useState, useLayoutEffect, useCallback, useContext, createContext,
 import {Provider} from 'react-redux';
 import {store} from 'stores/index';
 import {point_slice} from 'stores/slices/point'
-import {get_from_id, id_is_mPart, id_is_mPoint} from 'services/id';
+import { get_from_id } from 'services/id';
 import {Match} from './Match';
-import {mPoint} from 'models/mPoint';
+import {id_is_mPoint, id_is_PointChild, mPoint} from 'models/mPoint';
 import { mEvidenceSignature } from 'models/mEvidence';
 import {generate_match} from 'services/match';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
-import { append_sibling_point, append_point_child, append_point_to_part, set_rebut_to, append_point_to_parent } from 'services/point';
+import { append_sibling_point, append_point_child, append_point_to_part, set_rebut_to, append_point_to_parent, is_switch_for_append_id } from 'services/point';
 import { Point } from './Point';
 import { useCheckDepsUpdate, useDependentObj, usePreviousValue } from 'util/hooks';
 import { css } from '@emotion/react';
@@ -18,8 +18,10 @@ import LeaderLine from 'leader-line-new';
 import { baseModel } from 'models/baseModel';
 import { saveMatch } from 'repositories/encoder';
 import { useLoadFileModal } from './LoadFileModal';
+import { ID_TYPE } from 'models';
+import { mMatch } from 'models/mMatch';
 
-export type typeSelected=string|undefined;
+export type typeSelected = ID_TYPE|undefined;
 
 type idToPointRef = {[id: mPoint['id']]: React.RefObject<HTMLElement>};
 
@@ -61,38 +63,38 @@ const useAppEventListeners = (selected: typeSelected, setRebutToFn: React.Dispat
   return {
     add_claim: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!is_switch_for_append_id(selected)) return;
       setNextFocus(append_claim(selected)?.id);
     }, [selected]),
     add_point: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!is_switch_for_append_id(selected)) return;
       setNextFocus(append_sibling_point(selected)?.id);
     }, [selected]),
     add_point_to_parent: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!is_switch_for_append_id(selected)) return;
       setNextFocus(append_point_to_parent(selected)?.id);
     }, [selected]),
     add_point_child: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!is_switch_for_append_id(selected)) return;
       setNextFocus(append_point_child(selected)?.id);
     }, [selected]),
     add_point_to_part: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!is_switch_for_append_id(selected)) return;
       setNextFocus(append_point_to_part(selected)?.id);
     }, [selected]),
     draw_line: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!id_is_PointChild(selected)) return;
       setRebutToFn(_=>[set_rebut_to(selected), document.activeElement as HTMLElement|null]);
       setLineStartId(selected);
     }, [selected]),
     add_evidence: useCallback((e?:Event|React.SyntheticEvent)=>{
       e?.preventDefault();
-      if(selected==undefined) return;
+      if(!is_switch_for_append_id(selected)) return;
       setNextFocus(append_evidence(selected)?.id);
     }, [selected]),
   };
@@ -143,7 +145,7 @@ const MovingDivLineInner: React.FC<{
   const thisRef = useRef<HTMLDivElement>(null);
   useEffect(()=>{
     let newLine: LeaderLine|undefined =undefined;
-    if(props.lineStartId!==undefined){
+    if(id_is_mPoint(props.lineStartId)){
       if(props.idToPointRef[props.lineStartId]!==undefined){
         const [start, end] = [props.idToPointRef[props.lineStartId].current, thisRef.current];
         if(start!==null && end!==null) newLine=new LeaderLine(start, end);
@@ -165,7 +167,7 @@ const MovingDivLineInner: React.FC<{
 };
 
 function App() {
-  const [matchID,setMatchID]=useState<string>('');
+  const [matchID,setMatchID]=useState<mMatch['id']|undefined>(undefined);
   // 初めに1回だけ実行
   useLayoutEffect(()=>{
     setMatchID(generate_match({
@@ -204,12 +206,12 @@ function App() {
       <AppContext.Provider value={AppContextValue}>
         <div onMouseMove={onMouseMoveFnRef.current} className="App">
           <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
-          <Match matchID={matchID} setSelected={setSelected} />
+          { matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
           <button onClick={add_claim}>Add Claim</button>
           <button onClick={add_point}>Add Point</button>
           <button onClick={add_point_to_part}>Add Point to Part</button>
           <button onClick={add_evidence}>Add Evidence</button>
-          <button onClick={()=>saveMatch(matchID)}>save</button>
+          <button onClick={()=>matchID&&saveMatch(matchID)}>save</button>
           <button onClick={openLoadFileModal}>load</button>
           <LoadFileModal/>
         </div>

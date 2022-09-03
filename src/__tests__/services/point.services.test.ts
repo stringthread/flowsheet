@@ -427,18 +427,6 @@ test('set_rebut: mPoint2->mPoint1', ()=>{
   if(point2_in_redux===undefined) return;
   expect(point2_in_redux.rebut_to).toBe(point1.id);
 });
-test('set_rebut: mClaim<-mPoint', ()=>{
-  const [_,side_id,part1_id]=generate_parents();
-  const point1=generate_point(part1_id);
-  const claim=generate_claim(point1.id);
-  const part2=generate_part(side_id);
-  const point2=generate_point(part2.id);
-  set_rebut(claim.id,point2.id);
-  const point2_in_redux=store.getState().point.entities[point2.id];
-  expect(point2_in_redux).toBeDefined();
-  if(point2_in_redux===undefined) return;
-  expect(point2_in_redux.rebut_to).toBe(claim.id);
-});
 test('set_rebut_to mPoint1<-mPoint2', ()=>{
   const [_,side_id,part1_id]=generate_parents();
   const point1=generate_point(part1_id);
@@ -466,6 +454,18 @@ test('set_rebut_to mPoint1->mPoint2', ()=>{
   expect(point1_in_redux).toBeDefined();
   if(point1_in_redux===undefined) return;
   expect(point1_in_redux.rebut_to).toBeUndefined();
+  const point2_in_redux=store.getState().point.entities[point2.id];
+  expect(point2_in_redux).toBeDefined();
+  if(point2_in_redux===undefined) return;
+  expect(point2_in_redux.rebut_to).toBe(point1.id);
+});
+test('set_rebut_to: mClaim<-mPoint', ()=>{
+  const [_,side_id,part1_id]=generate_parents();
+  const point1=generate_point(part1_id);
+  const claim=generate_claim(point1.id);
+  const part2=generate_part(side_id);
+  const point2=generate_point(part2.id);
+  set_rebut_to(claim.id)(point2.id);
   const point2_in_redux=store.getState().point.entities[point2.id];
   expect(point2_in_redux).toBeDefined();
   if(point2_in_redux===undefined) return;

@@ -5,9 +5,10 @@ import {RootState} from 'stores/index';
 import {Point} from './Point';
 import {typeSelected} from './App';
 import {part_selectors} from 'stores/slices/part';
+import { mPart } from 'models/mPart';
 
 type Props = {
-  partID: string;
+  partID: mPart['id'];
   setSelected: (_:typeSelected)=>void;
 };
 
