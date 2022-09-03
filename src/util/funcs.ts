@@ -16,3 +16,7 @@ export function reorder_array<T,U>(array:Array<T>,target:U,before:U|null,func?:(
 export const map_object = <K extends string|number|symbol, V, R>(obj: Record<K,V>, callbackfn: (value: V, key: K, object: Record<K,V>) => R): R[]=>{
   return (Object.keys(obj) as K[]).map(k=>callbackfn(obj[k], k, obj));
 }
+export const map_to_object = <V, RK extends string|number|symbol, RV>(arr: Array<V>, callbackfn: (value: V, index: number, arr: Array<V>) => Record<RK, RV>): Record<RK, RV> => arr.reduce<Record<RK, RV>>(
+  (acm, v, i, arr) => ({ ...acm, ...callbackfn(v, i, arr) }),
+  {} as Record<RK,RV>
+);

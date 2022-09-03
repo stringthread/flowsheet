@@ -18,7 +18,8 @@ import { ValidationError } from 'errors';
 
 export const generate_point=(
   parent: baseModel['id'],
-  from?:Omit<mPoint,'type_signature'|'id'|'parent'|'contents'|'_shorthands'>
+  from?: Partial<Omit<mPoint,'type_signature'|'id'|'parent'>>,
+  empty: boolean = false
 ):mPoint=>{
   const parent_obj=get_from_id(parent);
   if(!is_mPart(parent_obj)&&!is_mPoint(parent_obj)) throw TypeError('argument `parent` does not match mPart|mPoint');
@@ -30,7 +31,7 @@ export const generate_point=(
   };
   store.dispatch(point_slice.actions.add(generated));
   store.dispatch((id_to_slice(parent) as typeof part_slice|typeof point_slice)?.actions.addChild([parent, generated.id])); // TODO: asで誤魔化している。#31で早急に修正
-  generate_claim(generated.id);
+  if(!empty) generate_claim(generated.id);
   return get_from_id(generated.id) as mPoint|undefined||generated; // FIXME: asで誤魔化している。#31で修正
 }
 
@@ -51,6 +52,9 @@ export function point_add_child(parent_id:mPoint['id'], type: baseModel['type_si
   }
   return child;
 }
+export const point_set_child = (parent_id: mPoint['id'], child_id: PointChild['id']): void => {
+  store.dispatch(point_slice.actions.addChild([parent_id, child_id]));
+};
 
 export const reorder_child = (parent: baseModel['id'], target: baseModel['id'], before: baseModel['id']|null): void =>{
   if(!id_is_mPoint(parent) && !id_is_mPart(parent)) throw TypeError('argument `parent` does not match mPoint|mPart');

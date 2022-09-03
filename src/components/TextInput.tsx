@@ -1,14 +1,16 @@
-import React,{useState,useCallback, forwardRef} from 'react';
+import React,{useState,useCallback, forwardRef, useRef, useEffect} from 'react';
 import {css} from '@emotion/react';
 
 export interface TextInputProps<T extends HTMLElement> {
   onClick?: React.MouseEventHandler<T>,
   onChange?: React.ChangeEventHandler<T>,
+  onInput?: React.FormEventHandler<T>,
   onBlur?: React.FocusEventHandler<T>,
   onFocus?: React.FocusEventHandler<T>,
   onKeyPress?: React.KeyboardEventHandler<T>,
   value?: string,
   placeholder?: string,
+  key?: React.Key,
   id?: string,
   className?: string,
   css?: ReturnType<typeof css>,
@@ -35,9 +37,11 @@ export const TextInput = forwardRef((props: TextInputProps<HTMLInputElement>, re
     <input type="text"
     ref={ref}
     id={props.id}
+    key={props.key}
     className={props.className}
     onClick={props.onClick??empty_event_handler}
     onChange={props.onChange??empty_event_handler}
+    onInput={props.onInput??empty_event_handler}
     onBlur={props.onBlur??empty_event_handler}
     onFocus={props.onFocus??empty_event_handler}
     onKeyPress={props.onKeyPress??empty_event_handler}
@@ -51,21 +55,30 @@ const styleStretchTextInput=css`
   width: 0;
 `;
 
+const updateWidth = (element: HTMLInputElement)=>{
+  const minWidth=element.style.minWidth;
+  element.style.width='0';
+  element.style.minWidth='0';
+  element.style.width=element.scrollWidth+'px';
+  element.style.minWidth=minWidth;
+};
+
 export const StretchTextInput = forwardRef((props: TextInputProps<HTMLInputElement>, ref: React.ForwardedRef<HTMLInputElement>)=>{
+  const changeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>)=>{
+    if(props.onChange!==undefined) props.onChange(e);
+    updateWidth(e.currentTarget);
+  },[props]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  if(typeof ref==='function') ref(inputRef.current);
+  else if(ref!==null) ref.current=inputRef.current;
+  useEffect(()=>{
+    if(inputRef.current!==null) updateWidth(inputRef.current);
+  }, [inputRef.current?.value]);
   return (
     <TextInput
     {...props}
-    ref={ref}
-    onChange={
-      useCallback((e: React.ChangeEvent<HTMLInputElement>)=>{
-        if(props.onChange!==undefined) props.onChange(e);
-        const minWidth=e.currentTarget.style.minWidth
-        e.currentTarget.style.width='0';
-        e.currentTarget.style.minWidth='0';
-        e.currentTarget.style.width=e.currentTarget.scrollWidth+'px';
-        e.currentTarget.style.minWidth=minWidth;
-      },[props])
-    }
+    ref={inputRef}
+    onChange={changeHandler}
     css={css(props.css,styleStretchTextInput)} />
   )
 });
@@ -82,42 +95,50 @@ export const TextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, 
     <textarea
     ref={ref}
     id={props.id}
+    key={props.key}
     className={props.className}
     onClick={props.onClick??empty_event_handler}
     onChange={props.onChange??empty_event_handler}
+    onInput={props.onInput??empty_event_handler}
     onBlur={props.onBlur??empty_event_handler}
     onFocus={props.onFocus??empty_event_handler}
     onKeyPress={props.onKeyPress??empty_event_handler}
     placeholder={props.placeholder??''}
-    css={styleTextArea} >
-      {props.value??''}
-    </textarea>
+    css={styleTextArea}
+    defaultValue={props.value??''} />
   );
 });
 
 const styleStretchTextArea=css(
   styleTextArea,
   css`
-    box-sizing: content-box;
-    height: 1em;
+    min-height: 1em;
   `
 );
 
+const updateHeight = (element: HTMLTextAreaElement)=>{
+  element.style.height='0px';
+  element.style.height=element.scrollHeight+'px';
+};
+
 export const StretchTextArea = forwardRef((props: TextInputProps<HTMLTextAreaElement>, ref: React.ForwardedRef<HTMLTextAreaElement>)=>{
+  const changeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>)=>{
+      if(props.onChange!==undefined) props.onChange(e);
+      updateHeight(e.currentTarget);
+    }
+  ,[props]);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  if(typeof ref==='function') ref(inputRef.current);
+  else if(ref!==null) ref.current=inputRef.current;
+  useEffect(()=>{
+    if(inputRef.current!==null) updateHeight(inputRef.current);
+  }, [inputRef.current?.value]);
   return (
     <TextArea {...props}
     ref={ref}
-    onChange={useCallback(
-      (e)=>{
-        if(props.onChange!==undefined) props.onChange(e);
-        const minHeight=e.currentTarget.style.minHeight
-        e.currentTarget.style.height='0';
-        e.currentTarget.style.minHeight='0';
-        e.currentTarget.style.height=e.currentTarget.scrollHeight+'px';
-        e.currentTarget.style.minHeight=minHeight;
-      }
-    ,[props])}
+    onChange={changeHandler}
     css={styleStretchTextArea}
-     />
+    />
   );
 });

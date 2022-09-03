@@ -37,6 +37,7 @@ export const Claim: React.VFC<Props> = (props)=>{
   return (
     <StretchTextArea
       ref={focusRef}
+      key={props.claimID}
       className="pointClaim"
       data-testid="claim"
       data-modelid={props.claimID}
