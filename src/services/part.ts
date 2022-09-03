@@ -11,7 +11,7 @@ import { side_slice } from 'stores/slices/side';
 import { mPoint } from 'models/mPoint';
 
 export const generate_part=(
-  parent: baseModel['id'],
+  parent: mPart['parent'],
   from?: Partial<Omit<mPart,'type_signature'|'id'|'parent'>>,
   empty: boolean = false,
 ):mPart=>{

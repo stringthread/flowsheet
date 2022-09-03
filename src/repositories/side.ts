@@ -39,7 +39,7 @@ export const isSideInputObj = (v: unknown): v is SideInputObj =>{
     && isObject<SideInputObj['$']>(v['$']) && typeof v['$'].id==='string';
 };
 
-export const decodeSide = (obj: object, parent: mSide['id'], idMap: idMap): decodeResult<mSide> => {
+export const decodeSide = (obj: object, parent: mSide['parent'], idMap: idMap): decodeResult<mSide> => {
   if(!isSideInputObj(obj)) return { id: undefined, idMap };
   const generated = generate_side(parent, undefined, {
     side: obj['$'].side,

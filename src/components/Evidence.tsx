@@ -9,7 +9,7 @@ import {AppContext, typeSelected} from './App';
 
 type HeaderProps = {
   focusRef: React.RefObject<HTMLInputElement>;
-  parentID: string;
+  parentID: mEvidence['id'];
   metadata: Omit<mEvidence, 'content'>;
 }
 
@@ -87,7 +87,7 @@ const EvidenceHeader: React.VFC<HeaderProps> = (props)=>{
 };
 
 type Props = {
-  eviID: string;
+  eviID: mEvidence['id'];
   setSelected: (_:typeSelected)=>void;
 }
 

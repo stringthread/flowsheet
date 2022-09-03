@@ -2,6 +2,8 @@ import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mSide} from 'models/mSide';
+import { mPart } from 'models/mPart';
+import { mMatch } from 'models/mMatch';
 
 const side_adapter=createEntityAdapter<mSide>();
 const side_initialState:EntityStateWithLastID<mSide>=side_adapter.getInitialState({
@@ -24,7 +26,7 @@ export const side_slice=createSlice({
       side_adapter.removeAll(state);
     },
     // Payload[a,b]->ID==aの要素にあるcontentsの末尾にbを追加する
-    addChild: (state,action:PayloadAction<[string,string]>)=>{
+    addChild: (state,action:PayloadAction<[mSide['id'], mPart['id']]>)=>{
       const [id, new_part]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;
@@ -32,7 +34,7 @@ export const side_slice=createSlice({
       entity.contents.push(new_part);
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[string,string]>)=>{
+    setParent: (state,action:PayloadAction<[mSide['id'], mMatch['id']]>)=>{
       const [id,parent]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;

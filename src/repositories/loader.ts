@@ -4,8 +4,9 @@ import { isObject } from 'util/typeGuardUtils';
 import xml2js from 'xml2js';
 import deepmerge from 'deepmerge';
 import { decodeMatch, MetaInputObj, MatchInputObj } from './match';
+import { ID_TYPE } from 'models';
 
-export type idMap = Map<baseModel['id'], baseModel['id']>;
+export type idMap = Map<string, ID_TYPE>;
 export interface decodeResult <T extends baseModel> {
   id: T['id']|undefined;
   idMap: idMap;

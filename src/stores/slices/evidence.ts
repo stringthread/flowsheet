@@ -2,6 +2,7 @@ import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../index';
 import {EntityStateWithLastID} from './EntityStateWithLastID';
 import {mEvidence,is_mEvidence} from 'models/mEvidence';
+import { mPoint } from 'models/mPoint';
 
 const evidence_adapter=createEntityAdapter<mEvidence>();
 const evidence_initialState:EntityStateWithLastID<mEvidence>=evidence_adapter.getInitialState({
@@ -21,7 +22,7 @@ export const evidence_slice=createSlice({
       };
       if(is_mEvidence(evi)) evidence_adapter.upsertOne(state,evi);
     },
-    removeOne: (state,action:PayloadAction<string>)=>{
+    removeOne: (state,action:PayloadAction<mEvidence['id']>)=>{
       evidence_adapter.removeOne(state,action.payload);
     },
     removeAll: state=>{
@@ -31,7 +32,7 @@ export const evidence_slice=createSlice({
       state.last_id_number++;
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[string,string]>)=>{
+    setParent: (state,action:PayloadAction<[mEvidence['id'], mPoint['id']]>)=>{
       const [id,parent]=action.payload;
       const entity=state.entities[id];
       if(entity===undefined) return;
