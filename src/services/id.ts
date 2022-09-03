@@ -1,18 +1,18 @@
-import {ID_TYPE, evidence_id_prefix, claim_id_prefix, point_id_prefix, part_id_prefix, side_id_prefix, match_id_prefix} from '../stores/ids/id_generators'
 import { baseModel } from 'models/baseModel';
-import { mMatchSignature } from 'models/mMatch';
-import { mSideSignature } from 'models/mSide';
-import { mPartSignature } from 'models/mPart';
-import { mPointSignature } from 'models/mPoint';
-import { mEvidenceSignature } from 'models/mEvidence';
+import { match_id_prefix, mMatchSignature } from 'models/mMatch';
+import { mSideSignature, side_id_prefix } from 'models/mSide';
+import { mPartSignature, part_id_prefix } from 'models/mPart';
+import { mPointSignature, point_id_prefix } from 'models/mPoint';
+import { evidence_id_prefix, mEvidenceSignature } from 'models/mEvidence';
 import { store } from 'stores';
-import { mClaimSignature } from 'models/mClaim';
+import { claim_id_prefix, mClaimSignature } from 'models/mClaim';
 import { match_slice } from 'stores/slices/match';
 import { side_slice } from 'stores/slices/side';
 import { part_slice } from 'stores/slices/part';
 import { point_slice } from 'stores/slices/point';
 import { claim_slice } from 'stores/slices/claim';
 import { evidence_slice } from 'stores/slices/evidence';
+import { ID_TYPE } from 'models';
 
 export const id_is_mMatch=(id:ID_TYPE):boolean=>{
   return id.startsWith(match_id_prefix);

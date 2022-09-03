@@ -3,8 +3,12 @@ import {baseModel} from './baseModel';
 
 export const mEvidenceSignature='mEvidence';
 
+export const evidence_id_prefix = 'evi_';
+export type mEvidenceId = `${typeof evidence_id_prefix}${number}`;
+
 export interface mEvidence extends baseModel {
   type_signature: typeof mEvidenceSignature;
+  id: mEvidenceId;
   parent: baseModel['id'];
   about_author?: string;
   author?: string;

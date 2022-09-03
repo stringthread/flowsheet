@@ -7,8 +7,12 @@ export type PointChild = mClaim|mEvidence|mPoint;
 
 export const mPointSignature='mPoint';
 
+export const point_id_prefix = 'point_';
+export type mPointId = `${typeof point_id_prefix}${number}`;
+
 export interface mPoint extends baseModel {
   type_signature: typeof mPointSignature;
+  id: mPointId;
   parent: baseModel['id'];
   numbering?: number|string;
   children_numbering?: number|string;

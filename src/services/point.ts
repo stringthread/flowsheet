@@ -10,9 +10,9 @@ import {id_is_mEvidence, id_is_mPart,id_is_mPoint, id_is_mClaim, get_parent_id, 
 import {point_slice} from 'stores/slices/point';
 import {evidence_slice} from 'stores/slices/evidence';
 import { claim_slice } from 'stores/slices/claim';
-import {generate_point_id, part_id_prefix} from 'stores/ids/id_generators';
+import {generate_point_id} from 'stores/ids/id_generators';
 import { mMatchSignature } from 'models/mMatch';
-import { is_mPart, mPart } from 'models/mPart';
+import { is_mPart, mPart, part_id_prefix } from 'models/mPart';
 import { part_slice } from 'stores/slices/part';
 import { ValidationError } from 'errors';
 
