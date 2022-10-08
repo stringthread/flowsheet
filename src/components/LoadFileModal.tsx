@@ -1,10 +1,10 @@
+import { css } from '@emotion/react';
+import { mMatch } from 'models/mMatch';
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useModal } from 'react-hooks-use-modal';
-import { css } from '@emotion/react';
 import { FaTimes } from 'react-icons/fa';
 import { string_to_mMatch } from 'repositories/loader';
-import { mMatch } from 'models/mMatch';
 
 const loadFileWrapStyle = css`
   position: relative;
@@ -41,35 +41,52 @@ const loadFileDropzoneStyle = css`
   }
 `;
 
-export type useLoadFileModal = (setMatchID: React.Dispatch<React.SetStateAction<mMatch['id']|undefined>>)=>[React.VFC<{}>, ()=>void, ()=>void, boolean];
-export const useLoadFileModal: useLoadFileModal = setMatchID=>{
+export type useLoadFileModal = (
+  setMatchID: React.Dispatch<React.SetStateAction<mMatch['id'] | undefined>>,
+) => [React.VFC<{}>, () => void, () => void, boolean];
+export const useLoadFileModal: useLoadFileModal = (setMatchID) => {
   const [Modal, open, close, isModalOpen] = useModal('root', {
     preventScroll: true,
   });
-  const onDrop = useCallback(async (acceptedFiles: File[])=>{
-    if(acceptedFiles.length<1 || !(acceptedFiles[0] instanceof File)) return;
-    const text = await acceptedFiles[0].text();
-    const match = await string_to_mMatch(text);
-    if(match===undefined) {
-      alert('ファイルの読み込みに失敗しました');
-      return;
-    }
-    setMatchID(match);
-    close();
-  }, [setMatchID]);
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
-  return [useCallback(()=>(
-    <Modal>
-      <div id="load-file-wrap" css={loadFileWrapStyle}>
-        <div className="close" css={loadFileCloseStyle} onClick={close}>
-          <FaTimes title="Close the load-file modal" size={32} />
-        </div>
-        <div className="title" css={loadFileTitleStyle}>フローシートファイル (*.dflow) の読み込み</div>
-        <div {...getRootProps({className: "dropzone", css: loadFileDropzoneStyle})}>
-          <span>{isDragActive?'ここにファイルをドロップ':'ファイルをドラッグ&ドロップ または ここをクリック'}</span>
-          <input {...getInputProps({ name: "load-file-input", className: "file-input" })} />
-        </div>
-      </div>
-    </Modal>
-  ), [close, getRootProps, getInputProps, isDragActive, isModalOpen]), open, close, isModalOpen];
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length < 1 || !(acceptedFiles[0] instanceof File)) return;
+      const text = await acceptedFiles[0].text();
+      const match = await string_to_mMatch(text);
+      if (match === undefined) {
+        alert('ファイルの読み込みに失敗しました');
+        return;
+      }
+      setMatchID(match);
+      close();
+    },
+    [setMatchID],
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  return [
+    useCallback(
+      () => (
+        <Modal>
+          <div id='load-file-wrap' css={loadFileWrapStyle}>
+            <div className='close' css={loadFileCloseStyle} onClick={close}>
+              <FaTimes title='Close the load-file modal' size={32} />
+            </div>
+            <div className='title' css={loadFileTitleStyle}>
+              フローシートファイル (*.dflow) の読み込み
+            </div>
+            <div {...getRootProps({ className: 'dropzone', css: loadFileDropzoneStyle })}>
+              <span>
+                {isDragActive ? 'ここにファイルをドロップ' : 'ファイルをドラッグ&ドロップ または ここをクリック'}
+              </span>
+              <input {...getInputProps({ name: 'load-file-input', className: 'file-input' })} />
+            </div>
+          </div>
+        </Modal>
+      ),
+      [close, getRootProps, getInputProps, isDragActive, isModalOpen],
+    ),
+    open,
+    close,
+    isModalOpen,
+  ];
 };

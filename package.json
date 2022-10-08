@@ -65,10 +65,19 @@
       "last 1 safari version"
     ]
   },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "quoteProps": "consistent",
+    "trailingComma": "all",
+    "endOfLine": "lf"
+  },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.3.0",
     "@testing-library/react": "^12.1.1",
     "@testing-library/react-hooks": "^8.0.1",
+    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
     "@types/jest": "^27.0.2",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^26.6.3",

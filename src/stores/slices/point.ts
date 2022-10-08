@@ -1,61 +1,61 @@
-import {createEntityAdapter,createSlice,PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../index';
-import {EntityStateWithLastID} from './EntityStateWithLastID';
-import {is_mPoint, mPoint,mPointSignature, PointChild, PointParent} from 'models/mPoint';
-import {reorder_array} from 'util/funcs';
+import { RootState } from '../index';
+import { EntityStateWithLastID } from './EntityStateWithLastID';
+import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { is_mPoint, mPoint, mPointSignature, PointChild, PointParent } from 'models/mPoint';
+import { reorder_array } from 'util/funcs';
 
-const point_adapter=createEntityAdapter<mPoint>();
-const point_initialState:EntityStateWithLastID<mPoint>=point_adapter.getInitialState({
-  last_id_number: 0
+const point_adapter = createEntityAdapter<mPoint>();
+const point_initialState: EntityStateWithLastID<mPoint> = point_adapter.getInitialState({
+  last_id_number: 0,
 });
-export const point_slice=createSlice({
+export const point_slice = createSlice({
   name: 'point',
   initialState: point_initialState,
   reducers: {
-    add: (state,action:PayloadAction<mPoint>)=>{
-      point_adapter.addOne(state,action.payload);
+    add: (state, action: PayloadAction<mPoint>) => {
+      point_adapter.addOne(state, action.payload);
     },
-    upsertOne: (state,action:PayloadAction<Pick<mPoint,'id'>&Partial<mPoint>>)=>{
-      const point={
+    upsertOne: (state, action: PayloadAction<Pick<mPoint, 'id'> & Partial<mPoint>>) => {
+      const point = {
         ...state.entities[action.payload.id],
-        ...action.payload
+        ...action.payload,
       };
-      if(is_mPoint(point)) point_adapter.upsertOne(state,point);
+      if (is_mPoint(point)) point_adapter.upsertOne(state, point);
     },
-    removeOne: (state,action:PayloadAction<mPoint['id']>)=>{
-      point_adapter.removeOne(state,action.payload);
+    removeOne: (state, action: PayloadAction<mPoint['id']>) => {
+      point_adapter.removeOne(state, action.payload);
     },
-    removeAll: state=>{
+    removeAll: (state) => {
       point_adapter.removeAll(state);
     },
     // Payload[a,b]: ID==aの要素にあるcontentsの末尾にbを追加する
-    addChild: (state,action:PayloadAction<[mPoint['id'], PointChild['id']]>)=>{
-      const [id, new_part]=action.payload;
-      const entity=state.entities[id];
-      if(entity===undefined||typeof entity.contents==='string') return;
-      if(entity.contents===undefined) entity.contents=[];
+    addChild: (state, action: PayloadAction<[mPoint['id'], PointChild['id']]>) => {
+      const [id, new_part] = action.payload;
+      const entity = state.entities[id];
+      if (entity === undefined || typeof entity.contents === 'string') return;
+      if (entity.contents === undefined) entity.contents = [];
       entity.contents.push(new_part);
     },
     // Payload[a,b,c]->ID===aの要素にあるcontentsに対してreorder_array(b,c)を実行する
-    reorderChild: (state,action:PayloadAction<[mPoint['id'], PointChild['id'], PointChild['id']|null]>)=>{
-      const [id, child_target, before]=action.payload;
-      const entity=state.entities[id];
-      if(entity===undefined) return;
-      const contents=entity.contents;
-      if(!(contents instanceof Array)) return;
-      entity.contents=reorder_array(contents,child_target,before,(e,t)=>e===t);
+    reorderChild: (state, action: PayloadAction<[mPoint['id'], PointChild['id'], PointChild['id'] | null]>) => {
+      const [id, child_target, before] = action.payload;
+      const entity = state.entities[id];
+      if (entity === undefined) return;
+      const contents = entity.contents;
+      if (!(contents instanceof Array)) return;
+      entity.contents = reorder_array(contents, child_target, before, (e, t) => e === t);
     },
     // Payload[a,b]->ID===aの要素の親をbに設定する
-    setParent: (state,action:PayloadAction<[mPoint['id'], PointParent['id']]>)=>{
-      const [id,parent]=action.payload;
-      const entity=state.entities[id];
-      if(entity===undefined) return;
-      entity.parent=parent;
+    setParent: (state, action: PayloadAction<[mPoint['id'], PointParent['id']]>) => {
+      const [id, parent] = action.payload;
+      const entity = state.entities[id];
+      if (entity === undefined) return;
+      entity.parent = parent;
     },
-    incrementID: state=>{
+    incrementID: (state) => {
       state.last_id_number++;
     },
-    reset: ()=>point_initialState,
-  }
+    reset: () => point_initialState,
+  },
 });
-export const point_selectors=point_adapter.getSelectors<RootState>(state=>state.point);
+export const point_selectors = point_adapter.getSelectors<RootState>((state) => state.point);

@@ -1,7 +1,7 @@
-import { mMatch } from "models/mMatch"
-import { create } from "xmlbuilder2"
-import { encodeMatch } from "./match"
-import { saveXML } from "./textfileSaver";
+import { encodeMatch } from './match';
+import { saveXML } from './textfileSaver';
+import { mMatch } from 'models/mMatch';
+import { create } from 'xmlbuilder2';
 
 export const encode = (matchId: mMatch['id']) => {
   const xml = create({
@@ -11,4 +11,4 @@ export const encode = (matchId: mMatch['id']) => {
 };
 export const saveMatch = (matchId: mMatch['id']) => {
   saveXML(encode(matchId), 'flowsheet.dflow');
-}
+};
