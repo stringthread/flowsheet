@@ -10,6 +10,7 @@ import { id_is_mEvidence } from 'models/mEvidence';
 import { id_is_mPoint, mPoint } from 'models/mPoint';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { set_rebut } from 'services/point';
 import { RootState } from 'stores/index';
 import { point_selectors, point_slice } from 'stores/slices/point';
 import { useCheckDepsUpdate, useDependentObj } from 'util/hooks';
@@ -103,6 +104,7 @@ export const Point: React.VFC<Props> = (props) => {
           const rebut_to = idToPointRef.get[point.rebut_to]?.current;
           if (rebut_to && thisRef.current) setRebuttalLine(new LeaderLine(rebut_to, thisRef.current));
         } catch (e) {
+          set_rebut(props.pointID, undefined);
           throw new NonCriticalError('リンク線の表示に失敗', '反駁先が正しくありません');
         }
       }
