@@ -3,6 +3,7 @@ import { Claim } from './Claim';
 import { Evidence } from './Evidence';
 import { StretchTextInput, StretchTextArea } from './TextInput';
 import { css } from '@emotion/react';
+import { NonCriticalError } from 'errors/NonCriticalError';
 import LeaderLine from 'leader-line-new';
 import { id_is_mClaim } from 'models/mClaim';
 import { id_is_mEvidence } from 'models/mEvidence';
@@ -98,9 +99,12 @@ export const Point: React.VFC<Props> = (props) => {
         setRebuttalLine(undefined);
       }
       if (point?.rebut_to !== undefined) {
-        const ref_to_rebut = idToPointRef.get[point.rebut_to];
-        if (ref_to_rebut !== undefined && ref_to_rebut.current !== null && thisRef.current)
-          setRebuttalLine(new LeaderLine(ref_to_rebut.current, thisRef.current));
+        try {
+          const rebut_to = idToPointRef.get[point.rebut_to]?.current;
+          if (rebut_to && thisRef.current) setRebuttalLine(new LeaderLine(rebut_to, thisRef.current));
+        } catch (e) {
+          throw new NonCriticalError('リンク線の表示に失敗', '反駁先が正しくありません');
+        }
       }
     }
   }, [point?.rebut_to, setRebuttalLine, idToPointRef, idToPointRef?.get]);

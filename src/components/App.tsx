@@ -2,6 +2,7 @@ import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { Point } from './Point';
 import { css } from '@emotion/react';
+import { NonCriticalError } from 'errors/NonCriticalError';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
 import { baseModel } from 'models/baseModel';
@@ -61,7 +62,12 @@ const useOnClickToRebut = (
       if (rebutToFnInfo === undefined) return;
       const [rebutToFn, previousActive] = rebutToFnInfo;
       const data_modelid = e.currentTarget.getAttribute('data-modelid');
-      if (typeof data_modelid !== 'string' || !id_is_mPoint(data_modelid)) return;
+      if (typeof data_modelid !== 'string' || !id_is_mPoint(data_modelid))
+        throw new NonCriticalError(
+          '反駁先の指定',
+          'Point, Claim, Evidenceを指定してください',
+          `invalid data_modelid: ${data_modelid}`,
+        );
       e.stopPropagation();
       e.preventDefault();
       if (e.target instanceof HTMLElement) e.target.blur();
@@ -84,7 +90,12 @@ const useAppEventListeners = (
     add_claim: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected))
+          throw new NonCriticalError(
+            'Add Claim',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setNextFocus(append_claim(selected)?.id);
       },
       [selected],
@@ -92,7 +103,12 @@ const useAppEventListeners = (
     add_point: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected))
+          throw new NonCriticalError(
+            'Add Point',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setNextFocus(append_sibling_point(selected)?.id);
       },
       [selected],
@@ -100,7 +116,12 @@ const useAppEventListeners = (
     add_point_to_parent: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected))
+          throw new NonCriticalError(
+            'Add Point to Parent',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setNextFocus(append_point_to_parent(selected)?.id);
       },
       [selected],
@@ -108,7 +129,12 @@ const useAppEventListeners = (
     add_point_child: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected))
+          throw new NonCriticalError(
+            'Add Point Child',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setNextFocus(append_point_child(selected)?.id);
       },
       [selected],
@@ -116,7 +142,12 @@ const useAppEventListeners = (
     add_point_to_part: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected))
+          throw new NonCriticalError(
+            'Add Point to Part',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setNextFocus(append_point_to_part(selected)?.id);
       },
       [selected],
@@ -124,7 +155,12 @@ const useAppEventListeners = (
     draw_line: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!id_is_PointChild(selected)) return;
+        if (!id_is_PointChild(selected))
+          throw new NonCriticalError(
+            '反駁先の指定',
+            'Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setRebutToFn((_) => [set_rebut_to(selected), document.activeElement as HTMLElement | null]);
         setLineStartId(selected);
       },
@@ -133,7 +169,12 @@ const useAppEventListeners = (
     add_evidence: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected))
+          throw new NonCriticalError(
+            'Add Evidence',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
         setNextFocus(append_evidence(selected)?.id);
       },
       [selected],
