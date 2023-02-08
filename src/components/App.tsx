@@ -1,3 +1,4 @@
+import { ErrorBoundary } from './ErrorBoundary';
 import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { Point } from './Point';
@@ -321,21 +322,23 @@ function App() {
     [onClickToRebut, idToPointRef, setIdToPointRef, nextFocus, setNextFocus],
   );
   return (
-    <Provider store={store}>
-      <AppContext.Provider value={AppContextValue}>
-        <div onMouseMove={onMouseMoveFnRef.current} className='App'>
-          <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
-          {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
-          <button onClick={add_claim}>Add Claim</button>
-          <button onClick={add_point}>Add Point</button>
-          <button onClick={add_point_to_part}>Add Point to Part</button>
-          <button onClick={add_evidence}>Add Evidence</button>
-          <button onClick={() => matchID && saveMatch(matchID)}>save</button>
-          <button onClick={openLoadFileModal}>load</button>
-          <LoadFileModal />
-        </div>
-      </AppContext.Provider>
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <AppContext.Provider value={AppContextValue}>
+          <div onMouseMove={onMouseMoveFnRef.current} className='App'>
+            <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
+            {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
+            <button onClick={add_claim}>Add Claim</button>
+            <button onClick={add_point}>Add Point</button>
+            <button onClick={add_point_to_part}>Add Point to Part</button>
+            <button onClick={add_evidence}>Add Evidence</button>
+            <button onClick={() => matchID && saveMatch(matchID)}>save</button>
+            <button onClick={openLoadFileModal}>load</button>
+            <LoadFileModal />
+          </div>
+        </AppContext.Provider>
+      </Provider>
+    </ErrorBoundary>
   );
 }
 
