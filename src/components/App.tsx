@@ -17,6 +17,7 @@ import { saveMatch } from 'repositories/encoder';
 import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
 import { get_from_id } from 'services/id';
+import { createLeaderLine } from 'services/line';
 import { generate_match } from 'services/match';
 import {
   append_sibling_point,
@@ -251,7 +252,7 @@ const MovingDivLineInner: React.FC<{
     if (id_is_mPoint(props.lineStartId)) {
       if (props.idToPointRef[props.lineStartId] !== undefined) {
         const [start, end] = [props.idToPointRef[props.lineStartId].current, thisRef.current];
-        if (start !== null && end !== null) newLine = new LeaderLine(start, end);
+        if (start !== null && end !== null) newLine = createLeaderLine(start, end);
       }
     }
     props.setLine(newLine);

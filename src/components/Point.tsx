@@ -3,12 +3,12 @@ import { Claim } from './Claim';
 import { Evidence } from './Evidence';
 import { StretchTextInput, StretchTextArea } from './TextInput';
 import { css } from '@emotion/react';
-import LeaderLine from 'leader-line-new';
 import { id_is_mClaim } from 'models/mClaim';
 import { id_is_mEvidence } from 'models/mEvidence';
 import { id_is_mPoint, mPoint } from 'models/mPoint';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { createLeaderLine } from 'services/line';
 import { set_rebut } from 'services/point';
 import { toastAndLog } from 'services/toast';
 import { RootState } from 'stores/index';
@@ -102,7 +102,7 @@ export const Point: React.VFC<Props> = (props) => {
       if (point?.rebut_to !== undefined) {
         try {
           const rebut_to = idToPointRef.get[point.rebut_to]?.current;
-          if (rebut_to && thisRef.current) setRebuttalLine(new LeaderLine(rebut_to, thisRef.current));
+          if (rebut_to && thisRef.current) setRebuttalLine(createLeaderLine(rebut_to, thisRef.current));
         } catch (e) {
           set_rebut(props.pointID, undefined);
           toastAndLog('リンク線の表示に失敗', '反駁先が正しくありません');
