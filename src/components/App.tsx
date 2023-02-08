@@ -3,7 +3,6 @@ import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { Point } from './Point';
 import { css } from '@emotion/react';
-import { NonCriticalError } from 'errors/NonCriticalError';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
 import { baseModel } from 'models/baseModel';

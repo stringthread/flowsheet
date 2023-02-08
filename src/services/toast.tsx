@@ -1,4 +1,3 @@
-import { NonCriticalError } from 'errors/NonCriticalError';
 import { toast as nativeToast, ToastContentProps } from 'react-toastify';
 
 interface ToastContentData {
@@ -29,9 +28,4 @@ export const toastAndLog = (
   toast(title, description);
   if (log_msg === undefined) log_msg = description;
   console.log(`Toasted - ${title}: ${log_msg}`);
-};
-
-export const toastNonCriticalError = (e: NonCriticalError, rethrow: boolean = false) => {
-  toastAndLog(e.title, e.toast_msg, e.message);
-  if (rethrow) throw e;
 };

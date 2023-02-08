@@ -1,4 +1,3 @@
-import { NonCriticalError } from 'errors/NonCriticalError';
 import React from 'react';
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary';
 

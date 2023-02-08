@@ -3,7 +3,6 @@ import { Claim } from './Claim';
 import { Evidence } from './Evidence';
 import { StretchTextInput, StretchTextArea } from './TextInput';
 import { css } from '@emotion/react';
-import { NonCriticalError } from 'errors/NonCriticalError';
 import LeaderLine from 'leader-line-new';
 import { id_is_mClaim } from 'models/mClaim';
 import { id_is_mEvidence } from 'models/mEvidence';
