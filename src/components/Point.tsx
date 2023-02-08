@@ -46,25 +46,26 @@ const PointChild: React.VFC<ChildProps> = (props) => {
   );
 };
 
-const stylePointNumbering = css`
+const stylePointNumberingWrap = css`
   display: inline-block;
   min-width: 1.2em;
   height: 1em;
   flex-grow: 0;
   flex-shrink: 0;
-  & > input {
-    min-width: 1em;
-    width: 1em;
-    height: 1em;
-    &:not(:placeholder-shown):not(:focus) {
-      padding-right: 0;
-      padding-left: 0;
-      border: none;
-    }
-  }
   &::after {
     content: '.';
     display: inline;
+  }
+`;
+
+const stylePointNumbering = css`
+  min-width: 1em;
+  width: 1em;
+  height: 1em;
+  &:not(:placeholder-shown):not(:focus) {
+    padding-right: 0;
+    padding-left: 0;
+    border: none;
   }
 `;
 
@@ -129,7 +130,7 @@ export const Point: React.VFC<Props> = (props) => {
       onClick={onClick}
       css={stylePoint}
     >
-      <div className='pointNumberingWrap' css={stylePointNumbering}>
+      <div className='pointNumberingWrap' css={stylePointNumberingWrap}>
         <StretchTextInput
           ref={focusRef}
           key={props.pointID}
@@ -144,6 +145,7 @@ export const Point: React.VFC<Props> = (props) => {
               }),
             );
           }}
+          css={stylePointNumbering}
         />
       </div>
       <div className='pointChildrenWrap' data-testid='pointChildrenWrap' css={stylePointChildrenWrap}>
