@@ -48,15 +48,23 @@ const PointChild: React.VFC<ChildProps> = (props) => {
 
 const stylePointNumbering = css`
   display: inline-block;
-  min-width: 1em;
-  width: 1em;
+  min-width: 1.2em;
   height: 1em;
   flex-grow: 0;
   flex-shrink: 0;
-  &:not(:placeholder-shown):not(:focus) {
-    padding-right: 0;
-    padding-left: 0;
-    border: none;
+  & > input {
+    min-width: 1em;
+    width: 1em;
+    height: 1em;
+    &:not(:placeholder-shown):not(:focus) {
+      padding-right: 0;
+      padding-left: 0;
+      border: none;
+    }
+  }
+  &::after {
+    content: '.';
+    display: inline;
   }
 `;
 
@@ -121,22 +129,23 @@ export const Point: React.VFC<Props> = (props) => {
       onClick={onClick}
       css={stylePoint}
     >
-      <StretchTextInput
-        ref={focusRef}
-        key={props.pointID}
-        className='pointNumbering'
-        data-testid='pointNumbering'
-        value={point.numbering?.toString()}
-        onBlur={(e) => {
-          dispatch(
-            point_slice.actions.upsertOne({
-              id: props.pointID,
-              numbering: e.currentTarget.value,
-            }),
-          );
-        }}
-        css={stylePointNumbering}
-      />
+      <div className='pointNumberingWrap' css={stylePointNumbering}>
+        <StretchTextInput
+          ref={focusRef}
+          key={props.pointID}
+          className='pointNumbering'
+          data-testid='pointNumbering'
+          value={point.numbering?.toString()}
+          onBlur={(e) => {
+            dispatch(
+              point_slice.actions.upsertOne({
+                id: props.pointID,
+                numbering: e.currentTarget.value,
+              }),
+            );
+          }}
+        />
+      </div>
       <div className='pointChildrenWrap' data-testid='pointChildrenWrap' css={stylePointChildrenWrap}>
         {point.contents !== undefined ? (
           <PointChild parentID={props.pointID} contents={point.contents} setSelected={props.setSelected} />
