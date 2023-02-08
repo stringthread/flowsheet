@@ -200,14 +200,19 @@ export const append_point_child = (parent_id: switch_for_append_id): mPoint | un
   );
 };
 
-export const set_rebut = (end1: mPoint['id'], end2: mPoint['id']) => {
-  const [to, from] = [end1, end2].sort((end1, end2) => {
-    const part1 = get_ancestor_part(end1);
-    if (part1 === undefined) throw TypeError('argument `end1` is not descendent of mPart');
-    const part2 = get_ancestor_part(end2);
-    if (part2 === undefined) throw TypeError('argument `end2` is not descendent of mPart');
-    return compare_id(part1, part2);
-  });
+export const set_rebut = (end1: mPoint['id'], end2: mPoint['id'] | undefined) => {
+  let from: mPoint['id'], to: mPoint['id'] | undefined;
+  if (end2 == undefined) {
+    [from, to] = [end1, end2];
+  } else {
+    [to, from] = [end1, end2].sort((end1, end2) => {
+      const part1 = get_ancestor_part(end1);
+      if (part1 === undefined) throw TypeError('argument `end1` is not descendent of mPart');
+      const part2 = get_ancestor_part(end2);
+      if (part2 === undefined) throw TypeError('argument `end2` is not descendent of mPart');
+      return compare_id(part1, part2);
+    });
+  }
   const obj = get_from_id(from);
   if (!is_mPoint(obj)) throw TypeError('param `from` does not match mPoint');
   store.dispatch(

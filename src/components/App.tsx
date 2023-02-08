@@ -1,3 +1,4 @@
+import { ErrorBoundary } from './ErrorBoundary';
 import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { Point } from './Point';
@@ -11,6 +12,7 @@ import { id_is_mPoint, id_is_PointChild, mPoint } from 'models/mPoint';
 import React, { useState, useLayoutEffect, useCallback, useContext, createContext, useRef, useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import { saveMatch } from 'repositories/encoder';
 import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
@@ -24,6 +26,7 @@ import {
   append_point_to_parent,
   is_switch_for_append_id,
 } from 'services/point';
+import { toastAndLog } from 'services/toast';
 import { store } from 'stores/index';
 import { point_slice } from 'stores/slices/point';
 import { useCheckDepsUpdate, useDependentObj, usePreviousValue } from 'util/hooks';
@@ -61,7 +64,14 @@ const useOnClickToRebut = (
       if (rebutToFnInfo === undefined) return;
       const [rebutToFn, previousActive] = rebutToFnInfo;
       const data_modelid = e.currentTarget.getAttribute('data-modelid');
-      if (typeof data_modelid !== 'string' || !id_is_mPoint(data_modelid)) return;
+      if (typeof data_modelid !== 'string' || !id_is_mPoint(data_modelid)) {
+        toastAndLog(
+          '反駁先の指定',
+          'Point, Claim, Evidenceを指定してください',
+          `invalid data_modelid: ${data_modelid}`,
+        );
+        return;
+      }
       e.stopPropagation();
       e.preventDefault();
       if (e.target instanceof HTMLElement) e.target.blur();
@@ -84,7 +94,10 @@ const useAppEventListeners = (
     add_claim: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected)) {
+          toastAndLog('Add Claim', 'Part, Point, Claim, Evidenceを選択してください', `invalid selected: ${selected}`);
+          return;
+        }
         setNextFocus(append_claim(selected)?.id);
       },
       [selected],
@@ -92,7 +105,10 @@ const useAppEventListeners = (
     add_point: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected)) {
+          toastAndLog('Add Point', 'Part, Point, Claim, Evidenceを選択してください', `invalid selected: ${selected}`);
+          return;
+        }
         setNextFocus(append_sibling_point(selected)?.id);
       },
       [selected],
@@ -100,7 +116,14 @@ const useAppEventListeners = (
     add_point_to_parent: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected)) {
+          toastAndLog(
+            'Add Point to Parent',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
+          return;
+        }
         setNextFocus(append_point_to_parent(selected)?.id);
       },
       [selected],
@@ -108,7 +131,14 @@ const useAppEventListeners = (
     add_point_child: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected)) {
+          toastAndLog(
+            'Add Point Child',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
+          return;
+        }
         setNextFocus(append_point_child(selected)?.id);
       },
       [selected],
@@ -116,7 +146,14 @@ const useAppEventListeners = (
     add_point_to_part: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected)) {
+          toastAndLog(
+            'Add Point to Part',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
+          return;
+        }
         setNextFocus(append_point_to_part(selected)?.id);
       },
       [selected],
@@ -124,7 +161,10 @@ const useAppEventListeners = (
     draw_line: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!id_is_PointChild(selected)) return;
+        if (!id_is_PointChild(selected)) {
+          toastAndLog('反駁先の指定', 'Point, Claim, Evidenceを選択してください', `invalid selected: ${selected}`);
+          return;
+        }
         setRebutToFn((_) => [set_rebut_to(selected), document.activeElement as HTMLElement | null]);
         setLineStartId(selected);
       },
@@ -133,7 +173,14 @@ const useAppEventListeners = (
     add_evidence: useCallback(
       (e?: Event | React.SyntheticEvent) => {
         e?.preventDefault();
-        if (!is_switch_for_append_id(selected)) return;
+        if (!is_switch_for_append_id(selected)) {
+          toastAndLog(
+            'Add Evidence',
+            'Part, Point, Claim, Evidenceを選択してください',
+            `invalid selected: ${selected}`,
+          );
+          return;
+        }
         setNextFocus(append_evidence(selected)?.id);
       },
       [selected],
@@ -280,21 +327,29 @@ function App() {
     [onClickToRebut, idToPointRef, setIdToPointRef, nextFocus, setNextFocus],
   );
   return (
-    <Provider store={store}>
-      <AppContext.Provider value={AppContextValue}>
-        <div onMouseMove={onMouseMoveFnRef.current} className='App'>
-          <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
-          {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
-          <button onClick={add_claim}>Add Claim</button>
-          <button onClick={add_point}>Add Point</button>
-          <button onClick={add_point_to_part}>Add Point to Part</button>
-          <button onClick={add_evidence}>Add Evidence</button>
-          <button onClick={() => matchID && saveMatch(matchID)}>save</button>
-          <button onClick={openLoadFileModal}>load</button>
-          <LoadFileModal />
-        </div>
-      </AppContext.Provider>
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <AppContext.Provider value={AppContextValue}>
+          <div onMouseMove={onMouseMoveFnRef.current} className='App'>
+            <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
+            {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
+            <button onClick={add_claim}>Add Claim</button>
+            <button onClick={add_point}>Add Point</button>
+            <button onClick={add_point_to_part}>Add Point to Part</button>
+            <button onClick={add_evidence}>Add Evidence</button>
+            <button onClick={() => matchID && saveMatch(matchID)}>save</button>
+            <button onClick={openLoadFileModal}>load</button>
+            <LoadFileModal />
+          </div>
+          <ToastContainer
+            position='top-center'
+            style={{
+              color: 'red',
+            }}
+          />
+        </AppContext.Provider>
+      </Provider>
+    </ErrorBoundary>
   );
 }
 
