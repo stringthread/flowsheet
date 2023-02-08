@@ -71,6 +71,7 @@ const stylePointNumbering = css`
 
 const stylePointChildrenWrap = css`
   min-width: 0;
+  width: 100%;
 `;
 
 const stylePoint = css`
