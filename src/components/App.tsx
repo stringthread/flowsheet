@@ -1,6 +1,7 @@
 import { ErrorBoundary } from './ErrorBoundary';
 import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
+import { MenuBar } from './MenuBar';
 import { Point } from './Point';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
@@ -327,11 +328,49 @@ function App() {
     },
     [onClickToRebut, idToPointRef, setIdToPointRef, nextFocus, setNextFocus],
   );
+  const menuBarItems = [
+    {
+      label: 'ファイル',
+      items: [
+        { label: 'ファイルを開く', onClick: openLoadFileModal },
+        { label: 'ファイルを保存', onClick: () => matchID && saveMatch(matchID) },
+        { label: '名前を付けて保存', onClick: () => alert('未実装です') },
+        { label: '設定', onClick: () => alert('未実装です') },
+      ],
+    },
+    {
+      label: '編集',
+      items: [
+        { label: '論点を追加', onClick: add_point },
+        { label: 'クレームを追加', onClick: add_claim },
+        { label: '証拠資料を追加', onClick: add_evidence },
+        { label: 'パートに論点を追加', onClick: add_point_to_part },
+        { label: '論点を削除', onClick: () => alert('未実装です') },
+        { label: 'パートを編集', onClick: () => alert('未実装です') },
+      ],
+    },
+    {
+      label: '表示',
+      items: [
+        { label: '全画面表示', onClick: () => alert('未実装です') },
+        { label: '操作ボタンの表示/非表示', onClick: () => alert('未実装です') },
+      ],
+    },
+    {
+      label: 'ヘルプ',
+      items: [
+        { label: 'ショートカットキーの一覧', onClick: () => alert('未実装です') },
+        { label: '質問・バグ報告・機能要望を送信', onClick: () => alert('未実装です') },
+        { label: '投げ銭', onClick: () => alert('未実装です') },
+      ],
+    },
+  ];
   return (
     <ErrorBoundary>
       <Provider store={store}>
         <AppContext.Provider value={AppContextValue}>
           <div onMouseMove={onMouseMoveFnRef.current} className='App'>
+            <MenuBar items={menuBarItems} />
             <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
             {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
             <button onClick={add_claim}>Add Claim</button>
