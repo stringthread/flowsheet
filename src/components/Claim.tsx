@@ -17,6 +17,9 @@ const stylePointClaim = css`
   width: 100%;
   height: 1em;
   border: none !important;
+  &:not(:only-child):not(:last-child):placeholder-shown {
+    background: #f6f6f6;
+  }
 `;
 
 export const Claim: React.VFC<Props> = (props) => {
