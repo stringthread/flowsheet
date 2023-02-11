@@ -376,7 +376,13 @@ function App() {
       label: 'ヘルプ',
       items: [
         { label: 'ヘルプ画面', onClick: openHelpModal },
-        { label: '質問・バグ報告・機能要望を送信', onClick: () => alert('未実装です') },
+        {
+          label: '質問・バグ報告・機能要望を送信',
+          onClick: () => {
+            alert('コメントはGitHub Discussionsで受け付けます。リンク先から適切なカテゴリを選んで投稿してください');
+            window.open('https://github.com/stringthread/flowsheet/discussions/new/choose', '_blank');
+          },
+        },
         { label: '投げ銭', onClick: () => alert('未実装です') },
       ],
     },
