@@ -1,4 +1,5 @@
 import { ErrorBoundary } from './ErrorBoundary';
+import { useHelpModal } from './HelpModal';
 import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { MenuBar } from './MenuBar';
@@ -320,6 +321,7 @@ function App() {
     setNextFocus,
   );
   const [LoadFileModal, openLoadFileModal, closeLoadFileModal, isOpenLoadFileModal] = useLoadFileModal(setMatchID);
+  const [HelpModal, openHelpModal, closeHelpModal, isOpenHelpModal] = useHelpModal();
   useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
   const onMouseMoveFnRef = useRef((e: React.MouseEvent) => {});
   const AppContextValue = useDependentObj(
@@ -373,7 +375,7 @@ function App() {
     {
       label: 'ヘルプ',
       items: [
-        { label: 'ショートカットキーの一覧', onClick: () => alert('未実装です') },
+        { label: 'ヘルプ画面', onClick: openHelpModal },
         { label: '質問・バグ報告・機能要望を送信', onClick: () => alert('未実装です') },
         { label: '投げ銭', onClick: () => alert('未実装です') },
       ],
@@ -394,6 +396,7 @@ function App() {
             <button onClick={() => matchID && saveMatch(matchID)}>save</button>
             <button onClick={openLoadFileModal}>load</button>
             <LoadFileModal />
+            <HelpModal />
           </div>
           <ToastContainer
             position='top-center'
