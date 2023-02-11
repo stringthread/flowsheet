@@ -333,8 +333,8 @@ function App() {
       label: 'ファイル',
       items: [
         { label: 'ファイルを開く', onClick: openLoadFileModal },
-        { label: 'ファイルを保存', onClick: () => matchID && saveMatch(matchID) },
-        { label: '名前を付けて保存', onClick: () => alert('未実装です') },
+        { label: '上書き保存', onClick: () => alert('未実装です') },
+        { label: '名前を付けて保存', onClick: () => matchID && saveMatch(matchID) },
         { label: '設定', onClick: () => alert('未実装です') },
       ],
     },
