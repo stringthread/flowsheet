@@ -277,6 +277,20 @@ const MovingDivLineInner: React.FC<{
   );
 };
 
+const toggleFullscreen = () => {
+  if (!document.fullscreenEnabled) {
+    toastAndLog('全画面表示失敗', 'このブラウザでは使用できません');
+    return;
+  }
+  if (!document.fullscreenElement) {
+    document.documentElement
+      .requestFullscreen()
+      .catch((e) => toastAndLog('全画面表示失敗', 'エラーが発生しました', `${e.message} (${e.name})`));
+  } else {
+    document.exitFullscreen();
+  }
+};
+
 function App() {
   const [matchID, setMatchID] = useState<mMatch['id'] | undefined>(undefined);
   // 初めに1回だけ実行
@@ -352,7 +366,7 @@ function App() {
     {
       label: '表示',
       items: [
-        { label: '全画面表示', onClick: () => alert('未実装です') },
+        { label: '全画面表示', onClick: toggleFullscreen },
         { label: '操作ボタンの表示/非表示', onClick: () => alert('未実装です') },
       ],
     },
