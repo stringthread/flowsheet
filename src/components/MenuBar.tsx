@@ -71,7 +71,7 @@ const menuBarStyle = css`
 `;
 const menuStyle = css`
   position: relative;
-  padding: ${menuVertivalPadding} 1em;
+  padding: ${menuVertivalPadding} 0;
   & > ul {
     visibility: hidden;
   }
@@ -80,9 +80,12 @@ const menuStyle = css`
     visibility: visible;
   }
 `;
+const menuTextStyle = css`
+  padding: ${menuVertivalPadding} 1em;
+`;
 const onMenuClick = (e: React.MouseEvent) => {
-  const items = e.currentTarget.querySelector('ul');
-  if (items === null) {
+  const items = e.currentTarget.parentNode?.querySelector('ul');
+  if (!items) {
     console.error('No child MenuItemList found');
     return;
   }
@@ -92,8 +95,10 @@ export const MenuBar: React.FC<MenuBarProps> = (props) => {
   return (
     <ul className='menuBar' css={menuBarStyle}>
       {props.items.map((v) => (
-        <li className='menu' key={v.label} css={menuStyle} onClick={onMenuClick}>
-          {v.label}
+        <li className='menu' key={v.label} css={menuStyle}>
+          <span css={menuTextStyle} onClick={onMenuClick}>
+            {v.label}
+          </span>
           <MenuItemList items={v.items} />
         </li>
       ))}
