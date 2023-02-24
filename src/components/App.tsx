@@ -4,6 +4,7 @@ import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { MenuBar } from './MenuBar';
 import { Point } from './Point';
+import { Toolbar } from './Toolbar';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
@@ -314,12 +315,7 @@ function App() {
     setRebutToFn,
     setLineStartId,
   );
-  const { add_claim, add_point, add_point_to_part, add_evidence } = useAppEventListeners(
-    selected,
-    setRebutToFn,
-    setLineStartId,
-    setNextFocus,
-  );
+  const operations = useAppEventListeners(selected, setRebutToFn, setLineStartId, setNextFocus);
   const [LoadFileModal, openLoadFileModal, closeLoadFileModal, isOpenLoadFileModal] = useLoadFileModal(setMatchID);
   const [HelpModal, openHelpModal, closeHelpModal, isOpenHelpModal] = useHelpModal();
   useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
@@ -357,10 +353,10 @@ function App() {
     {
       label: '編集',
       items: [
-        { label: '論点を追加', onClick: add_point },
-        { label: 'クレームを追加', onClick: add_claim },
-        { label: '証拠資料を追加', onClick: add_evidence },
-        { label: 'パートに論点を追加', onClick: add_point_to_part },
+        { label: '論点を追加', onClick: operations.add_point },
+        { label: 'クレームを追加', onClick: operations.add_claim },
+        { label: '証拠資料を追加', onClick: operations.add_evidence },
+        { label: 'パートに論点を追加', onClick: operations.add_point_to_part },
         { label: '論点を削除', onClick: () => alert('未実装です') },
         { label: 'パートを編集', onClick: () => alert('未実装です') },
       ],
@@ -393,6 +389,7 @@ function App() {
         <AppContext.Provider value={AppContextValue}>
           <div onMouseMove={onMouseMoveFnRef.current} className='App'>
             <MenuBar items={menuBarItems} />
+            <Toolbar operations={operations} />
             <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
             {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
             <LoadFileModal />
