@@ -4,7 +4,7 @@ import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { MenuBar } from './MenuBar';
 import { Point } from './Point';
-import { useToolBar } from './Toolbar';
+import { useToolBar } from './ToolBar';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
