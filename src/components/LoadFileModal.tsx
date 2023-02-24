@@ -43,8 +43,9 @@ const loadFileDropzoneStyle = css`
 
 export type useLoadFileModal = (
   setMatchID: React.Dispatch<React.SetStateAction<mMatch['id'] | undefined>>,
+  setFileName: React.Dispatch<React.SetStateAction<string | undefined>>,
 ) => [React.VFC<{}>, () => void, () => void, boolean];
-export const useLoadFileModal: useLoadFileModal = (setMatchID) => {
+export const useLoadFileModal: useLoadFileModal = (setMatchID, setFileName) => {
   const [Modal, open, close, isModalOpen] = useModal('root', {
     preventScroll: true,
   });
@@ -58,6 +59,7 @@ export const useLoadFileModal: useLoadFileModal = (setMatchID) => {
         return;
       }
       setMatchID(match);
+      setFileName(acceptedFiles[0].name);
       close();
     },
     [setMatchID],

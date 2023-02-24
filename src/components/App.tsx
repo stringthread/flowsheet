@@ -316,7 +316,11 @@ function App() {
     setLineStartId,
   );
   const operations = useAppEventListeners(selected, setRebutToFn, setLineStartId, setNextFocus);
-  const [LoadFileModal, openLoadFileModal, closeLoadFileModal, isOpenLoadFileModal] = useLoadFileModal(setMatchID);
+  const [loadFileName, setLoadFileName] = useState<string | undefined>(undefined);
+  const [LoadFileModal, openLoadFileModal, closeLoadFileModal, isOpenLoadFileModal] = useLoadFileModal(
+    setMatchID,
+    setLoadFileName,
+  );
   const [HelpModal, openHelpModal, closeHelpModal, isOpenHelpModal] = useHelpModal();
   useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
   const onMouseMoveFnRef = useRef((e: React.MouseEvent) => {});
@@ -347,7 +351,7 @@ function App() {
       items: [
         { label: 'ファイルを開く', onClick: openLoadFileModal },
         { label: '上書き保存', onClick: () => alert('未実装です') },
-        { label: '名前を付けて保存', onClick: () => matchID && saveMatch(matchID) },
+        { label: '名前を付けて保存', onClick: () => matchID && saveMatch(matchID, loadFileName) },
         { label: '設定', onClick: () => alert('未実装です') },
       ],
     },

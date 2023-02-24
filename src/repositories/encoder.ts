@@ -9,6 +9,6 @@ export const encode = (matchId: mMatch['id']) => {
   });
   return xml.end({ prettyPrint: true });
 };
-export const saveMatch = (matchId: mMatch['id']) => {
-  saveXML(encode(matchId), 'flowsheet.dflow');
+export const saveMatch = (matchId: mMatch['id'], fileName: string | undefined) => {
+  saveXML(encode(matchId), fileName ?? 'flowsheet.dflow');
 };
