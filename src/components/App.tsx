@@ -4,7 +4,7 @@ import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { MenuBar } from './MenuBar';
 import { Point } from './Point';
-import { Toolbar } from './Toolbar';
+import { ToolBar } from './Toolbar';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
@@ -389,7 +389,7 @@ function App() {
         <AppContext.Provider value={AppContextValue}>
           <div onMouseMove={onMouseMoveFnRef.current} className='App'>
             <MenuBar items={menuBarItems} />
-            <Toolbar operations={operations} />
+            <ToolBar operations={operations} />
             <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
             {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
             <LoadFileModal />

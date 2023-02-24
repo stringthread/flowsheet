@@ -9,7 +9,7 @@ import { css } from '@emotion/react';
 import { SyntheticEvent, useCallback, useState } from 'react';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 
-type ToolbarProps = {
+type ToolBarProps = {
   operations: {
     add_claim: (e?: Event | SyntheticEvent) => void;
     add_evidence: (e?: Event | SyntheticEvent) => void;
@@ -74,19 +74,19 @@ const buttonStyle = css`
   }
 `;
 
-export const Toolbar = ({ operations }: ToolbarProps): JSX.Element => {
-  const [isToolbarOpen, setIsToolbarOpen] = useState(true);
+export const ToolBar = ({ operations }: ToolBarProps): JSX.Element => {
+  const [isToolBarOpen, setIsToolBarOpen] = useState(true);
   return (
     <div className='ToolbarWrap' css={wrapStyle}>
       <div
         css={topBarStyle}
         onClick={useCallback(() => {
-          setIsToolbarOpen(!isToolbarOpen);
-        }, [isToolbarOpen])}
+          setIsToolBarOpen(!isToolBarOpen);
+        }, [isToolBarOpen])}
       >
-        {isToolbarOpen ? <FaAngleDown /> : <FaAngleUp />}
+        {isToolBarOpen ? <FaAngleDown /> : <FaAngleUp />}
       </div>
-      {isToolbarOpen ? (
+      {isToolBarOpen ? (
         <div css={buttonsWrapStyle}>
           <AddClaimSVG onClick={operations.add_claim} css={buttonStyle} />
           <AddEvidenceSVG onClick={operations.add_evidence} css={buttonStyle} />
