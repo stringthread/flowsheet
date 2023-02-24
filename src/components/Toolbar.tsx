@@ -74,31 +74,31 @@ const buttonStyle = css`
   }
 `;
 
-export const ToolBar = ({ operations }: ToolBarProps): JSX.Element => {
+export const useToolBar = (): [(_: ToolBarProps) => JSX.Element, boolean, () => void] => {
   const [isToolBarOpen, setIsToolBarOpen] = useState(true);
-  return (
-    <div className='ToolbarWrap' css={wrapStyle}>
-      <div
-        css={topBarStyle}
-        onClick={useCallback(() => {
-          setIsToolBarOpen(!isToolBarOpen);
-        }, [isToolBarOpen])}
-      >
-        {isToolBarOpen ? <FaAngleDown /> : <FaAngleUp />}
-      </div>
-      {isToolBarOpen ? (
-        <div css={buttonsWrapStyle}>
-          <AddClaimSVG onClick={operations.add_claim} css={buttonStyle} />
-          <AddEvidenceSVG onClick={operations.add_evidence} css={buttonStyle} />
-          <AddPointSVG onClick={operations.add_point} css={buttonStyle} />
-          <AddPointChildSVG onClick={operations.add_point_child} css={buttonStyle} />
-          <AddPointParentSVG onClick={operations.add_point_to_parent} css={buttonStyle} />
-          <AddPointToPartSVG onClick={operations.add_point_to_part} css={buttonStyle} />
-          <DrawLineSVG onClick={operations.draw_line} css={buttonStyle} />
+  const toggleToolBar = useCallback(() => setIsToolBarOpen(!isToolBarOpen), [isToolBarOpen]);
+  return [
+    ({ operations }: ToolBarProps) => (
+      <div className='ToolbarWrap' css={wrapStyle}>
+        <div css={topBarStyle} onClick={toggleToolBar}>
+          {isToolBarOpen ? <FaAngleDown /> : <FaAngleUp />}
         </div>
-      ) : (
-        <span>Tools</span>
-      )}
-    </div>
-  );
+        {isToolBarOpen ? (
+          <div css={buttonsWrapStyle}>
+            <AddClaimSVG onClick={operations.add_claim} css={buttonStyle} />
+            <AddEvidenceSVG onClick={operations.add_evidence} css={buttonStyle} />
+            <AddPointSVG onClick={operations.add_point} css={buttonStyle} />
+            <AddPointChildSVG onClick={operations.add_point_child} css={buttonStyle} />
+            <AddPointParentSVG onClick={operations.add_point_to_parent} css={buttonStyle} />
+            <AddPointToPartSVG onClick={operations.add_point_to_part} css={buttonStyle} />
+            <DrawLineSVG onClick={operations.draw_line} css={buttonStyle} />
+          </div>
+        ) : (
+          <span>Tools</span>
+        )}
+      </div>
+    ),
+    isToolBarOpen,
+    toggleToolBar,
+  ];
 };

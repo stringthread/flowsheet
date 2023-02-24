@@ -4,7 +4,7 @@ import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
 import { MenuBar } from './MenuBar';
 import { Point } from './Point';
-import { ToolBar } from './Toolbar';
+import { useToolBar } from './Toolbar';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
@@ -340,6 +340,7 @@ function App() {
     },
     [onClickToRebut, idToPointRef, setIdToPointRef, nextFocus, setNextFocus],
   );
+  const [ToolBar, isToolBarOpen, toggleToolBarOpen] = useToolBar();
   const menuBarItems = [
     {
       label: 'ファイル',
