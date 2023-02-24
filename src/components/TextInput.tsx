@@ -142,6 +142,6 @@ export const StretchTextArea = forwardRef(
     useEffect(() => {
       if (inputRef.current !== null) updateHeight(inputRef.current);
     }, [inputRef.current?.value]);
-    return <TextArea {...props} ref={ref} onChange={changeHandler} css={styleStretchTextArea} />;
+    return <TextArea {...props} ref={inputRef} onChange={changeHandler} css={styleStretchTextArea} />;
   },
 );
