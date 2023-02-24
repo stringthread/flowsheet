@@ -6,7 +6,8 @@ import { ReactComponent as AddPointParentSVG } from './images/AddPointParent.svg
 import { ReactComponent as AddPointToPartSVG } from './images/AddPointToPart.svg';
 import { ReactComponent as DrawLineSVG } from './images/DrawLine.svg';
 import { css } from '@emotion/react';
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useCallback, useState } from 'react';
+import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
 
 type ToolbarProps = {
   operations: {
@@ -22,15 +23,41 @@ type ToolbarProps = {
 
 const wrapStyle = css`
   position: fixed;
+  width: 5em;
   right: 2em;
   bottom: 1em;
   padding: 1em;
   display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+  justify-content: center;
+  padding-top: 2em;
   border-radius: 0.5em;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   background-color: white;
+  overflow: hidden;
+`;
+
+const topBarStyle = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1em;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  color: #3f3f3f;
+  background-color: #dfdfdf;
+  &:hover {
+    background-color: #ccc;
+  }
+`;
+
+const buttonsWrapStyle = css`
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 `;
 
 const buttonStyle = css`
@@ -47,14 +74,31 @@ const buttonStyle = css`
   }
 `;
 
-export const Toolbar = ({ operations }: ToolbarProps): JSX.Element => (
-  <div className='ToolbarWrap' css={wrapStyle}>
-    <AddClaimSVG onClick={operations.add_claim} css={buttonStyle} />
-    <AddEvidenceSVG onClick={operations.add_evidence} css={buttonStyle} />
-    <AddPointSVG onClick={operations.add_point} css={buttonStyle} />
-    <AddPointChildSVG onClick={operations.add_point_child} css={buttonStyle} />
-    <AddPointParentSVG onClick={operations.add_point_to_parent} css={buttonStyle} />
-    <AddPointToPartSVG onClick={operations.add_point_to_part} css={buttonStyle} />
-    <DrawLineSVG onClick={operations.draw_line} css={buttonStyle} />
-  </div>
-);
+export const Toolbar = ({ operations }: ToolbarProps): JSX.Element => {
+  const [isToolbarOpen, setIsToolbarOpen] = useState(true);
+  return (
+    <div className='ToolbarWrap' css={wrapStyle}>
+      <div
+        css={topBarStyle}
+        onClick={useCallback(() => {
+          setIsToolbarOpen(!isToolbarOpen);
+        }, [isToolbarOpen])}
+      >
+        {isToolbarOpen ? <FaAngleDown /> : <FaAngleUp />}
+      </div>
+      {isToolbarOpen ? (
+        <div css={buttonsWrapStyle}>
+          <AddClaimSVG onClick={operations.add_claim} css={buttonStyle} />
+          <AddEvidenceSVG onClick={operations.add_evidence} css={buttonStyle} />
+          <AddPointSVG onClick={operations.add_point} css={buttonStyle} />
+          <AddPointChildSVG onClick={operations.add_point_child} css={buttonStyle} />
+          <AddPointParentSVG onClick={operations.add_point_to_parent} css={buttonStyle} />
+          <AddPointToPartSVG onClick={operations.add_point_to_part} css={buttonStyle} />
+          <DrawLineSVG onClick={operations.draw_line} css={buttonStyle} />
+        </div>
+      ) : (
+        <span>Tools</span>
+      )}
+    </div>
+  );
+};
