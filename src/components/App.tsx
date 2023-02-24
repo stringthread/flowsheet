@@ -1,7 +1,10 @@
 import { ErrorBoundary } from './ErrorBoundary';
+import { useHelpModal } from './HelpModal';
 import { useLoadFileModal } from './LoadFileModal';
 import { Match } from './Match';
+import { MenuBar } from './MenuBar';
 import { Point } from './Point';
+import { useToolBar } from './ToolBar';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
@@ -17,6 +20,7 @@ import { saveMatch } from 'repositories/encoder';
 import { append_claim } from 'services/claim';
 import { append_evidence } from 'services/evidence';
 import { get_from_id } from 'services/id';
+import { createLeaderLine } from 'services/line';
 import { generate_match } from 'services/match';
 import {
   append_sibling_point,
@@ -251,7 +255,7 @@ const MovingDivLineInner: React.FC<{
     if (id_is_mPoint(props.lineStartId)) {
       if (props.idToPointRef[props.lineStartId] !== undefined) {
         const [start, end] = [props.idToPointRef[props.lineStartId].current, thisRef.current];
-        if (start !== null && end !== null) newLine = new LeaderLine(start, end);
+        if (start !== null && end !== null) newLine = createLeaderLine(start, end);
       }
     }
     props.setLine(newLine);
@@ -273,6 +277,20 @@ const MovingDivLineInner: React.FC<{
       style={{ left: `${props.coord[0]}px`, top: `${props.coord[1]}px` }}
     ></div>
   );
+};
+
+const toggleFullscreen = () => {
+  if (!document.fullscreenEnabled) {
+    toastAndLog('全画面表示失敗', 'このブラウザでは使用できません');
+    return;
+  }
+  if (!document.fullscreenElement) {
+    document.documentElement
+      .requestFullscreen()
+      .catch((e) => toastAndLog('全画面表示失敗', 'エラーが発生しました', `${e.message} (${e.name})`));
+  } else {
+    document.exitFullscreen();
+  }
 };
 
 function App() {
@@ -297,13 +315,9 @@ function App() {
     setRebutToFn,
     setLineStartId,
   );
-  const { add_claim, add_point, add_point_to_part, add_evidence } = useAppEventListeners(
-    selected,
-    setRebutToFn,
-    setLineStartId,
-    setNextFocus,
-  );
+  const operations = useAppEventListeners(selected, setRebutToFn, setLineStartId, setNextFocus);
   const [LoadFileModal, openLoadFileModal, closeLoadFileModal, isOpenLoadFileModal] = useLoadFileModal(setMatchID);
+  const [HelpModal, openHelpModal, closeHelpModal, isOpenHelpModal] = useHelpModal();
   useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
   const onMouseMoveFnRef = useRef((e: React.MouseEvent) => {});
   const AppContextValue = useDependentObj(
@@ -326,20 +340,61 @@ function App() {
     },
     [onClickToRebut, idToPointRef, setIdToPointRef, nextFocus, setNextFocus],
   );
+  const [ToolBar, isToolBarOpen, toggleToolBarOpen] = useToolBar();
+  const menuBarItems = [
+    {
+      label: 'ファイル',
+      items: [
+        { label: 'ファイルを開く', onClick: openLoadFileModal },
+        { label: '上書き保存', onClick: () => alert('未実装です') },
+        { label: '名前を付けて保存', onClick: () => matchID && saveMatch(matchID) },
+        { label: '設定', onClick: () => alert('未実装です') },
+      ],
+    },
+    {
+      label: '編集',
+      items: [
+        { label: '論点を追加', onClick: operations.add_point },
+        { label: 'クレームを追加', onClick: operations.add_claim },
+        { label: '証拠資料を追加', onClick: operations.add_evidence },
+        { label: 'パートに論点を追加', onClick: operations.add_point_to_part },
+        { label: '論点を削除', onClick: () => alert('未実装です') },
+        { label: 'パートを編集', onClick: () => alert('未実装です') },
+      ],
+    },
+    {
+      label: '表示',
+      items: [
+        { label: '全画面表示', onClick: toggleFullscreen },
+        { label: `操作ボタンの${isToolBarOpen ? '非表示' : '表示'}`, onClick: toggleToolBarOpen },
+      ],
+    },
+    {
+      label: 'ヘルプ',
+      items: [
+        { label: 'ヘルプ画面', onClick: openHelpModal },
+        {
+          label: '質問・バグ報告・機能要望を送信',
+          onClick: () => {
+            alert('コメントはGitHub Discussionsで受け付けます。リンク先から適切なカテゴリを選んで投稿してください');
+            window.open('https://github.com/stringthread/flowsheet/discussions/new/choose', '_blank');
+          },
+        },
+        { label: '投げ銭', onClick: () => alert('未実装です') },
+      ],
+    },
+  ];
   return (
     <ErrorBoundary>
       <Provider store={store}>
         <AppContext.Provider value={AppContextValue}>
           <div onMouseMove={onMouseMoveFnRef.current} className='App'>
+            <MenuBar items={menuBarItems} />
+            <ToolBar operations={operations} />
             <MovingDivLine idToPointRef={idToPointRef} lineStartId={lineStartId} onMouseMoveFnRef={onMouseMoveFnRef} />
             {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
-            <button onClick={add_claim}>Add Claim</button>
-            <button onClick={add_point}>Add Point</button>
-            <button onClick={add_point_to_part}>Add Point to Part</button>
-            <button onClick={add_evidence}>Add Evidence</button>
-            <button onClick={() => matchID && saveMatch(matchID)}>save</button>
-            <button onClick={openLoadFileModal}>load</button>
             <LoadFileModal />
+            <HelpModal />
           </div>
           <ToastContainer
             position='top-center'

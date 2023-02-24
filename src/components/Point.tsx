@@ -3,12 +3,12 @@ import { Claim } from './Claim';
 import { Evidence } from './Evidence';
 import { StretchTextInput, StretchTextArea } from './TextInput';
 import { css } from '@emotion/react';
-import LeaderLine from 'leader-line-new';
 import { id_is_mClaim } from 'models/mClaim';
 import { id_is_mEvidence } from 'models/mEvidence';
 import { id_is_mPoint, mPoint } from 'models/mPoint';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { createLeaderLine } from 'services/line';
 import { set_rebut } from 'services/point';
 import { toastAndLog } from 'services/toast';
 import { RootState } from 'stores/index';
@@ -46,13 +46,22 @@ const PointChild: React.VFC<ChildProps> = (props) => {
   );
 };
 
-const stylePointNumbering = css`
+const stylePointNumberingWrap = css`
   display: inline-block;
-  min-width: 1em;
-  width: 1em;
+  min-width: 1.2em;
   height: 1em;
   flex-grow: 0;
   flex-shrink: 0;
+  &::after {
+    content: '.';
+    display: inline;
+  }
+`;
+
+const stylePointNumbering = css`
+  min-width: 1em;
+  width: 1em;
+  height: 1em;
   &:not(:placeholder-shown):not(:focus) {
     padding-right: 0;
     padding-left: 0;
@@ -62,6 +71,7 @@ const stylePointNumbering = css`
 
 const stylePointChildrenWrap = css`
   min-width: 0;
+  width: 100%;
 `;
 
 const stylePoint = css`
@@ -102,7 +112,7 @@ export const Point: React.VFC<Props> = (props) => {
       if (point?.rebut_to !== undefined) {
         try {
           const rebut_to = idToPointRef.get[point.rebut_to]?.current;
-          if (rebut_to && thisRef.current) setRebuttalLine(new LeaderLine(rebut_to, thisRef.current));
+          if (rebut_to && thisRef.current) setRebuttalLine(createLeaderLine(rebut_to, thisRef.current));
         } catch (e) {
           set_rebut(props.pointID, undefined);
           toastAndLog('リンク線の表示に失敗', '反駁先が正しくありません');
@@ -121,22 +131,24 @@ export const Point: React.VFC<Props> = (props) => {
       onClick={onClick}
       css={stylePoint}
     >
-      <StretchTextInput
-        ref={focusRef}
-        key={props.pointID}
-        className='pointNumbering'
-        data-testid='pointNumbering'
-        value={point.numbering?.toString()}
-        onBlur={(e) => {
-          dispatch(
-            point_slice.actions.upsertOne({
-              id: props.pointID,
-              numbering: e.currentTarget.value,
-            }),
-          );
-        }}
-        css={stylePointNumbering}
-      />
+      <div className='pointNumberingWrap' css={stylePointNumberingWrap}>
+        <StretchTextInput
+          ref={focusRef}
+          key={props.pointID}
+          className='pointNumbering'
+          data-testid='pointNumbering'
+          value={point.numbering?.toString()}
+          onBlur={(e) => {
+            dispatch(
+              point_slice.actions.upsertOne({
+                id: props.pointID,
+                numbering: e.currentTarget.value,
+              }),
+            );
+          }}
+          css={stylePointNumbering}
+        />
+      </div>
       <div className='pointChildrenWrap' data-testid='pointChildrenWrap' css={stylePointChildrenWrap}>
         {point.contents !== undefined ? (
           <PointChild parentID={props.pointID} contents={point.contents} setSelected={props.setSelected} />

@@ -19,11 +19,11 @@ export interface TextInputProps<T extends HTMLElement> {
 const empty_event_handler: React.EventHandler<React.SyntheticEvent> = () => {};
 
 const styleTextInput = css`
-  border: solid 1px #ddd;
+  border: solid 1px #ccc;
   border-radius: 0;
   &:placeholder-shown {
     border: none;
-    background-color: #eee;
+    background-color: #ccc;
   }
   &:focus {
     border: solid 1px #aaa;
