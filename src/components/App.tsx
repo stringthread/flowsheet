@@ -366,7 +366,7 @@ function App() {
       label: '表示',
       items: [
         { label: '全画面表示', onClick: toggleFullscreen },
-        { label: '操作ボタンの表示/非表示', onClick: () => alert('未実装です') },
+        { label: `操作ボタンの${isToolBarOpen ? '非表示' : '表示'}`, onClick: toggleToolBarOpen },
       ],
     },
     {
