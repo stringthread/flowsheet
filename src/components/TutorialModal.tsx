@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import Cookies from 'js-cookie';
 import React, { useCallback, useEffect } from 'react';
 import { useModal } from 'react-hooks-use-modal';
 import { FaTimes } from 'react-icons/fa';
@@ -52,7 +53,10 @@ export const useTutorialModal: useTutorialModal = () => {
       loop: 0,
     },
   };
-  useEffect(() => open(), []);
+  useEffect(() => {
+    if (!Cookies.get('dontShowTutorial')) open();
+    Cookies.set('dontShowTutorial', 'true');
+  }, []);
   return [
     useCallback(
       () => (
