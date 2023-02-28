@@ -5,6 +5,7 @@ import { Match } from './Match';
 import { MenuBar } from './MenuBar';
 import { Point } from './Point';
 import { useToolBar } from './ToolBar';
+import { useTutorialModal } from './TutorialModal';
 import { css } from '@emotion/react';
 import LeaderLine from 'leader-line-new';
 import { ID_TYPE } from 'models';
@@ -322,6 +323,7 @@ function App() {
     setLoadFileName,
   );
   const [HelpModal, openHelpModal, closeHelpModal, isOpenHelpModal] = useHelpModal();
+  const [TutorialModal, openTutorialModal, closeTutorialModal, isOpenTutorialModal] = useTutorialModal();
   useAppHotkeys(selected, setRebutToFn, stopToRebut, setLineStartId, setNextFocus);
   const onMouseMoveFnRef = useRef((e: React.MouseEvent) => {});
   const AppContextValue = useDependentObj(
@@ -375,7 +377,8 @@ function App() {
     {
       label: 'ヘルプ',
       items: [
-        { label: 'ヘルプ画面', onClick: openHelpModal },
+        { label: '操作説明動画', onClick: openTutorialModal },
+        { label: 'ショートカットキー一覧', onClick: openHelpModal }, // TODO: 他ヘルプを加えたら改名
         {
           label: '質問・バグ報告・機能要望を送信',
           onClick: () => {
@@ -398,6 +401,7 @@ function App() {
             {matchID ? <Match matchID={matchID} setSelected={setSelected} /> : null}
             <LoadFileModal />
             <HelpModal />
+            <TutorialModal />
           </div>
           <ToastContainer
             position='top-center'
