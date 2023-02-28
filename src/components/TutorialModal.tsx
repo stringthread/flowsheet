@@ -34,6 +34,17 @@ export const useTutorialModal: useTutorialModal = () => {
   const [Modal, open, close, isModalOpen] = useModal('root', {
     preventScroll: true,
   });
+  const videoOptions = {
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      rel: 0,
+      showinfo: 0,
+      mute: 1,
+      loop: 0,
+    },
+  };
+  useEffect(() => open(), []);
   return [
     useCallback(
       () => (
@@ -42,7 +53,7 @@ export const useTutorialModal: useTutorialModal = () => {
             <div css={closeStyle} onClick={close}>
               <FaTimes title='Close the help modal' size={32} />
             </div>
-            <YouTube videoId='Xe7SfJouB7M' onEnd={() => setTimeout(close, 3000)} />
+            <YouTube videoId='Xe7SfJouB7M' onEnd={() => setTimeout(close, 3000)} opts={videoOptions} />
           </div>
         </Modal>
       ),
