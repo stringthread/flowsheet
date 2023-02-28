@@ -7,13 +7,21 @@ import YouTube from 'react-youtube';
 const wrapStyle = css`
   position: relative;
   width: 70vw;
-  max-width: 600px;
-  max-height: 80vh;
+  height: 70vh;
+  max-width: 1000px;
   padding: 24px 40px 16px;
   border-radius: 8px;
   background-color: white;
-  & iframe {
+  & > div:not(:first-of-type) {
     width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  & iframe {
+    width: 90%;
+    height: 90%;
   }
 `;
 const closeStyle = css`
