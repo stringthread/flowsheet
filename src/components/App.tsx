@@ -377,7 +377,8 @@ function App() {
     {
       label: 'ヘルプ',
       items: [
-        { label: 'ヘルプ画面', onClick: openHelpModal },
+        { label: '操作説明動画', onClick: openTutorialModal },
+        { label: 'ショートカットキー一覧', onClick: openHelpModal }, // TODO: 他ヘルプを加えたら改名
         {
           label: '質問・バグ報告・機能要望を送信',
           onClick: () => {
